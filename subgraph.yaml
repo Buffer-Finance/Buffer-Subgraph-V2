@@ -84,7 +84,7 @@ dataSources:
           handler: handleSetFeeProtocol
       file: ./src/mapping.ts
   - kind: ethereum/contract
-    name: BinaryPoolUSDC
+    name: BinaryPool
     network: arbitrum-one
     source:
       address: "0x6Ec7B10bF7331794adAaf235cb47a2A292cD9c7e"

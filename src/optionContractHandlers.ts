@@ -19,7 +19,6 @@ import { State, RouterAddress, ARBITRUM_SOLANA_ADDRESS } from "./config";
 import { updateOptionContractData } from "./core";
 import { updateOpeningStats, updateClosingStats } from "./aggregate";
 import { referralAndNFTDiscountStats } from "./stats";
-import { UserOptionData } from "../generated/schema";
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;

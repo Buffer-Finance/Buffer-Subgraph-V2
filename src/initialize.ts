@@ -16,25 +16,20 @@ import {
   WeeklyRevenueAndFee,
   PoolStat,
   ARBPoolStat,
+  NFT,
   UserRewards,
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BinaryPool } from "../generated/BinaryPool/BinaryPool";
-import { ARB_POOL_CONTRACT, USDC_POL_POOL_CONTRACT, USDC_POOL_CONTRACT } from "./config";
+import {
+  ARB_POOL_CONTRACT,
+  USDC_POL_POOL_CONTRACT,
+  USDC_POOL_CONTRACT,
+} from "./config";
 
 export const ZERO = BigInt.fromI32(0);
-
-export function _calculateCurrentUtilization(
-  totalLockedAmount: BigInt,
-  poolAddress: Address
-): BigInt {
-  let poolContractInstance = BinaryPool.bind(poolAddress);
-  let currentUtilization = totalLockedAmount
-    .times(BigInt.fromI64(1000000000000000000))
-    .div(poolContractInstance.totalTokenXBalance());
-  return currentUtilization;
-}
+let ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 //TODO: Scan Config for settlement fee update
 export function calculatePayout(settlementFeePercent: BigInt): BigInt {
@@ -60,9 +55,6 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.openDown = ZERO;
     optionContract.openUp = ZERO;
     optionContract.openInterest = ZERO;
-    optionContract.currentUtilization = ZERO;
-    optionContract.payoutForDown = ZERO;
-    optionContract.payoutForUp = ZERO;
     optionContract.asset = optionContractInstance.assetPair();
     let optionContractPool = optionContractInstance.pool();
     if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
@@ -75,16 +67,6 @@ export function _loadOrCreateOptionContractEntity(
       optionContract.token = "USDC";
       optionContract.pool = "USDC";
     }
-    optionContract.payoutForDown = calculatePayout(
-      BigInt.fromI32(
-        optionContractInstance.baseSettlementFeePercentageForBelow()
-      )
-    );
-    optionContract.payoutForUp = calculatePayout(
-      BigInt.fromI32(
-        optionContractInstance.baseSettlementFeePercentageForAbove()
-      )
-    );
     optionContract.save();
   }
   return optionContract as OptionContract;
@@ -162,7 +144,8 @@ export function _loadOrCreateQueuedOptionEntity(
     entity = new QueuedOptionData(referenceID);
     entity.queueID = queueID;
     entity.optionContract = contractAddress;
-    entity.queuedTimestamp = ZERO;
+    entity.queueTimestamp = ZERO;
+    entity.cancelTimestamp = ZERO;
     entity.lag = ZERO;
     entity.processTime = ZERO;
     entity.save();
@@ -404,4 +387,22 @@ export function _loadOrCreateUserRewards(
     entity.save();
   }
   return entity as UserRewards;
+}
+
+export function _loadOrCreateNFT(tokenId: BigInt): NFT {
+  let referenceID = `${tokenId}`;
+  let entity = NFT.load(referenceID);
+  if (entity == null) {
+    entity = new NFT(referenceID);
+    entity.batchId = ZERO;
+    entity.tokenId = tokenId;
+    entity.tier = "";
+    entity.owner = Bytes.fromHexString(ZERO_ADDRESS);
+    entity.nftImage = "";
+    entity.ipfs = "";
+    entity.hasRevealed = false;
+
+    entity.save();
+  }
+  return entity as NFT;
 }

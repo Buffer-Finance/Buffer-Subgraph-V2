@@ -1,4 +1,6 @@
 specVersion: 0.0.6
+features:
+  - ipfsOnEthereumContracts
 schema:
   file: ./schema.graphql
 dataSources:
@@ -64,24 +66,30 @@ dataSources:
           handler: handleOpenTrade
       file: ./src/mapping.ts
   - kind: ethereum/contract
-    name: UniswapPool
+    name: DropERC721
     network: arbitrum-one
     source:
-      address: "0x81c48D31365e6B526f6BBadC5c9aaFd822134863"
-      abi: UniswapPool
-      startBlock: 70813585
+      address: "0x53bD6b734F50AC058091077249A40f5351629d05"
+      abi: DropERC721
+      startBlock: 53878193
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      abis:
-        - name: UniswapPool
-          file: ./abis/UniswapPool.json
       entities:
-        - UserOptionData
+        - NFT
+      abis:
+        - name: DropERC721
+          file: ./abis/DropERC721.json
       eventHandlers:
-        - event: SetFeeProtocol(uint8,uint8,uint8,uint8)
-          handler: handleSetFeeProtocol
+        - event: TokensLazyMinted(indexed uint256,uint256,string,bytes)
+          handler: handleLazyMint
+        - event: TokenURIRevealed(indexed uint256,string)
+          handler: handleReveal
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleNftTransfer
+        - event: TokensClaimed(indexed uint256,indexed address,indexed address,uint256,uint256)
+          handler: handleTokenClaim
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BinaryPool
@@ -200,3 +208,23 @@ dataSources:
   #       - event: Transfer(indexed address,indexed address,uint256)
   #         handler: handleTransfer
   #     file: ./src/BFRmapping.ts
+  # - kind: ethereum/contract
+  #   name: UniswapPool
+  #   network: arbitrum-one
+  #   source:
+  #     address: "0x81c48D31365e6B526f6BBadC5c9aaFd822134863"
+  #     abi: UniswapPool
+  #     startBlock: 70813585
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     abis:
+  #       - name: UniswapPool
+  #         file: ./abis/UniswapPool.json
+  #     entities:
+  #       - UserOptionData
+  #     eventHandlers:
+  #       - event: SetFeeProtocol(uint8,uint8,uint8,uint8)
+  #         handler: handleSetFeeProtocol
+  #     file: ./src/mapping.ts

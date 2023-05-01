@@ -60,7 +60,7 @@ export function handleInitiateTrade(event: InitiateTrade): void {
     queuedOptionData.totalFee = queuedTradeData.value3;
     queuedOptionData.slippage = queuedTradeData.value8;
     queuedOptionData.isAbove = queuedTradeData.value5 ? true : false;
-    queuedOptionData.queuedTimestamp = event.block.timestamp;
+    queuedOptionData.queueTimestamp = event.block.timestamp;
     queuedOptionData.save();
 }
 
@@ -73,7 +73,7 @@ export function handleOpenTrade(event: OpenTrade): void {
         contractAddress
     );
     userQueuedData.lag = event.block.timestamp.minus(
-        userQueuedData.queuedTimestamp
+        userQueuedData.queueTimestamp
     );
     userQueuedData.processTime = event.block.timestamp;
     userQueuedData.state = State.opened;
@@ -83,9 +83,9 @@ export function handleOpenTrade(event: OpenTrade): void {
         contractAddress
     );
     userOptionData.queueID = queueID;
-    userOptionData.queuedTimestamp = userQueuedData.queuedTimestamp;
+    userOptionData.queuedTimestamp = userQueuedData.queueTimestamp;
     userOptionData.lag = event.block.timestamp.minus(
-        userQueuedData.queuedTimestamp
+        userQueuedData.queueTimestamp
     );
     userOptionData.save();
 }
@@ -104,6 +104,7 @@ export function handleCancelTrade(event: CancelTrade): void {
     );
     userQueuedData.state = State.cancelled;
     userQueuedData.reason = event.params.reason;
+    userQueuedData.cancelTimestamp = event.block.timestamp;
     userQueuedData.save();
 }
 

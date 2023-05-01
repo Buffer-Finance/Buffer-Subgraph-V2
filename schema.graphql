@@ -58,9 +58,10 @@ type QueuedOptionData @entity {
   slippage: BigInt
   depositToken: String
   reason: String
-  queuedTimestamp: BigInt!
   lag: BigInt!
   processTime: BigInt!
+  queueTimestamp: BigInt!
+  cancelTimestamp: BigInt!
 }
 
 type UserOptionData @entity {

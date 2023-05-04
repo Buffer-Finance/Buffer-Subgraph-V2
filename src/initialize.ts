@@ -21,7 +21,6 @@ import {
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { BinaryPool } from "../generated/BinaryPool/BinaryPool";
 import {
   ARB_POOL_CONTRACT,
   USDC_POL_POOL_CONTRACT,

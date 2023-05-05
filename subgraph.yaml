@@ -37,7 +37,7 @@ dataSources:
     name: TournamentManager
     network: arbitrum-goerli
     source:
-      address: "0x59AF9f172bbEC082e8cC09afB5eB3341DA43E77A"
+      address: "0x9E9bE7b36ADf4D14520d1F3DE15Eda450331F190"
       abi: TournamentManager
       startBlock: 17937150
     mapping:
@@ -65,7 +65,7 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0x6043bB7bD4fFB4973d2086d8c2692EdF28A0d874"
+      address: "0xAc0C97659F0a86C8B24C61f6e3aEf65F06622e7A"
       abi: BufferRouter
       startBlock: 17937150
     mapping:

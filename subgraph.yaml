@@ -18,6 +18,7 @@ dataSources:
         - UserOptionData
         - OptionContract
         - User
+        - NetPnLPerPool
       abis:
         - name: BufferBinaryOptions
           file: ./abis/BufferBinaryOptions.json

@@ -18,6 +18,7 @@ import {
   ARBPoolStat,
   NFT,
   UserRewards,
+  NetPnLPerPool
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
@@ -405,4 +406,23 @@ export function _loadOrCreateNFT(tokenId: BigInt): NFT {
     entity.save();
   }
   return entity as NFT;
+}
+
+
+export function _loadOrCreateNetPnLPerPool(
+  contractAddress: Bytes,
+  dayID: string,
+  period: string
+): NetPnLPerPool {
+  let referenceID = `${dayID}${contractAddress}`;
+  let entity = NetPnLPerPool.load(referenceID);
+  if (entity === null) {
+    entity = new NetPnLPerPool(referenceID);
+    entity.contractAddress = contractAddress;
+    entity.netPnL = ZERO;
+    entity.periodID = dayID;
+    entity.period = period;
+    entity.save();
+  }
+  return entity as NetPnLPerPool;
 }

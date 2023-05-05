@@ -16,7 +16,7 @@ type OptionContract @entity {
   volume: BigInt!
   token: String!
   asset: String
-  pool:String!
+  pool: String!
 }
 
 type VolumePerContract @entity {
@@ -263,20 +263,27 @@ type BFRHolder @entity {
 }
 
 type NFT @entity {
-    id: String!
-    tokenId: BigInt!
-    owner: Bytes!
-    tier: String!
-    nftImage: String!
-    ipfs: String!
-    batchId: BigInt!
-    hasRevealed: Boolean!
-    claimTimestamp: BigInt
-    phaseId: BigInt
+  id: String!
+  tokenId: BigInt!
+  owner: Bytes!
+  tier: String!
+  nftImage: String!
+  ipfs: String!
+  batchId: BigInt!
+  hasRevealed: Boolean!
+  claimTimestamp: BigInt
+  phaseId: BigInt
 }
 
 type NFTBatch @entity {
-    id: String!
-    tokenIds: [BigInt!]!
+  id: String!
+  tokenIds: [BigInt!]!
 }
 
+type NetPnLPerPool @entity {
+  id: String!
+  contractAddress: Bytes!
+  netPnL: BigInt!
+  periodID: String!
+  period: Period!
+}

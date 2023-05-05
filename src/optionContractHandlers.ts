@@ -9,6 +9,7 @@ import {
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import {
+  ZERO,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
   _loadOrCreateReferralData,
@@ -97,7 +98,8 @@ export function _handleExpire(event: Expire): void {
       userOptionData.user,
       contractAddress,
       false,
-      userOptionData.totalFee
+      userOptionData.totalFee,
+      ZERO
     );
   }
 }
@@ -127,7 +129,8 @@ export function _handleExercise(event: Exercise): void {
       userOptionData.user,
       contractAddress,
       true,
-      event.params.profit.minus(userOptionData.totalFee)
+      event.params.profit.minus(userOptionData.totalFee),
+      event.params.profit
     );
   }
 }

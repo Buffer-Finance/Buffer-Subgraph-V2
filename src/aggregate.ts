@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getHourId } from "./helpers";
+import { _getHourId, _getDayId } from "./helpers";
 import { ZERO } from "./initialize";
 import {
   updateOpenInterest,
@@ -17,6 +17,7 @@ import {
 } from "./dashboard";
 import { convertARBToUSDC } from "./convertToUSDC";
 import { updateOptionContractData } from "./core";
+import { _loadOrCreateNetPnLPerPool } from "./initialize";
 
 export function updateOpeningStats(
   token: string,
@@ -27,6 +28,17 @@ export function updateOpeningStats(
   contractAddress: Bytes,
   poolToken: string
 ): void {
+  // Circuit Breaker
+  let netPnLPerPool = _loadOrCreateNetPnLPerPool(
+    contractAddress,
+    _getDayId(timestamp),
+    "daily"
+  );
+  netPnLPerPool.netPnL = netPnLPerPool.netPnL.minus(
+    totalFee.minus(settlementFee)
+  );
+  netPnLPerPool.save();
+
   if (token == "USDC") {
     // Dashboard Page - overview
     updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
@@ -134,8 +146,20 @@ export function updateClosingStats(
   user: Bytes,
   contractAddress: Bytes,
   isExercised: boolean,
-  netPnL: BigInt
+  netPnL: BigInt,
+  payout: BigInt
 ): void {
+  // Circuit Breaker
+  if (isExercised) {
+    let netPnLPerPool = _loadOrCreateNetPnLPerPool(
+      contractAddress,
+      _getDayId(timestamp),
+      "daily"
+    );
+    netPnLPerPool.netPnL = netPnLPerPool.netPnL.plus(payout);
+    netPnLPerPool.save();
+  }
+
   if (token == "USDC") {
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, isAbove, totalFee);

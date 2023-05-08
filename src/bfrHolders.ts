@@ -10,7 +10,7 @@ let ONE = BigInt.fromI32(1);
 export function _handleTransfer(event: Transfer): void {
   let from = event.params.from.toHex();
   let to = event.params.to.toHex();
-  let value = event.params.value;
+  const value = event.params.value;
   const timestamp = event.block.timestamp;
   const dayId = _getDayId(timestamp);
   let dayEntity = loadOrCreateBFRInvestorsData(dayId);
@@ -21,7 +21,7 @@ export function _handleTransfer(event: Transfer): void {
     fromAccount.balance = fromAccount.balance.minus(value);
     fromAccount.save();
   }
-  dayEntity.values.plus(value);
+  dayEntity.values = dayEntity.values.plus(value);
   dayEntity.save();
   toAccount.balance = toAccount.balance.plus(value);
   toAccount.save();

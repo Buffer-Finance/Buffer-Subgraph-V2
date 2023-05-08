@@ -11,18 +11,21 @@ export function _handleTransfer(event: Transfer): void {
   let from = event.params.from.toHex();
   let to = event.params.to.toHex();
   const value = event.params.value;
+
   const timestamp = event.block.timestamp;
   const dayId = _getDayId(timestamp);
   let dayEntity = loadOrCreateBFRInvestorsData(dayId);
   dayEntity.timestamp = timestamp;
+  dayEntity.values = dayEntity.values.plus(value);
+  dayEntity.save();
+
   let fromAccount = loadOrCreateBFRholder(from, dayEntity);
-  let toAccount = loadOrCreateBFRholder(to, dayEntity);
   if (fromAccount.id != zeroAddress) {
     fromAccount.balance = fromAccount.balance.minus(value);
     fromAccount.save();
   }
-  dayEntity.values = dayEntity.values.plus(value);
-  dayEntity.save();
+
+  let toAccount = loadOrCreateBFRholder(to, dayEntity);
   toAccount.balance = toAccount.balance.plus(value);
   toAccount.save();
 }
@@ -34,10 +37,10 @@ function loadOrCreateBFRholder(
   let referenceID = `${address}`;
   let entity = BFRInvestor.load(referenceID);
   if (entity == null) {
-    dayEntity.holder = dayEntity.holder.plus(ONE);
     entity = new BFRInvestor(referenceID);
     entity.balance = ZERO;
     entity.save();
+    dayEntity.holder = dayEntity.holder.plus(ONE);
   }
   return entity as BFRInvestor;
 }

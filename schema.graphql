@@ -1,8 +1,5 @@
 
-
-type BFRHolderData @entity {
+type BFRHolder @entity {
   id: String!
-  holders: Int!
-  period: Period!
-  timestamp: BigInt!
+  balance: BigInt!
 }

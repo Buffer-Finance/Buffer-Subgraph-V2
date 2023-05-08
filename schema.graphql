@@ -2,7 +2,6 @@
 type BFRInvestor @entity {
   id: String!
   balance: BigInt!
-  count: BigInt!
 }
 
 type BFRInvestorsCount @entity {

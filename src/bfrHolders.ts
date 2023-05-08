@@ -5,24 +5,25 @@ import { _getDayId } from "./utils";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 let ZERO = BigInt.fromI32(0);
+let ONE = BigInt.fromI32(1);
 
 export function _handleTransfer(event: Transfer): void {
   let from = event.params.from.toHex();
   let to = event.params.to.toHex();
   let value = event.params.value;
-  const timestamp = event.block.timestamp;
   let fromAccount = loadOrCreateBFRholder(from);
   let toAccount = loadOrCreateBFRholder(to);
-  const dayId = _getDayId(timestamp);
-  let dayEntity = loadOrCreateBFRInvestorsData(dayId);
   if (fromAccount.id != zeroAddress) {
     fromAccount.balance = fromAccount.balance.minus(value);
     fromAccount.save();
   }
+  const timestamp = event.block.timestamp;
+  const dayId = _getDayId(timestamp);
+  let dayEntity = loadOrCreateBFRInvestorsData(dayId);
   if (fromAccount.balance.equals(ZERO)) {
-    dayEntity.holders = dayEntity.holders.minus(1);
+    dayEntity.holders = dayEntity.holders.minus(ONE);
   }
-  dayEntity.holders = dayEntity.holders.plus(1);
+  dayEntity.holders = dayEntity.holders.plus(ONE);
   dayEntity.save();
   toAccount.balance = toAccount.balance.plus(value);
   toAccount.save();

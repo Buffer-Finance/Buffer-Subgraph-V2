@@ -7,7 +7,7 @@ type BFRInvestor @entity {
 
 type BFRInvestorsCount @entity {
   id: String!
-  holders: Int!
+  holders: BigInt!
   timestamp: BigInt!
 }
 

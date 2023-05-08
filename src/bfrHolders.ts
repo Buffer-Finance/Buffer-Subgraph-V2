@@ -24,6 +24,7 @@ export function _handleTransfer(event: Transfer): void {
     dayEntity.holders = dayEntity.holders.minus(ONE);
   }
   dayEntity.holders = dayEntity.holders.plus(ONE);
+  dayEntity.count = dayEntity.holders;
   dayEntity.save();
   toAccount.balance = toAccount.balance.plus(value);
   toAccount.save();
@@ -44,6 +45,7 @@ function loadOrCreateBFRInvestorsData(id: string): BFRInvestorsCount {
   if (!entity) {
     entity = new BFRInvestorsCount(id);
     entity.holders = ZERO;
+    entity.count = ZERO;
     entity.timestamp = BigInt.fromI32(0);
     entity.save();
   }

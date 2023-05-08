@@ -6,9 +6,9 @@ type BFRInvestor @entity {
 
 type BFRInvestorsCount @entity {
   id: String!
-  count: BigInt!
-  holders: BigInt!
+  holder: BigInt!
   timestamp: BigInt!
+  values:BigInt!
 }
 
 # swap from,to

@@ -11,29 +11,30 @@ export function _handleTransfer(event: Transfer): void {
   let from = event.params.from.toHex();
   let to = event.params.to.toHex();
   let value = event.params.value;
-  let fromAccount = loadOrCreateBFRholder(from);
-  let toAccount = loadOrCreateBFRholder(to);
+  const timestamp = event.block.timestamp;
+  const dayId = _getDayId(timestamp);
+  let dayEntity = loadOrCreateBFRInvestorsData(dayId);
+  dayEntity.timestamp = timestamp;
+  let fromAccount = loadOrCreateBFRholder(from, dayEntity);
+  let toAccount = loadOrCreateBFRholder(to, dayEntity);
   if (fromAccount.id != zeroAddress) {
     fromAccount.balance = fromAccount.balance.minus(value);
     fromAccount.save();
   }
-  const timestamp = event.block.timestamp;
-  const dayId = _getDayId(timestamp);
-  let dayEntity = loadOrCreateBFRInvestorsData(dayId);
-  if (fromAccount.balance.equals(ZERO)) {
-    dayEntity.holders = dayEntity.holders.minus(ONE);
-  }
-  dayEntity.holders = dayEntity.holders.plus(ONE);
-  dayEntity.count = dayEntity.holders;
+  dayEntity.values.plus(value);
   dayEntity.save();
   toAccount.balance = toAccount.balance.plus(value);
   toAccount.save();
 }
 
-function loadOrCreateBFRholder(address: string): BFRInvestor {
+function loadOrCreateBFRholder(
+  address: string,
+  dayEntity: BFRInvestorsCount
+): BFRInvestor {
   let referenceID = `${address}`;
   let entity = BFRInvestor.load(referenceID);
   if (entity == null) {
+    dayEntity.holder = dayEntity.holder.plus(ONE);
     entity = new BFRInvestor(referenceID);
     entity.balance = ZERO;
     entity.save();
@@ -44,8 +45,8 @@ function loadOrCreateBFRInvestorsData(id: string): BFRInvestorsCount {
   let entity = BFRInvestorsCount.load(id);
   if (!entity) {
     entity = new BFRInvestorsCount(id);
-    entity.holders = ZERO;
-    entity.count = ZERO;
+    entity.holder = ZERO;
+    entity.values = ZERO;
     entity.timestamp = BigInt.fromI32(0);
     entity.save();
   }

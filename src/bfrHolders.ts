@@ -18,6 +18,11 @@ export function _handleTransfer(event: Transfer): void {
   toAccount.balance = toAccount.balance.plus(value);
   toAccount.save();
 }
+/*
+id : to
+count 
+# swap from,to
+# swap if from balance reached 0, cnt--  cnt++ */
 
 function loadOrCreateBFRholder(address: string): BFRHolder {
   let referenceID = `${address}`;
@@ -29,13 +34,3 @@ function loadOrCreateBFRholder(address: string): BFRHolder {
   }
   return entity as BFRHolder;
 }
-// function loadOrCreateBFRHolderCounter(address: string): BFRHolderCounter {
-//   let referenceID = `${address}`;
-//   let entity = BFRHolderCounter.load(referenceID);
-//   if (entity == null) {
-//     entity = new BFRHolderCounter(referenceID);
-//     entity.save();
-//     entity.balance = ZERO;
-//   }
-//   return entity;
-// }

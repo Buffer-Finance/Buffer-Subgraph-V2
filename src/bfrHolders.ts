@@ -1,6 +1,7 @@
 import { Transfer } from "../generated/BFR/BFR";
-import { BFRHolder } from "../generated/schema";
+import { BFRInvestor, BFRInvestorsCount } from "../generated/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
+import { _getDayId } from "./utils";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 let ZERO = BigInt.fromI32(0);
@@ -24,13 +25,23 @@ count
 # swap from,to
 # swap if from balance reached 0, cnt--  cnt++ */
 
-function loadOrCreateBFRholder(address: string): BFRHolder {
+function loadOrCreateBFRholder(address: string): BFRInvestor {
   let referenceID = `${address}`;
-  let entity = BFRHolder.load(referenceID);
+  let entity = BFRInvestor.load(referenceID);
   if (entity == null) {
-    entity = new BFRHolder(referenceID);
+    entity = new BFRInvestor(referenceID);
     entity.balance = ZERO;
     entity.save();
   }
-  return entity as BFRHolder;
+  const dayId = _getDayId();
+  return entity as BFRInvestor;
+}
+function loadOrCreateBFRInvestorsData(id: string): BFRInvestorsCount {
+  let entity = BFRInvestorsCount.load(id);
+  if (!entity) {
+    entity = new BFRInvestorsCount(id);
+    entity.holders = 0;
+    entity.save();
+  }
+  return entity;
 }

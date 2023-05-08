@@ -1,12 +1,14 @@
 
-type BFRHolder @entity {
+type BFRInvestor @entity {
   id: String!
   balance: BigInt!
   count: BigInt!
 }
-type BFRInvestors @entity {
+
+type BFRInvestorsCount @entity {
   id: String!
-  count: BigInt!
+  holders: Int!
+  timestamp: BigInt!
 }
 
 # swap from,to

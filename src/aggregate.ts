@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getHourId, _getDayId } from "./helpers";
+import { _getHourId, _getDayId, _getWeekId } from "./helpers";
 import { ZERO } from "./initialize";
 import {
   updateOpenInterest,
@@ -29,15 +29,35 @@ export function updateOpeningStats(
   poolToken: string
 ): void {
   // Circuit Breaker
-  let netPnLPerPool = _loadOrCreateNetPnLPerPool(
+  let dailyNetPnLPerPool = _loadOrCreateNetPnLPerPool(
     contractAddress,
     _getDayId(timestamp),
     "daily"
   );
-  netPnLPerPool.netPnL = netPnLPerPool.netPnL.minus(
+  let weeklyNetPnLPerPool = _loadOrCreateNetPnLPerPool(
+    contractAddress,
+    _getWeekId(timestamp),
+    "weekly"
+  );
+
+  dailyNetPnLPerPool.netPnL = dailyNetPnLPerPool.netPnL.plus(
     totalFee.minus(settlementFee)
   );
-  netPnLPerPool.save();
+  weeklyNetPnLPerPool.netPnL = weeklyNetPnLPerPool.netPnL.plus(
+    totalFee.minus(settlementFee)
+  );
+
+  let blpFee = BigInt.fromI32(0);
+  if (timestamp < BigInt.fromI32(1683664200)) {
+    blpFee = settlementFee.times(BigInt.fromI32(55).div(BigInt.fromI32(100)));
+  } else {
+    blpFee = settlementFee.times(BigInt.fromI32(70).div(BigInt.fromI32(100)));
+  }
+  weeklyNetPnLPerPool.netPnL = weeklyNetPnLPerPool.netPnL.plus(blpFee);
+  weeklyNetPnLPerPool.save();
+
+  dailyNetPnLPerPool.netPnL = dailyNetPnLPerPool.netPnL.plus(blpFee);
+  dailyNetPnLPerPool.save();
 
   if (token == "USDC") {
     // Dashboard Page - overview
@@ -151,13 +171,21 @@ export function updateClosingStats(
 ): void {
   // Circuit Breaker
   if (isExercised) {
-    let netPnLPerPool = _loadOrCreateNetPnLPerPool(
+    let dailyNetPnLPerPool = _loadOrCreateNetPnLPerPool(
       contractAddress,
       _getDayId(timestamp),
       "daily"
     );
-    netPnLPerPool.netPnL = netPnLPerPool.netPnL.plus(payout);
-    netPnLPerPool.save();
+    let weeklyNetPnLPerPool = _loadOrCreateNetPnLPerPool(
+      contractAddress,
+      _getWeekId(timestamp),
+      "weekly"
+    );
+    dailyNetPnLPerPool.netPnL = dailyNetPnLPerPool.netPnL.minus(payout);
+    weeklyNetPnLPerPool.netPnL = weeklyNetPnLPerPool.netPnL.minus(payout);
+
+    dailyNetPnLPerPool.save();
+    weeklyNetPnLPerPool.save();
   }
 
   if (token == "USDC") {

@@ -1,6 +1,5 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { VolumePerContract } from "../generated/schema";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import { _loadOrCreateDashboardStat } from "./initialize";
 
 // For the overview section

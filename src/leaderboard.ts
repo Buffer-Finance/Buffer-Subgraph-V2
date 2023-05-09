@@ -1,5 +1,5 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
+import { _getDayId, _getHourId, _getWeekId, _getLeaderboardWeekId } from "./helpers";
 import {
   _loadOrCreateDailyRevenueAndFee,
   _loadOrCreateWeeklyRevenueAndFee,
@@ -55,7 +55,7 @@ export function updateDailyAndWeeklyRevenue(
 
   // Weekly
   let weeklyFeeAndRevenue = _loadOrCreateWeeklyRevenueAndFee(
-    _getWeekId(timestamp),
+    _getLeaderboardWeekId(timestamp),
     timestamp,
     token
   );
@@ -98,7 +98,7 @@ function _updateWeeklyLeaderboard(
   usdcNetPnL: BigInt
 ): void {
   let weeklyLeaderboardEntity = _loadOrCreateWeeklyLeaderboardEntity(
-    _getWeekId(timestamp),
+    _getLeaderboardWeekId(timestamp),
     user
   );
 

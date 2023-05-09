@@ -7,7 +7,6 @@ import {
   Pause,
   BufferBinaryOptions,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import {
   ZERO,
   _loadOrCreateOptionContractEntity,

@@ -33,6 +33,13 @@ export function logVolume(
   hourlyEntity.VolumeARB = hourlyEntity.VolumeARB.plus(volumeARB);
   hourlyEntity.VolumeUSDC = hourlyEntity.VolumeUSDC.plus(volumeUSDC);
   hourlyEntity.save();
+
+  let weekID = _getWeekId(timestamp);
+  let weekEntity = _loadOrCreateVolumeStat(weekID, "weekly", timestamp);
+  weekEntity.amount = weekEntity.amount.plus(amount);
+  weekEntity.VolumeARB = weekEntity.VolumeARB.plus(volumeARB);
+  weekEntity.VolumeUSDC = weekEntity.VolumeUSDC.plus(volumeUSDC);
+  weekEntity.save();
 }
 
 export function storeFees(
@@ -47,6 +54,13 @@ export function storeFees(
   entity.feeARB = entity.feeARB.plus(feesARB);
   entity.feeUSDC = entity.feeUSDC.plus(feesUSDC);
   entity.save();
+
+  let weekID = _getWeekId(timestamp);
+  let weekEntity = _loadOrCreateFeeStat(weekID, "weekly", timestamp);
+  weekEntity.fee = weekEntity.fee.plus(fees);
+  weekEntity.feeARB = weekEntity.feeARB.plus(feesARB);
+  weekEntity.feeUSDC = weekEntity.feeUSDC.plus(feesUSDC);
+  weekEntity.save();
 
   let totalEntity = _loadOrCreateFeeStat("total", "total", timestamp);
   totalEntity.fee = totalEntity.fee.plus(fees);
@@ -88,7 +102,9 @@ export function storePnl(
   pnlARB: BigInt
 ): void {
   let dayID = _getDayId(timestamp);
+  let weekID = _getWeekId(timestamp);
   let dailyEntity = _loadOrCreateTradingStatEntity(dayID, "daily", timestamp);
+  let weeklyEntity = _loadOrCreateTradingStatEntity(weekID, "weekly", timestamp);
   let totalEntity = _loadOrCreateTradingStatEntity("total", "total", timestamp);
 
   if (isProfit) {
@@ -96,17 +112,30 @@ export function storePnl(
     totalEntity.profitCumulativeUSDC = totalEntity.profitCumulativeUSDC.plus(
       pnlUSDC
     );
-    totalEntity.profitCumulativeARB = totalEntity.profitCumulativeARB.plus(pnlARB);
+    totalEntity.profitCumulativeARB = totalEntity.profitCumulativeARB.plus(
+      pnlARB
+    );
     dailyEntity.profit = dailyEntity.profit.plus(pnl);
     dailyEntity.profitUSDC = dailyEntity.profitUSDC.plus(pnlUSDC);
     dailyEntity.profitARB = dailyEntity.profitARB.plus(pnlARB);
+
+    weeklyEntity.profit = weeklyEntity.profit.plus(pnl);
+    weeklyEntity.profitUSDC = weeklyEntity.profitUSDC.plus(pnlUSDC);
+    weeklyEntity.profitARB = weeklyEntity.profitARB.plus(pnlARB);
   } else {
     totalEntity.lossCumulative = totalEntity.lossCumulative.plus(pnl);
-    totalEntity.lossCumulativeUSDC = totalEntity.lossCumulativeUSDC.plus(pnlUSDC);
+    totalEntity.lossCumulativeUSDC = totalEntity.lossCumulativeUSDC.plus(
+      pnlUSDC
+    );
     totalEntity.lossCumulativeARB = totalEntity.lossCumulativeARB.plus(pnlARB);
+
     dailyEntity.loss = dailyEntity.loss.plus(pnl);
     dailyEntity.lossARB = dailyEntity.lossARB.plus(pnlARB);
     dailyEntity.lossUSDC = dailyEntity.lossUSDC.plus(pnlUSDC);
+  
+    weeklyEntity.loss = weeklyEntity.loss.plus(pnl);
+    weeklyEntity.lossARB = weeklyEntity.lossARB.plus(pnlARB);
+    weeklyEntity.lossUSDC = weeklyEntity.lossUSDC.plus(pnlUSDC);
   }
   totalEntity.save();
   let totalEntityV2 = _loadOrCreateTradingStatEntity(
@@ -120,7 +149,16 @@ export function storePnl(
   dailyEntity.lossCumulative = totalEntityV2.lossCumulative;
   dailyEntity.lossCumulativeARB = totalEntityV2.lossCumulativeARB;
   dailyEntity.lossCumulativeUSDC = totalEntityV2.lossCumulativeUSDC;
+
+  weeklyEntity.profitCumulative = totalEntityV2.profitCumulative;
+  weeklyEntity.profitCumulativeUSDC = totalEntityV2.profitCumulativeUSDC;
+  weeklyEntity.profitCumulativeARB = totalEntityV2.profitCumulativeARB;
+  weeklyEntity.lossCumulative = totalEntityV2.lossCumulative;
+  weeklyEntity.lossCumulativeARB = totalEntityV2.lossCumulativeARB;
+  weeklyEntity.lossCumulativeUSDC = totalEntityV2.lossCumulativeUSDC;
+  
   dailyEntity.save();
+  weeklyEntity.save();
 }
 
 export function storePnlPerContract(

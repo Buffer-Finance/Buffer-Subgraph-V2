@@ -15,9 +15,6 @@ export function _handleTransfer(event: Transfer): void {
   const timestamp = event.block.timestamp;
   const dayId = _getDayId(timestamp);
   let dayEntity = loadOrCreateBFRInvestorsData(dayId);
-  dayEntity.timestamp = timestamp;
-  dayEntity.values = dayEntity.values.plus(value);
-  dayEntity.save();
 
   let fromAccount = loadOrCreateBFRholder(from, dayEntity);
   if (fromAccount.id != zeroAddress) {
@@ -28,6 +25,10 @@ export function _handleTransfer(event: Transfer): void {
   let toAccount = loadOrCreateBFRholder(to, dayEntity);
   toAccount.balance = toAccount.balance.plus(value);
   toAccount.save();
+
+  dayEntity.timestamp = timestamp;
+  dayEntity.values = dayEntity.values.plus(value);
+  dayEntity.save();
 }
 
 function loadOrCreateBFRholder(

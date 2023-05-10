@@ -36,6 +36,25 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "targetContract",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "register",
+        "type": "bool"
+      }
+    ],
+    "name": "ContractRegistryUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "queueId",
         "type": "uint256"
@@ -248,25 +267,162 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
-      { "internalType": "uint256", "name": "period", "type": "uint256" },
-      { "internalType": "bool", "name": "isAbove", "type": "bool" },
       {
-        "internalType": "address",
-        "name": "targetContract",
-        "type": "address"
+        "components": [
+          { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
+          { "internalType": "uint256", "name": "period", "type": "uint256" },
+          { "internalType": "bool", "name": "isAbove", "type": "bool" },
+          {
+            "internalType": "address",
+            "name": "targetContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedStrike",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "slippage", "type": "uint256" },
+          {
+            "internalType": "bool",
+            "name": "allowPartialFill",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "referralCode",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "traderNFTId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IBufferRouter.TradeParams",
+        "name": "params",
+        "type": "tuple"
+      },
+      { "internalType": "address", "name": "user", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "queuedTimestamp",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "expectedStrike",
+        "name": "signatureTimestamp",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "slippage", "type": "uint256" },
-      { "internalType": "bool", "name": "allowPartialFill", "type": "bool" },
-      { "internalType": "string", "name": "referralCode", "type": "string" },
-      { "internalType": "uint256", "name": "traderNFTId", "type": "uint256" }
+      { "internalType": "bytes", "name": "userSignature", "type": "bytes" },
+      { "internalType": "bytes", "name": "resolveSignature", "type": "bytes" },
+      { "internalType": "uint256", "name": "signedPrice", "type": "uint256" }
     ],
-    "name": "initiateTrade",
+    "name": "initiateAndResolve",
+    "outputs": [
+      { "internalType": "uint256", "name": "queueId", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
+          { "internalType": "uint256", "name": "period", "type": "uint256" },
+          { "internalType": "bool", "name": "isAbove", "type": "bool" },
+          {
+            "internalType": "address",
+            "name": "targetContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedStrike",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "slippage", "type": "uint256" },
+          {
+            "internalType": "bool",
+            "name": "allowPartialFill",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "referralCode",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "traderNFTId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IBufferRouter.TradeParams",
+        "name": "params",
+        "type": "tuple"
+      },
+      { "internalType": "address", "name": "user", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "queuedTimestamp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "signatureTimestamp",
+        "type": "uint256"
+      },
+      { "internalType": "bytes", "name": "userSignature", "type": "bytes" }
+    ],
+    "name": "initiateTradeForAccount",
+    "outputs": [
+      { "internalType": "uint256", "name": "queueId", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
+          { "internalType": "uint256", "name": "period", "type": "uint256" },
+          { "internalType": "bool", "name": "isAbove", "type": "bool" },
+          {
+            "internalType": "address",
+            "name": "targetContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedStrike",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "slippage", "type": "uint256" },
+          {
+            "internalType": "bool",
+            "name": "allowPartialFill",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "referralCode",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "traderNFTId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IBufferRouter.TradeParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "initiateTradeFromAccount",
     "outputs": [
       { "internalType": "uint256", "name": "queueId", "type": "uint256" }
     ],
@@ -295,9 +451,9 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "nextQueueIdToProcess",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
+    "name": "prevSignatures",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -473,13 +629,6 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "userNextQueueIndexToProcess",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       { "internalType": "address", "name": "user", "type": "address" }
     ],
@@ -495,6 +644,57 @@
     ],
     "name": "userQueuedIds",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
+          { "internalType": "uint256", "name": "period", "type": "uint256" },
+          { "internalType": "bool", "name": "isAbove", "type": "bool" },
+          {
+            "internalType": "address",
+            "name": "targetContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedStrike",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "slippage", "type": "uint256" },
+          {
+            "internalType": "bool",
+            "name": "allowPartialFill",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "referralCode",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "traderNFTId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IBufferRouter.TradeParams",
+        "name": "params",
+        "type": "tuple"
+      },
+      { "internalType": "address", "name": "user", "type": "address" },
+      { "internalType": "bytes", "name": "userSignature", "type": "bytes" },
+      {
+        "internalType": "uint256",
+        "name": "signatureTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "verifyTrade",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   }

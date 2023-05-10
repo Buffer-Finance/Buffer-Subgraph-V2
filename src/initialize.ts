@@ -23,7 +23,6 @@ import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBina
 import { BinaryPool } from "../generated/BinaryPool/BinaryPool";
 import {
   ARB_POOL_CONTRACT,
-  USDC_POL_POOL_CONTRACT,
   USDC_POOL_CONTRACT,
 } from "./config";
 

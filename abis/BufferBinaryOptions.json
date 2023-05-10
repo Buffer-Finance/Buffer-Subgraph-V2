@@ -26,7 +26,10 @@
         "name": "_category",
         "type": "uint8"
       },
-      { "internalType": "string", "name": "_assetPair", "type": "string" }
+      { "internalType": "string", "name": "_assetPair", "type": "string" },
+      { "internalType": "string", "name": "token0", "type": "string" },
+      { "internalType": "string", "name": "token1", "type": "string" },
+      { "internalType": "string", "name": "coinName", "type": "string" }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -110,6 +113,37 @@
       }
     ],
     "name": "Create",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "assetPair",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "config",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "tokenX",
+        "type": "address"
+      }
+    ],
+    "name": "CreateOptionsContract",
     "type": "event"
   },
   {
@@ -339,6 +373,13 @@
   },
   {
     "inputs": [],
+    "name": "PAUSER_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "ROUTER_ROLE",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "view",
@@ -384,6 +425,17 @@
         "name": "",
         "type": "uint8"
       }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "assetMeta",
+    "outputs": [
+      { "internalType": "string", "name": "token0", "type": "string" },
+      { "internalType": "string", "name": "token1", "type": "string" },
+      { "internalType": "string", "name": "coinName", "type": "string" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -474,25 +526,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
-        "name": "_baseSettlementFeePercentageForAbove",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "_baseSettlementFeePercentageForBelow",
-        "type": "uint16"
-      },
-      { "internalType": "uint8[4]", "name": "_nftTierStep", "type": "uint8[4]" }
-    ],
-    "name": "configure",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "components": [
           { "internalType": "uint256", "name": "strike", "type": "uint256" },
           { "internalType": "uint256", "name": "amount", "type": "uint256" },
@@ -520,7 +553,8 @@
         "name": "optionParams",
         "type": "tuple"
       },
-      { "internalType": "bool", "name": "isReferralValid", "type": "bool" }
+      { "internalType": "bool", "name": "isReferralValid", "type": "bool" },
+      { "internalType": "uint256", "name": "queuedTime", "type": "uint256" }
     ],
     "name": "createFromRouter",
     "outputs": [
@@ -606,15 +640,6 @@
       { "internalType": "address", "name": "operator", "type": "address" }
     ],
     "name": "isApprovedForAll",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "period", "type": "uint256" }
-    ],
-    "name": "isInCreationWindow",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
@@ -761,7 +786,7 @@
       { "internalType": "address", "name": "from", "type": "address" },
       { "internalType": "address", "name": "to", "type": "address" },
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-      { "internalType": "bytes", "name": "_data", "type": "bytes" }
+      { "internalType": "bytes", "name": "data", "type": "bytes" }
     ],
     "name": "safeTransferFrom",
     "outputs": [],
@@ -774,6 +799,32 @@
       { "internalType": "bool", "name": "approved", "type": "bool" }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_baseSettlementFeePercentageForAbove",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_baseSettlementFeePercentageForBelow",
+        "type": "uint16"
+      },
+      { "internalType": "uint8[4]", "name": "_nftTierStep", "type": "uint8[4]" }
+    ],
+    "name": "setConfigure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "setIsPaused",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -799,13 +850,6 @@
     "name": "symbol",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "toggleCreation",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

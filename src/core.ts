@@ -10,7 +10,6 @@ import {
 } from "./initialize";
 import { DailyUserStat } from "../generated/schema";
 import {
-  USDC_POL_POOL_CONTRACT,
   USDC_POOL_CONTRACT,
   ARB_POOL_CONTRACT,
 } from "./config";

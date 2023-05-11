@@ -40,13 +40,6 @@ export function updateOpeningStats(
     "weekly"
   );
 
-  dailyNetPnLPerPool.netPnL = dailyNetPnLPerPool.netPnL.plus(
-    totalFee.minus(settlementFee)
-  );
-  weeklyNetPnLPerPool.netPnL = weeklyNetPnLPerPool.netPnL.plus(
-    totalFee.minus(settlementFee)
-  );
-
   let blpFee = BigInt.fromI32(0);
   if (timestamp < BigInt.fromI32(1683664200)) {
     blpFee = settlementFee.times(BigInt.fromI32(55).div(BigInt.fromI32(100)));
@@ -181,8 +174,8 @@ export function updateClosingStats(
       _getWeekId(timestamp),
       "weekly"
     );
-    dailyNetPnLPerPool.netPnL = dailyNetPnLPerPool.netPnL.minus(payout);
-    weeklyNetPnLPerPool.netPnL = weeklyNetPnLPerPool.netPnL.minus(payout);
+    dailyNetPnLPerPool.netPnL = dailyNetPnLPerPool.netPnL.minus(netPnL);
+    weeklyNetPnLPerPool.netPnL = weeklyNetPnLPerPool.netPnL.minus(netPnL);
 
     dailyNetPnLPerPool.save();
     weeklyNetPnLPerPool.save();

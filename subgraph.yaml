@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 19268880 
+      startBlock: 19883110 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -40,9 +40,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0x2Acf434D53B6427d450Ae44563820f9714B5d776"
+      address: "0x05475f4a4fD4F6A56CA05b8df8EAc55e74a9F19F"
       abi: BufferRouter
-      startBlock: 19268880 
+      startBlock: 19883110 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -67,9 +67,9 @@ dataSources:
     name: BinaryPool
     network: arbitrum-goerli
     source:
-      address: "0x997CF4dDf0F38e77bE0Ff8f14A050949503288ee"
+      address: "0x0Bd21c984b66bfa311d7D590829669dA0eB9B987"
       abi: BinaryPool
-      startBlock: 19268880
+      startBlock: 19883110
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

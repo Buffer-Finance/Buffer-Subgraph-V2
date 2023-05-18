@@ -21,10 +21,7 @@ import {
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BinaryPool } from "../generated/BinaryPool/BinaryPool";
-import {
-  ARB_POOL_CONTRACT,
-  USDC_POOL_CONTRACT,
-} from "./config";
+import { ARB_POOL_CONTRACT, USDC_POOL_CONTRACT } from "./config";
 
 export const ZERO = BigInt.fromI32(0);
 

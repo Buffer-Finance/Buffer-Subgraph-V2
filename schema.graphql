@@ -20,7 +20,20 @@ type OptionContract @entity {
   payoutForDown: BigInt
   asset: String
   pool:String!
+  configContract: ConfigContract
 }
+
+type ConfigContract @entity {
+  id: Bytes!
+  address: Bytes
+  minPeriod: BigInt!
+  maxPeriod: BigInt!
+  minFee: BigInt!
+  maxFee: BigInt!
+  baseSettlementFeeForAbove: BigInt!
+  baseSettlementFeeForBelow: BigInt!
+}
+
 
 type VolumePerContract @entity {
   id: String!

@@ -4,7 +4,13 @@ import {
   Exercise,
   UpdateReferral,
   Pause,
+  CreateOptionsContract,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
+import {
+  UpdateMaxPeriod,
+  UpdateMinFee,
+  UpdateMinPeriod,
+} from "../generated/BufferConfigUpdates/BufferConfig";
 import {
   Provide,
   Withdraw,
@@ -28,6 +34,12 @@ import {
   _handleOpenTrade,
   _handleInitiateTrade,
 } from "./routerContractHandlers";
+import {
+  _handleCreateOptionsContract,
+  _handleUpdateMaxPeriod,
+  _handleUpdateMinFee,
+  _handleUpdateMinPeriod,
+} from "./configContractHandlers";
 
 export function handleInitiateTrade(event: InitiateTrade): void {
   _handleInitiateTrade(event);
@@ -75,4 +87,22 @@ export function handleProfit(event: Profit): void {
 
 export function handleLoss(event: Loss): void {
   let a = "a";
+}
+
+export function handleCreateOptionsContract(
+  event: CreateOptionsContract
+): void {
+  _handleCreateOptionsContract(event);
+}
+
+export function handleUpdateMinFee(event: UpdateMinFee): void {
+  _handleUpdateMinFee(event);
+}
+
+export function handleUpdateMaxPeriod(event: UpdateMaxPeriod): void {
+  _handleUpdateMaxPeriod(event);
+}
+
+export function handleUpdateMinPeriod(event: UpdateMinPeriod): void {
+  _handleUpdateMinPeriod(event);
 }

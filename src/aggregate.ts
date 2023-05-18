@@ -1,7 +1,7 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { _getWeekId } from "./helpers";
 import { _loadOrCreateLBFRStat } from "./initialize";
-import { Slabs } from "./config";
+import { Slabs, NFTBasedSlabs } from "./config";
 import { convertARBToUSDC } from "./convertARBToUSDC";
 import { UserNFT, NFT } from "../generated/schema";
 
@@ -10,7 +10,7 @@ const FACTOR_OF_6 = BigInt.fromI64(1000000);
 const ZERO = BigInt.fromI32(0);
 const FACTOR_OF_2 = BigInt.fromI32(100);
 
-function getLbfrAlloted(userVolume: BigInt): BigInt {
+function getLbfrAlloted(userVolume: BigInt, hasTraderNFT: boolean): BigInt {
   let newSlabIndex = 0;
 
   for (let i = 0; i < Slabs.length; i++) {
@@ -22,12 +22,12 @@ function getLbfrAlloted(userVolume: BigInt): BigInt {
       break;
     }
   }
-
   let newSlab = Slabs[newSlabIndex];
-  // newSlab[0] = minRequiredVolume
-  // newSlab[1] = LBFR/usdcVolume rate
-  // newSlab[2] = equivalent lbfr before this slab
-  // TODO: adjust the units, multipliers below
+
+  if (hasTraderNFT == true) {
+    newSlab = NFTBasedSlabs[newSlabIndex];
+  }
+
   return newSlab[2].times(FACTOR_OF_18).plus(
     userVolume
       .minus(newSlab[0].times(FACTOR_OF_18))
@@ -36,7 +36,7 @@ function getLbfrAlloted(userVolume: BigInt): BigInt {
   );
 }
 
-function getCurrentSlab(userVolume: BigInt): BigInt {
+function getCurrentSlab(userVolume: BigInt, hasTraderNFT: boolean): BigInt {
   let slabIndex = 0;
 
   for (let i = 0; i < Slabs.length; i++) {
@@ -47,7 +47,11 @@ function getCurrentSlab(userVolume: BigInt): BigInt {
       break;
     }
   }
-  return Slabs[slabIndex][1];
+  if (hasTraderNFT == false) {
+    return Slabs[slabIndex][1];
+  } else {
+    return NFTBasedSlabs[slabIndex][1];
+  }
 }
 
 export function updateLBFRStats(
@@ -81,30 +85,27 @@ export function updateLBFRStats(
       .times(FACTOR_OF_18)
       .div(FACTOR_OF_6);
   }
-  let initialVolume = LBFRStat.volume;
   let finalVolume = LBFRStat.volume.plus(totalFee);
   LBFRStat.volume = finalVolume;
   TotalLBFRStat.volume = TotalLBFRStat.volume.plus(totalFee);
 
-  let lbfrAlloted = getLbfrAlloted(finalVolume).minus(
-    getLbfrAlloted(initialVolume)
+  let hasTraderNFT = getSlabBasedOnNFTs(userAddress);
+  let lbfrAlloted = getLbfrAlloted(finalVolume, hasTraderNFT).minus(
+    TotalLBFRStat.lBFRAlloted
   );
   LBFRStat.lBFRAlloted = LBFRStat.lBFRAlloted.plus(lbfrAlloted);
   TotalLBFRStat.lBFRAlloted = TotalLBFRStat.lBFRAlloted.plus(lbfrAlloted);
   LBFRStat.claimable = LBFRStat.claimable.plus(lbfrAlloted);
   TotalLBFRStat.claimable = TotalLBFRStat.claimable.plus(lbfrAlloted);
 
-  let slab = getSlabBasedOnNFTs(userAddress);
-  if (slab == ZERO) {
-    slab = getCurrentSlab(finalVolume);
-  }
+  let slab = getCurrentSlab(finalVolume, hasTraderNFT);
   LBFRStat.currentSlab = slab;
 
   LBFRStat.save();
   TotalLBFRStat.save();
 }
 
-export function getSlabBasedOnNFTs(userAddress: Bytes): BigInt {
+export function getSlabBasedOnNFTs(userAddress: Bytes): boolean {
   let nftsOwned = 0;
   let userNfts = UserNFT.load(userAddress);
   if (userNfts != null) {
@@ -130,9 +131,9 @@ export function getSlabBasedOnNFTs(userAddress: Bytes): BigInt {
         }
       }
       if (diamond && gold && silver && platinum) {
-        return BigInt.fromI32(5);
+        return true;
       }
     }
   }
-  return ZERO;
+  return false;
 }

@@ -9,7 +9,7 @@ import {
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { RouterAddress, LBFR_START_TIMESTAMP } from "./config";
-import { updateLBFRStats, getSlabBasedOnNFTs } from "./aggregate";
+import { updateLBFRStats } from "./aggregate";
 import { _getWeekId } from "./helpers";
 import {
   DropERC721,
@@ -26,17 +26,6 @@ export function handleCreate(event: Create): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   if (routerContract.contractRegistry(contractAddress) == true) {
-    let slab = getSlabBasedOnNFTs(event.params.account);
-    if (slab > ZERO) {
-      let LBFRStat = _loadOrCreateLBFRStat(
-        "weekly",
-        event.block.timestamp,
-        event.params.account,
-        _getWeekId(event.block.timestamp)
-      );
-      LBFRStat.currentSlab = slab;
-      LBFRStat.save();
-    }
     if (BigInt.fromI32(LBFR_START_TIMESTAMP) < event.block.timestamp) {
       let optionContract = _loadOrCreateOptionContractEntity(contractAddress);
       let token = optionContract.token;

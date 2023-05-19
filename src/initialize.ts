@@ -168,6 +168,7 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.currentUtilization = ZERO;
     optionContract.payoutForDown = ZERO;
     optionContract.payoutForUp = ZERO;
+    optionContract.asset = optionContractInstance.assetPair();
     optionContract.save();
   }
   return optionContract as OptionContract;

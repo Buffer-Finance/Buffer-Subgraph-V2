@@ -60,8 +60,8 @@ dataSources:
           handler: handleInitiateTrade
         - event: CancelTrade(indexed address,uint256,string)
           handler: handleCancelTrade
-        - event: OpenTrade(indexed address,uint256,uint256)
-          handler: handleOpenTrade
+        # - event: OpenTrade(indexed address,uint256,uint256)
+        #   handler: handleOpenTrade
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BinaryPool

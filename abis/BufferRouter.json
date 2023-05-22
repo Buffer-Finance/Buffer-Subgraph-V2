@@ -143,6 +143,25 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "oneCT",
+        "type": "address"
+      }
+    ],
+    "name": "RegisterAccount",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "bytes32",
         "name": "role",
         "type": "bytes32"
@@ -217,6 +236,13 @@
     "inputs": [],
     "name": "DEFAULT_ADMIN_ROLE",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "accountMapping",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -457,7 +483,8 @@
       },
       { "internalType": "bytes", "name": "userSignature", "type": "bytes" },
       { "internalType": "bytes", "name": "resolveSignature", "type": "bytes" },
-      { "internalType": "uint256", "name": "signedPrice", "type": "uint256" }
+      { "internalType": "uint256", "name": "signedPrice", "type": "uint256" },
+      { "internalType": "bool", "name": "isOneCT", "type": "bool" }
     ],
     "name": "initiateAndResolve",
     "outputs": [
@@ -515,7 +542,8 @@
         "name": "signatureTimestamp",
         "type": "uint256"
       },
-      { "internalType": "bytes", "name": "userSignature", "type": "bytes" }
+      { "internalType": "bytes", "name": "userSignature", "type": "bytes" },
+      { "internalType": "bool", "name": "isOneCT", "type": "bool" }
     ],
     "name": "initiateTradeForAccount",
     "outputs": [
@@ -585,10 +613,81 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "limitOrder",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "nextQueueId",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
+          { "internalType": "uint256", "name": "period", "type": "uint256" },
+          { "internalType": "bool", "name": "isAbove", "type": "bool" },
+          {
+            "internalType": "address",
+            "name": "targetContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expectedStrike",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "slippage", "type": "uint256" },
+          {
+            "internalType": "bool",
+            "name": "allowPartialFill",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "referralCode",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "traderNFTId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IBufferRouter.TradeParams",
+        "name": "params",
+        "type": "tuple"
+      },
+      { "internalType": "address", "name": "user", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "queuedTimestamp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "signatureTimestamp",
+        "type": "uint256"
+      },
+      { "internalType": "bytes", "name": "userSignature", "type": "bytes" },
+      { "internalType": "bool", "name": "isOneCT", "type": "bool" },
+      {
+        "internalType": "uint256",
+        "name": "limitOrderTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "openLimitOrder",
+    "outputs": [
+      { "internalType": "uint256", "name": "queueId", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -647,6 +746,15 @@
       { "internalType": "uint256", "name": "traderNFTId", "type": "uint256" }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "oneCT", "type": "address" }
+    ],
+    "name": "registerAccount",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -823,7 +931,8 @@
         "internalType": "uint256",
         "name": "signatureTimestamp",
         "type": "uint256"
-      }
+      },
+      { "internalType": "bool", "name": "isOneCT", "type": "bool" }
     ],
     "name": "verifyTrade",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],

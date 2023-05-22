@@ -141,6 +141,24 @@
         "internalType": "address",
         "name": "tokenX",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "baseSettlementFeeForAbove",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "baseSettlementFeeForBelow",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8[4]",
+        "name": "nftTiersStep",
+        "type": "uint8[4]"
       }
     ],
     "name": "CreateOptionsContract",

@@ -7,13 +7,15 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferConfig
-      startBlock: 19268880
+      startBlock: 20463625
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - ConfigContract
+        # - PoolContract
+        - OptionContract
       abis:
         - name: BufferConfig
           file: ./abis/BufferConfig.json
@@ -30,7 +32,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 20000779
+      startBlock: 20463625
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -66,9 +68,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0x4E48e4c79a21d1aC6c58740e2CD7541066aeA249"
       abi: BufferRouter
-      startBlock: 20000779
+      startBlock: 20463625
+      address: "0x2d44Df5d4106C0C62893606E8956443DcA3a4Da2"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -93,9 +95,9 @@ dataSources:
     name: BinaryPool
     network: arbitrum-goerli
     source:
-      address: "0x997CF4dDf0F38e77bE0Ff8f14A050949503288ee"
+      address: "0xA3769f6E42E1D7936919904E9156527dBc23C1b4"
       abi: BinaryPool
-      startBlock: 19268880
+      startBlock: 20463625
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

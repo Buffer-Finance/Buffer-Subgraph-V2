@@ -9,27 +9,54 @@ import {
   UpdateMaxPeriod,
   UpdateMinPeriod,
 } from "../generated/BufferConfigUpdates/BufferConfig";
+import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import { Address } from "@graphprotocol/graph-ts";
+import { RouterAddress } from "./config";
+
+function _getTokens(inputString: string, delimiter: string): string[] {
+  const delimiterIndex = inputString.indexOf(delimiter);
+  if (delimiterIndex !== -1) {
+    const firstPart = inputString.slice(0, delimiterIndex);
+    const secondPart = inputString.slice(delimiterIndex + delimiter.length);
+    return [firstPart, secondPart];
+  }
+  return [inputString];
+}
 
 export function _handleCreateOptionsContract(
   event: CreateOptionsContract
 ): void {
   const address = event.params.config;
-  const entity = new ConfigContract(address);
-  entity.address = address;
-  entity.baseSettlementFeeForAbove = event.params.baseSettlementFeeForAbove;
-  entity.baseSettlementFeeForBelow = event.params.baseSettlementFeeForBelow;
-  entity.maxFee = ZERO;
-  entity.minFee = ZERO;
-  entity.minPeriod = ZERO;
-  entity.maxPeriod = ZERO;
-  entity.id = address;
-  entity.save();
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  if (routerContract.contractRegistry(contractAddress) == true) {
+    const entity = new ConfigContract(address);
+    // const poolContractEntity = new PoolContract(address);
+    // poolContractEntity.address = event.params.pool;
+    // poolContractEntity.token = event.params.tokenX;
+    // poolContractEntity.decimals = 6;
+    // poolContractEntity.meta = zeroAddress;
+    // poolContractEntity.token = zeroAddress;
+    // poolContractEntity.save();
 
-  const optionContractInstance = _loadOrCreateOptionContractEntity(
-    event.address
-  );
-  optionContractInstance.configContract = entity.id;
-  optionContractInstance.save();
+    entity.address = address;
+    entity.baseSettlementFeeForAbove = event.params.baseSettlementFeeForAbove;
+    entity.baseSettlementFeeForBelow = event.params.baseSettlementFeeForBelow;
+
+    entity.maxFee = ZERO;
+    entity.minFee = ZERO;
+    entity.minPeriod = ZERO;
+    entity.maxPeriod = ZERO;
+    entity.id = address;
+    entity.save();
+
+    const optionContractInstance =
+      _loadOrCreateOptionContractEntity(contractAddress);
+    optionContractInstance.category = 0;
+    optionContractInstance.configContract = entity.id;
+    optionContractInstance.poolContract = event.params.pool;
+    optionContractInstance.save();
+  }
 }
 
 export function _handleUpdateMinFee(event: UpdateMinFee): void {

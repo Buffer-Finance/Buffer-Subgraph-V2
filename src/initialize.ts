@@ -61,8 +61,9 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.openUp = ZERO;
     optionContract.openInterest = ZERO;
     optionContract.currentUtilization = ZERO;
-    optionContract.payoutForDown = ZERO;
-    optionContract.payoutForUp = ZERO;
+    //    optionContract.payoutForDown = ZERO;
+    //    optionContract.payoutForUp = ZERO;
+    optionContract.category = -1;
     optionContract.asset = optionContractInstance.assetPair();
     let optionContractPool = optionContractInstance.pool();
     if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
@@ -75,16 +76,16 @@ export function _loadOrCreateOptionContractEntity(
       optionContract.token = "USDC";
       optionContract.pool = "USDC";
     }
-    optionContract.payoutForDown = calculatePayout(
-      BigInt.fromI32(
-        optionContractInstance.baseSettlementFeePercentageForBelow()
-      )
-    );
-    optionContract.payoutForUp = calculatePayout(
-      BigInt.fromI32(
-        optionContractInstance.baseSettlementFeePercentageForAbove()
-      )
-    );
+    // optionContract.payoutForDown = calculatePayout(
+    //   BigInt.fromI32(
+    //     optionContractInstance.baseSettlementFeePercentageForBelow()
+    //   )
+    // );
+    // optionContract.payoutForUp = calculatePayout(
+    //   BigInt.fromI32(
+    //     optionContractInstance.baseSettlementFeePercentageForAbove()
+    //   )
+    // );
     optionContract.save();
   }
   return optionContract as OptionContract;

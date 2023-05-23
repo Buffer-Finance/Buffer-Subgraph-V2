@@ -6,6 +6,7 @@ enum Period {
 }
 
 type OptionContract @entity {
+  category: Int!
   id: Bytes!
   address: Bytes
   isPaused: Boolean!
@@ -16,11 +17,12 @@ type OptionContract @entity {
   volume: BigInt!
   currentUtilization: BigInt
   token: String!
-  payoutForUp: BigInt
-  payoutForDown: BigInt
+  # payoutForUp: BigInt
+  # payoutForDown: BigInt
   asset: String
   pool:String!
   configContract: ConfigContract
+  poolContract: Bytes
 }
 
 type ConfigContract @entity {
@@ -34,6 +36,13 @@ type ConfigContract @entity {
   baseSettlementFeeForBelow: BigInt!
 }
 
+# type PoolContract @entity{
+#   id: Bytes!
+#   address: Bytes!
+#   meta:Bytes
+#   token: Bytes
+#   decimals: Int!
+# }
 
 type VolumePerContract @entity {
   id: String!

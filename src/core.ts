@@ -9,12 +9,9 @@ import {
   ZERO,
 } from "./initialize";
 import { DailyUserStat } from "../generated/schema";
-import {
-  USDC_POOL_CONTRACT,
-  ARB_POOL_CONTRACT,
-} from "./config";
+import { USDC_POOL_CONTRACT, ARB_POOL_CONTRACT } from "./config";
 
-const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';
+const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
 export function updateOptionContractData(
   increaseInOpenInterest: boolean,

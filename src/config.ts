@@ -7,8 +7,8 @@ export enum State {
   opened = 6,
 }
 
-export const RouterAddress = "0x4E48e4c79a21d1aC6c58740e2CD7541066aeA249";
-export const USDC_ADDRESS = "0x4b5ed6b788e22d7bbe4790a4d6be8f3a3ffc470e";
+export const RouterAddress = "0x2d44Df5d4106C0C62893606E8956443DcA3a4Da2";
+export const USDC_ADDRESS = "0x4B5ed6b788e22D7bBe4790A4D6bE8f3A3FFC470E";
 export const BFR = "0x89fEF05446aEA764C53a2f09bB763876FB57ea8E";
 export const ARBITRUM_SOLANA_ADDRESS =
   "0x0000000000000000000000000000000000000000";

@@ -28,12 +28,10 @@ function getLbfrAlloted(userVolume: BigInt): BigInt {
   // newSlab[1] = LBFR/usdcVolume rate
   // newSlab[2] = equivalent lbfr before this slab
   // TODO: adjust the units, multipliers below
-  return newSlab[2].times(FACTOR_OF_18).plus(
-    userVolume
-      .minus(newSlab[0].times(FACTOR_OF_18))
-      .times(newSlab[1])
-      .div(FACTOR_OF_2)
-  );
+  return newSlab[2]
+    .times(FACTOR_OF_18)
+    .plus(userVolume.minus(newSlab[0].times(FACTOR_OF_18)).times(newSlab[1]))
+    .div(FACTOR_OF_2);
 }
 
 function getCurrentSlab(userVolume: BigInt): BigInt {

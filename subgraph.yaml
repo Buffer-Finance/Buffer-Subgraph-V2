@@ -14,7 +14,6 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - ConfigContract
-        # - PoolContract
         - OptionContract
       abis:
         - name: BufferConfig
@@ -41,7 +40,6 @@ dataSources:
         - UserOptionData
         - OptionContract
         - User
-        - QueuedOptionData
         - ConfigContract
       abis:
         - name: BufferBinaryOptions
@@ -76,7 +74,6 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - QueuedOptionData
         - UserOptionData
       abis:
         - name: BufferBinaryOptions

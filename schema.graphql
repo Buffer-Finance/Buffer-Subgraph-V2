@@ -54,24 +54,6 @@ type VolumePerContract @entity {
   settlementFee: BigInt!
 }
 
-type QueuedOptionData @entity {
-  id: String!
-  optionContract: OptionContract!
-  strike: BigInt
-  totalFee: BigInt
-  user: User
-  state: Int
-  isAbove: Boolean
-  queueID: BigInt
-  slippage: BigInt
-  depositToken: String
-  reason: String
-  queueTimestamp: BigInt!
-  cancelTimestamp: BigInt!
-  lag: BigInt!
-  processTime: BigInt!
-}
-
 type UserOptionData @entity {
   id: String!
   optionContract: OptionContract!
@@ -80,7 +62,6 @@ type UserOptionData @entity {
   totalFee: BigInt!
   user: User!
   creationTime: BigInt!
-  queuedTimestamp: BigInt!
   expirationPrice: BigInt
   payout: BigInt
   state: Int
@@ -88,7 +69,6 @@ type UserOptionData @entity {
   expirationTime: BigInt
   isAbove: Boolean
   depositToken: String!
-  queueID: BigInt
   settlementFee: BigInt!
   lag: BigInt!
   poolToken: String!

@@ -20,11 +20,13 @@ import { updateOptionContractData } from "./core";
 import { updateOpeningStats, updateClosingStats } from "./aggregate";
 import { referralAndNFTDiscountStats } from "./stats";
 import { UserOptionData } from "../generated/schema";
+import { logUser } from "./core";
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   if (routerContract.contractRegistry(contractAddress) == true) {
+    logUser(event.block.timestamp, event.params.account);
     let optionID = event.params.id;
     let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
     let optionData = optionContractInstance.options(optionID);

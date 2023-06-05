@@ -11,7 +11,6 @@ import {
   VolumeStat,
   Leaderboard,
   WeeklyLeaderboard,
-  QueuedOptionData,
   DailyRevenueAndFee,
   WeeklyRevenueAndFee,
   PoolStat,
@@ -153,25 +152,6 @@ export function _loadOrCreateAssetTradingStatEntity(
   return entity as AssetTradingStat;
 }
 
-export function _loadOrCreateQueuedOptionEntity(
-  queueID: BigInt,
-  contractAddress: Bytes
-): QueuedOptionData {
-  let referenceID = `${queueID}${contractAddress}`;
-  let entity = QueuedOptionData.load(referenceID);
-  if (entity == null) {
-    entity = new QueuedOptionData(referenceID);
-    entity.queueID = queueID;
-    entity.optionContract = contractAddress;
-    entity.queueTimestamp = ZERO;
-    entity.cancelTimestamp = ZERO;
-    entity.lag = ZERO;
-    entity.processTime = ZERO;
-    entity.save();
-  }
-  return entity as QueuedOptionData;
-}
-
 export function _loadOrCreateOptionDataEntity(
   optionID: BigInt,
   contractAddress: Bytes
@@ -184,7 +164,6 @@ export function _loadOrCreateOptionDataEntity(
     entity.optionContract = contractAddress;
     entity.amount = ZERO;
     entity.totalFee = ZERO;
-    entity.queuedTimestamp = ZERO;
     entity.lag = ZERO;
   }
   return entity as UserOptionData;

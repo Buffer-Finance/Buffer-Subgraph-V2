@@ -30,28 +30,11 @@ import {
   _handlePause,
 } from "./optionContractHandlers";
 import {
-  _handleCancelTrade,
-  _handleOpenTrade,
-  _handleInitiateTrade,
-} from "./routerContractHandlers";
-import {
   _handleCreateOptionsContract,
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
 } from "./configContractHandlers";
-
-export function handleInitiateTrade(event: InitiateTrade): void {
-  _handleInitiateTrade(event);
-}
-
-export function handleOpenTrade(event: OpenTrade): void {
-  _handleOpenTrade(event);
-}
-
-export function handleCancelTrade(event: CancelTrade): void {
-  _handleCancelTrade(event);
-}
 
 export function handleCreate(event: Create): void {
   _handleCreate(event);

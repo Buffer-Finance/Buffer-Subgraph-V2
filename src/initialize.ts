@@ -111,12 +111,6 @@ export function _loadOrCreateTradingStatEntity(
     entity.lossARB = ZERO;
     entity.profitCumulativeARB = ZERO;
     entity.lossCumulativeARB = ZERO;
-    entity.longOpenInterest = ZERO;
-    entity.longOpenInterestUSDC = ZERO;
-    entity.longOpenInterestARB = ZERO;
-    entity.shortOpenInterest = ZERO;
-    entity.shortOpenInterestARB = ZERO;
-    entity.shortOpenInterestUSDC = ZERO;
   }
   entity.timestamp = timestamp;
   return entity as TradingStat;

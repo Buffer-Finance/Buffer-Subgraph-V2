@@ -15,7 +15,6 @@ const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
 export function updateOptionContractData(
   increaseInOpenInterest: boolean,
-  isAbove: boolean,
   totalFee: BigInt,
   contractAddress: Address
 ): string {
@@ -24,15 +23,6 @@ export function updateOptionContractData(
   let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
   optionContractData.tradeCount += 1;
   optionContractData.volume = optionContractData.volume.plus(totalFee);
-  if (isAbove) {
-    optionContractData.openUp = increaseInOpenInterest
-      ? optionContractData.openUp.plus(totalFee)
-      : optionContractData.openUp.minus(totalFee);
-  } else {
-    optionContractData.openDown = increaseInOpenInterest
-      ? optionContractData.openDown.plus(totalFee)
-      : optionContractData.openDown.minus(totalFee);
-  }
   optionContractData.openInterest = increaseInOpenInterest
     ? optionContractData.openInterest.plus(totalFee)
     : optionContractData.openInterest.minus(totalFee);

@@ -40,9 +40,6 @@ export function _handleCreateOptionsContract(
     // poolContractEntity.save();
 
     entity.address = address;
-    entity.baseSettlementFeeForAbove = event.params.baseSettlementFeeForAbove;
-    entity.baseSettlementFeeForBelow = event.params.baseSettlementFeeForBelow;
-
     entity.maxFee = ZERO;
     entity.minFee = ZERO;
     entity.minPeriod = ZERO;

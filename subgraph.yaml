@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferConfig
-      startBlock: 20463625
+      startBlock: 24194548
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -31,7 +31,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 20463625
+      startBlock: 24194548
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -51,36 +51,14 @@ dataSources:
       eventHandlers:
         - event: Create(indexed address,indexed uint256,uint256,uint256)
           handler: handleCreate
-        - event: Expire(indexed uint256,uint256,uint256)
+        - event: Expire(indexed uint256,uint256,uint256,bool)
           handler: handleExpire
-        - event: Exercise(indexed address,indexed uint256,uint256,uint256)
+        - event: Exercise(indexed address,indexed uint256,uint256,uint256,bool)
           handler: handleExercise
         - event: UpdateReferral(address,address,bool,uint256,uint256,uint256,string)
           handler: handleUpdateReferral
         - event: Pause(bool)
           handler: handlePause
-        - event: CreateOptionsContract(indexed string,address,address,address,uint256,uint256,uint8[4])
+        - event: CreateOptionsContract(address,address,address,string,string,uint8[4])
           handler: handleCreateOptionsContract
-      file: ./src/mapping.ts
-  - kind: ethereum/contract
-    name: BinaryPool
-    network: arbitrum-goerli
-    source:
-      address: "0xA3769f6E42E1D7936919904E9156527dBc23C1b4"
-      abi: BinaryPool
-      startBlock: 20463625
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - UserOptionData
-      abis:
-        - name: BinaryPool
-          file: ./abis/BinaryPool.json
-        - name: USDC
-          file: ./abis/BFR.json
-      eventHandlers:
-        - event: Provide(indexed address,uint256,uint256)
-          handler: handleProvide
       file: ./src/mapping.ts

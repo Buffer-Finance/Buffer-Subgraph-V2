@@ -23,7 +23,6 @@ export function updateOpeningStats(
   timestamp: BigInt,
   totalFee: BigInt,
   settlementFee: BigInt,
-  isAbove: boolean,
   contractAddress: Bytes,
   poolToken: string
 ): void {
@@ -63,7 +62,7 @@ export function updateOpeningStats(
     logVolume(timestamp, totalFee, ZERO, totalFee);
 
     // Update daily & total open interest
-    updateOpenInterest(timestamp, true, isAbove, totalFee);
+    updateOpenInterest(timestamp, true, totalFee);
 
     // Updates referral & NFT discounts tracking
     saveSettlementFeeDiscount(timestamp, totalFee, settlementFee);
@@ -115,7 +114,7 @@ export function updateOpeningStats(
     logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO);
 
     // Update daily & total open interest
-    updateOpenInterest(timestamp, true, isAbove, totalFeeUSDC);
+    updateOpenInterest(timestamp, true, totalFeeUSDC);
 
     // Updates referral & NFT discounts tracking
     saveSettlementFeeDiscount(timestamp, totalFeeUSDC, settlementFeeUSDC);
@@ -130,7 +129,6 @@ export function updateClosingStats(
   timestamp: BigInt,
   totalFee: BigInt,
   settlementFee: BigInt,
-  isAbove: boolean,
   user: Bytes,
   contractAddress: Bytes,
   isExercised: boolean,
@@ -138,7 +136,7 @@ export function updateClosingStats(
 ): void {
   if (token == "USDC") {
     // Update daily & total open interest
-    updateOpenInterest(timestamp, false, isAbove, totalFee);
+    updateOpenInterest(timestamp, false, totalFee);
     // Update daily & total PnL for stats page
     storePnl(
       timestamp,
@@ -170,7 +168,6 @@ export function updateClosingStats(
     );
     updateOptionContractData(
       false,
-      isAbove,
       totalFee,
       Address.fromBytes(contractAddress)
     );
@@ -182,7 +179,7 @@ export function updateClosingStats(
     let netPnLUSDC = convertARBToUSDC(netPnL);
 
     // Update daily & total open interest
-    updateOpenInterest(timestamp, false, isAbove, totalFeeUSDC);
+    updateOpenInterest(timestamp, false, totalFeeUSDC);
     // Update daily & total PnL for stats page
     storePnl(
       timestamp,
@@ -214,7 +211,6 @@ export function updateClosingStats(
     );
     updateOptionContractData(
       false,
-      isAbove,
       totalFee,
       Address.fromBytes(contractAddress)
     );

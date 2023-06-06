@@ -20,7 +20,7 @@ type OptionContract @entity {
   # payoutForUp: BigInt
   # payoutForDown: BigInt
   asset: String
-  pool:String!
+  pool: String!
   configContract: ConfigContract
   poolContract: Bytes
 }
@@ -32,8 +32,6 @@ type ConfigContract @entity {
   maxPeriod: BigInt!
   minFee: BigInt!
   maxFee: BigInt!
-  baseSettlementFeeForAbove: BigInt!
-  baseSettlementFeeForBelow: BigInt!
 }
 
 # type PoolContract @entity{
@@ -67,7 +65,6 @@ type UserOptionData @entity {
   state: Int
   amount: BigInt!
   expirationTime: BigInt
-  isAbove: Boolean
   depositToken: String!
   settlementFee: BigInt!
   lag: BigInt!
@@ -199,12 +196,7 @@ type TradingStat @entity {
   lossCumulative: BigInt!
   lossCumulativeUSDC: BigInt!
   lossCumulativeARB: BigInt!
-  longOpenInterest: BigInt!
-  longOpenInterestUSDC: BigInt!
-  longOpenInterestARB: BigInt!
-  shortOpenInterest: BigInt!
-  shortOpenInterestUSDC: BigInt!
-  shortOpenInterestARB: BigInt!
+  openInterest: BigInt!
   timestamp: BigInt!
   period: Period!
 }

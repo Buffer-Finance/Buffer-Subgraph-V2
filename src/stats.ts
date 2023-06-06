@@ -58,25 +58,18 @@ export function storeFees(
 export function updateOpenInterest(
   timestamp: BigInt,
   increaseInOpenInterest: boolean,
-  isAbove: boolean,
   amount: BigInt
 ): void {
   let totalId = "total";
   let totalEntity = _loadOrCreateTradingStatEntity(totalId, "total", timestamp);
-  if (isAbove) {
-    totalEntity.longOpenInterest = increaseInOpenInterest
-      ? totalEntity.longOpenInterest.plus(amount)
-      : totalEntity.longOpenInterest.minus(amount);
-  } else {
-    totalEntity.shortOpenInterest = increaseInOpenInterest
-      ? totalEntity.shortOpenInterest.plus(amount)
-      : totalEntity.shortOpenInterest.minus(amount);
-  }
+  totalEntity.openInterest = increaseInOpenInterest
+    ? totalEntity.openInterest.plus(amount)
+    : totalEntity.openInterest.minus(amount);
+
   totalEntity.save();
   let dayID = _getDayId(timestamp);
   let dailyEntity = _loadOrCreateTradingStatEntity(dayID, "daily", timestamp);
-  dailyEntity.longOpenInterest = totalEntity.longOpenInterest;
-  dailyEntity.shortOpenInterest = totalEntity.shortOpenInterest;
+  dailyEntity.openInterest = totalEntity.openInterest;
   dailyEntity.save();
 }
 

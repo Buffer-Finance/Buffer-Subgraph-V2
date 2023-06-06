@@ -30,11 +30,9 @@ export function _handleCreate(event: Create): void {
     let optionID = event.params.id;
     let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
     let optionData = optionContractInstance.options(optionID);
-    let isAbove = optionData.value6 ? true : false;
     let totalFee = event.params.totalFee;
     let poolToken = updateOptionContractData(
       true,
-      isAbove,
       totalFee,
       contractAddress
     );
@@ -56,8 +54,7 @@ export function _handleCreate(event: Create): void {
     userOptionData.strike = optionData.value1;
     userOptionData.amount = optionData.value2;
     userOptionData.expirationTime = optionData.value5;
-    userOptionData.isAbove = isAbove;
-    userOptionData.creationTime = optionData.value8;
+    userOptionData.creationTime = optionData.value7;
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.depositToken = tokenReferrenceID;
     userOptionData.poolToken = poolToken;
@@ -68,7 +65,6 @@ export function _handleCreate(event: Create): void {
       event.block.timestamp,
       totalFee,
       userOptionData.settlementFee,
-      isAbove,
       contractAddress,
       userOptionData.poolToken
     );
@@ -95,7 +91,6 @@ export function _handleExpire(event: Expire): void {
       userOptionData.creationTime,
       userOptionData.totalFee,
       userOptionData.settlementFee,
-      userOptionData.isAbove,
       userOptionData.user,
       contractAddress,
       false,
@@ -125,7 +120,6 @@ export function _handleExercise(event: Exercise): void {
       userOptionData.creationTime,
       userOptionData.totalFee,
       userOptionData.settlementFee,
-      userOptionData.isAbove,
       userOptionData.user,
       contractAddress,
       true,

@@ -12,17 +12,6 @@ import {
   UpdateMinPeriod,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import {
-  Provide,
-  Withdraw,
-  Profit,
-  Loss,
-} from "../generated/BinaryPool/BinaryPool";
-import {
-  InitiateTrade,
-  CancelTrade,
-  OpenTrade,
-} from "../generated/BufferRouter/BufferRouter";
-import {
   _handleCreate,
   _handleExpire,
   _handleExercise,
@@ -54,22 +43,6 @@ export function handleUpdateReferral(event: UpdateReferral): void {
 
 export function handlePause(event: Pause): void {
   _handlePause(event);
-}
-
-export function handleProvide(event: Provide): void {
-  let a = "a";
-}
-
-export function handleWithdraw(event: Withdraw): void {
-  let a = "a";
-}
-
-export function handleProfit(event: Profit): void {
-  let a = "a";
-}
-
-export function handleLoss(event: Loss): void {
-  let a = "a";
 }
 
 export function handleCreateOptionsContract(

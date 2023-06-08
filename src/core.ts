@@ -5,7 +5,6 @@ import { _getDayId } from "./helpers";
 import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateUserStat,
-  _calculateCurrentUtilization,
   ZERO,
 } from "./initialize";
 import { DailyUserStat } from "../generated/schema";

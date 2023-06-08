@@ -19,21 +19,9 @@ import {
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { BinaryPool } from "../generated/BinaryPool/BinaryPool";
 import { ARB_POOL_CONTRACT, USDC_POOL_CONTRACT } from "./config";
 
 export const ZERO = BigInt.fromI32(0);
-
-export function _calculateCurrentUtilization(
-  totalLockedAmount: BigInt,
-  poolAddress: Address
-): BigInt {
-  let poolContractInstance = BinaryPool.bind(poolAddress);
-  let currentUtilization = totalLockedAmount
-    .times(BigInt.fromI64(1000000000000000000))
-    .div(poolContractInstance.totalTokenXBalance());
-  return currentUtilization;
-}
 
 //TODO: Scan Config for settlement fee update
 export function calculatePayout(settlementFeePercent: BigInt): BigInt {

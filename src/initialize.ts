@@ -99,6 +99,7 @@ export function _loadOrCreateTradingStatEntity(
     entity.lossARB = ZERO;
     entity.profitCumulativeARB = ZERO;
     entity.lossCumulativeARB = ZERO;
+    entity.openInterest = ZERO;
   }
   entity.timestamp = timestamp;
   return entity as TradingStat;

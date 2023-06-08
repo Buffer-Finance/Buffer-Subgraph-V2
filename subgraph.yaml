@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferConfig
-      startBlock: 24194548
+      startBlock: 24783662
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -31,7 +31,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 24194548
+      startBlock: 24783662
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

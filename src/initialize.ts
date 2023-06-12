@@ -115,6 +115,7 @@ export function _loadOrCreateTradingStatEntity(
     entity.profitCumulativeUSDC = ZERO;
     entity.lossCumulativeUSDC = ZERO;
     entity.profitARB = ZERO;
+    entity.profitBFR = ZERO;
     entity.lossARB = ZERO;
     entity.lossBFR = ZERO;
     entity.profitCumulativeARB = ZERO;

@@ -300,18 +300,23 @@ export function _loadOrCreateReferralData(user: Bytes): ReferralData {
     userReferralData.totalDiscountAvailed = ZERO;
     userReferralData.totalDiscountAvailedARB = ZERO;
     userReferralData.totalDiscountAvailedUSDC = ZERO;
+    userReferralData.totalDiscountAvailedBFR = ZERO;
     userReferralData.totalRebateEarned = ZERO;
     userReferralData.totalRebateEarnedUSDC = ZERO;
     userReferralData.totalRebateEarnedARB = ZERO;
+    userReferralData.totalRebateEarnedBFR = ZERO;
     userReferralData.totalTradesReferred = 0;
     userReferralData.totalTradesReferredUSDC = 0;
     userReferralData.totalTradesReferredARB = 0;
+    userReferralData.totalTradesReferredBFR = 0;
     userReferralData.totalTradingVolume = ZERO;
     userReferralData.totalTradingVolumeARB = ZERO;
     userReferralData.totalTradingVolumeUSDC = ZERO;
+    userReferralData.totalTradingVolumeBFR = ZERO;
     userReferralData.totalVolumeOfReferredTrades = ZERO;
     userReferralData.totalVolumeOfReferredTradesUSDC = ZERO;
     userReferralData.totalVolumeOfReferredTradesARB = ZERO;
+    userReferralData.totalVolumeOfReferredTradesBFR = ZERO;
 
     userReferralData.save();
   }

@@ -1,6 +1,6 @@
 import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
 import { _getDayId, _getHourId, _getWeekId } from "./helpers";
-import { _loadOrCreatePoolStat, _loadOrCreateARBPoolStat } from "./initialize";
+import { _loadOrCreatePoolStat } from "./initialize";
 import { USDC } from "../generated/USDC/USDC";
 import {
   USDC_ADDRESS,
@@ -32,23 +32,5 @@ export function _handleChangeInPool(
     totalPoolStat.amount = poolStat.amount;
     totalPoolStat.timestamp = timestamp;
     totalPoolStat.save();
-  } else if (contractAddress == Address.fromString(ARB_POOL_CONTRACT)) {
-    let poolContractInstance = BinaryPool.bind(contractAddress);
-    let rate = poolContractInstance
-      .totalTokenXBalance()
-      .times(BigInt.fromI64(100000000))
-      .div(poolContractInstance.totalSupply());
-
-    let poolStat = _loadOrCreateARBPoolStat(_getDayId(timestamp), "daily");
-    let arbContractInstance = USDC.bind(Address.fromString(ARB_TOKEN_ADDRESS));
-    poolStat.amount = arbContractInstance.balanceOf(contractAddress);
-    poolStat.timestamp = timestamp;
-    poolStat.rate = rate;
-    poolStat.save();
-
-    let totalPoolStat = _loadOrCreateARBPoolStat("total", "total");
-    totalPoolStat.amount = poolStat.amount;
-    totalPoolStat.timestamp = timestamp;
-    totalPoolStat.save();
-  }
+  } 
 }

@@ -15,7 +15,6 @@ import {
   DailyRevenueAndFee,
   WeeklyRevenueAndFee,
   PoolStat,
-  ARBPoolStat,
   UserRewards,
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
@@ -25,6 +24,7 @@ import {
   ARB_POOL_CONTRACT,
   USDC_POL_POOL_CONTRACT,
   USDC_POOL_CONTRACT,
+  BFR_POOL_CONTRACT,
 } from "./config";
 
 export const ZERO = BigInt.fromI32(0);
@@ -75,6 +75,9 @@ export function _loadOrCreateOptionContractEntity(
     } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
       optionContract.token = "USDC";
       optionContract.pool = "USDC";
+    } else if (optionContractPool == Address.fromString(BFR_POOL_CONTRACT)) {
+      optionContract.token = "BFR";
+      optionContract.pool = "BFR";
     } else {
       optionContract.token = "USDC";
       optionContract.pool = "USDC";
@@ -113,13 +116,18 @@ export function _loadOrCreateTradingStatEntity(
     entity.lossCumulativeUSDC = ZERO;
     entity.profitARB = ZERO;
     entity.lossARB = ZERO;
+    entity.lossBFR = ZERO;
     entity.profitCumulativeARB = ZERO;
+    entity.profitCumulativeBFR = ZERO;
     entity.lossCumulativeARB = ZERO;
+    entity.lossCumulativeBFR = ZERO;
     entity.longOpenInterest = ZERO;
     entity.longOpenInterestUSDC = ZERO;
     entity.longOpenInterestARB = ZERO;
+    entity.longOpenInterestBFR = ZERO;
     entity.shortOpenInterest = ZERO;
     entity.shortOpenInterestARB = ZERO;
+    entity.shortOpenInterestBFR = ZERO;
     entity.shortOpenInterestUSDC = ZERO;
   }
   entity.timestamp = timestamp;
@@ -231,6 +239,11 @@ export function _loadOrCreateWeeklyLeaderboardEntity(
     entity.arbTotalTrades = 0;
     entity.arbTradesWon = 0;
     entity.arbWinRate = 0;
+    entity.bfrVolume = ZERO;
+    entity.bfrNetPnL = ZERO;
+    entity.bfrTotalTrades = 0;
+    entity.bfrTradesWon = 0;
+    entity.bfrWinRate = 0;
     entity.usdcVolume = ZERO;
     entity.usdcNetPnL = ZERO;
     entity.usdcTotalTrades = 0;
@@ -272,6 +285,7 @@ export function _loadOrCreateVolumeStat(
     entity.amount = ZERO;
     entity.VolumeUSDC = ZERO;
     entity.VolumeARB = ZERO;
+    entity.VolumeBFR = ZERO;
     entity.save();
   }
   return entity as VolumeStat;
@@ -290,6 +304,7 @@ export function _loadOrCreateFeeStat(
     entity.fee = ZERO;
     entity.feeARB = ZERO;
     entity.feeUSDC = ZERO;
+    entity.feeBFR = ZERO;
     entity.save();
   }
   return entity as FeeStat;
@@ -343,20 +358,6 @@ export function _loadOrCreatePoolStat(id: string, period: string): PoolStat {
     poolStat.rate = ZERO;
   }
   return poolStat as PoolStat;
-}
-
-export function _loadOrCreateARBPoolStat(
-  id: string,
-  period: string
-): ARBPoolStat {
-  let poolStat = ARBPoolStat.load(id);
-  if (poolStat == null) {
-    poolStat = new ARBPoolStat(id);
-    poolStat.amount = ZERO;
-    poolStat.period = period;
-    poolStat.rate = ZERO;
-  }
-  return poolStat as ARBPoolStat;
 }
 
 export function _loadOrCreateDailyRevenueAndFee(

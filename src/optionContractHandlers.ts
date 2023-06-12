@@ -14,7 +14,7 @@ import {
   _loadOrCreateReferralData,
 } from "./initialize";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { convertARBToUSDC } from "./convertToUSDC";
+import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { State, RouterAddress, ARBITRUM_SOLANA_ADDRESS } from "./config";
 import { updateOptionContractData } from "./core";
 import { updateOpeningStats, updateClosingStats } from "./aggregate";
@@ -216,6 +216,46 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
         event.block.timestamp,
         convertARBToUSDC(event.params.rebate),
         convertARBToUSDC(event.params.referrerFee)
+      );
+    } else if (optionContractEntity.token == "BFR") {
+      userReferralData.totalDiscountAvailed = userReferralData.totalDiscountAvailed.plus(
+        convertBFRToUSDC(event.params.rebate)
+      );
+      userReferralData.totalDiscountAvailedBFR = userReferralData.totalDiscountAvailedBFR.plus(
+        event.params.rebate
+      );
+      userReferralData.totalTradingVolume = userReferralData.totalTradingVolume.plus(
+        convertBFRToUSDC(event.params.totalFee)
+      );
+      userReferralData.totalTradingVolumeBFR = userReferralData.totalTradingVolumeBFR.plus(
+        event.params.totalFee
+      );
+      userReferralData.save();
+
+      let referrerReferralData = _loadOrCreateReferralData(
+        event.params.referrer
+      );
+      referrerReferralData.totalTradesReferred += 1;
+      referrerReferralData.totalTradesReferredBFR += 1;
+
+      referrerReferralData.totalVolumeOfReferredTrades = referrerReferralData.totalVolumeOfReferredTrades.plus(
+        convertBFRToUSDC(event.params.totalFee)
+      );
+      referrerReferralData.totalVolumeOfReferredTradesBFR = referrerReferralData.totalVolumeOfReferredTradesBFR.plus(
+        event.params.totalFee
+      );
+      referrerReferralData.totalRebateEarned = referrerReferralData.totalRebateEarned.plus(
+        convertBFRToUSDC(event.params.referrerFee)
+      );
+      referrerReferralData.totalRebateEarnedBFR = referrerReferralData.totalRebateEarnedBFR.plus(
+        event.params.referrerFee
+      );
+      referrerReferralData.save();
+
+      referralAndNFTDiscountStats(
+        event.block.timestamp,
+        convertBFRToUSDC(event.params.rebate),
+        convertBFRToUSDC(event.params.referrerFee)
       );
     }
   }

@@ -19,7 +19,10 @@ export function updateLeaderboards(
   isUSDC: boolean,
   netPnL: BigInt,
   arbNetPnL: BigInt,
-  usdcNetPnL: BigInt
+  usdcNetPnL: BigInt,
+  bfrNetPnL: BigInt,
+  isBFR: boolean,
+  bfrVolume: BigInt
 ): void {
   _updateDailyLeaderboard(totalFee, timestamp, user, isExercised);
   _updateWeeklyLeaderboard(
@@ -33,7 +36,10 @@ export function updateLeaderboards(
     isARB,
     netPnL,
     arbNetPnL,
-    usdcNetPnL
+    usdcNetPnL,
+    bfrNetPnL,
+    isBFR,
+    bfrVolume
   );
 }
 
@@ -95,7 +101,10 @@ function _updateWeeklyLeaderboard(
   isARB: boolean,
   netPnL: BigInt,
   arbNetPnL: BigInt,
-  usdcNetPnL: BigInt
+  usdcNetPnL: BigInt,
+  bfrNetPnL: BigInt,
+  isBFR: boolean,
+  bfrVolume: BigInt
 ): void {
   let weeklyLeaderboardEntity = _loadOrCreateWeeklyLeaderboardEntity(
     _getWeekId(timestamp),
@@ -119,18 +128,32 @@ function _updateWeeklyLeaderboard(
   weeklyLeaderboardEntity.arbVolume = weeklyLeaderboardEntity.arbVolume.plus(
     arbVolume
   );
+
+  weeklyLeaderboardEntity.bfrVolume = weeklyLeaderboardEntity.bfrVolume.plus(
+    bfrVolume
+  );
   weeklyLeaderboardEntity.arbNetPnL = isExercised
     ? weeklyLeaderboardEntity.arbNetPnL.plus(arbNetPnL)
     : weeklyLeaderboardEntity.arbNetPnL.minus(arbNetPnL);
+  weeklyLeaderboardEntity.bfrNetPnL = isExercised
+    ? weeklyLeaderboardEntity.bfrNetPnL.plus(bfrNetPnL)
+    : weeklyLeaderboardEntity.bfrNetPnL.minus(bfrNetPnL);
   let arbTotalTrades = isARB ? 1 : 0;
+  let bfrTotalTrades = isBFR ? 1 : 0;
   weeklyLeaderboardEntity.arbTotalTrades += arbTotalTrades;
+  weeklyLeaderboardEntity.bfrTotalTrades += bfrTotalTrades;
   weeklyLeaderboardEntity.arbTradesWon += isExercised ? arbTotalTrades : 0;
+  weeklyLeaderboardEntity.bfrTradesWon += isExercised ? bfrTotalTrades : 0;
   if (weeklyLeaderboardEntity.arbTotalTrades > 0) {
     weeklyLeaderboardEntity.arbWinRate =
       (weeklyLeaderboardEntity.arbTradesWon * 100000) /
       weeklyLeaderboardEntity.arbTotalTrades;
   }
-
+  if (weeklyLeaderboardEntity.bfrTotalTrades > 0) {
+    weeklyLeaderboardEntity.bfrWinRate =
+      (weeklyLeaderboardEntity.bfrTradesWon * 100000) /
+      weeklyLeaderboardEntity.bfrTotalTrades;
+  }
   weeklyLeaderboardEntity.usdcVolume = weeklyLeaderboardEntity.usdcVolume.plus(
     usdcVolume
   );

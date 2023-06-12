@@ -135,6 +135,11 @@ type WeeklyLeaderboard @entity {
   usdcTotalTrades: Int!
   usdcTradesWon: Int!
   usdcWinRate: Int!
+  bfrVolume: BigInt!
+  bfrNetPnL: BigInt!
+  bfrTotalTrades: Int!
+  bfrTradesWon: Int!
+  bfrWinRate: Int!
 }
 
 type DashboardStat @entity {
@@ -151,6 +156,7 @@ type FeeStat @entity {
   period: Period!
   timestamp: BigInt!
   feeARB: BigInt!
+  feeBFR: BigInt!
   feeUSDC: BigInt!
 }
 
@@ -160,6 +166,7 @@ type VolumeStat @entity {
   period: Period!
   timestamp: BigInt!
   VolumeARB: BigInt!
+  VolumeBFR: BigInt!
   VolumeUSDC: BigInt!
 }
 
@@ -169,18 +176,23 @@ type ReferralData @entity {
   totalTradesReferred: Int!
   totalTradesReferredARB: Int!
   totalTradesReferredUSDC: Int!
+  totalTradesReferredBFR: Int!
   totalVolumeOfReferredTrades: BigInt!
   totalVolumeOfReferredTradesARB: BigInt!
   totalVolumeOfReferredTradesUSDC: BigInt!
+  totalVolumeOfReferredTradesBFR: BigInt!
   totalRebateEarned: BigInt!
   totalRebateEarnedARB: BigInt!
   totalRebateEarnedUSDC: BigInt!
+  totalRebateEarnedBFR: BigInt!
   totalTradingVolume: BigInt!
   totalTradingVolumeARB: BigInt!
   totalTradingVolumeUSDC: BigInt!
+  totalTradingVolumeBFR: BigInt!
   totalDiscountAvailed: BigInt!
   totalDiscountAvailedARB: BigInt!
   totalDiscountAvailedUSDC: BigInt!
+  totalDiscountAvailedBFR: BigInt!
 }
 
 type TradingStat @entity {
@@ -188,34 +200,32 @@ type TradingStat @entity {
   profit: BigInt!
   profitUSDC: BigInt!
   profitARB: BigInt!
+  profitBFR: BigInt!
   loss: BigInt!
   lossUSDC: BigInt!
   lossARB: BigInt!
+  lossBFR: BigInt!
   profitCumulative: BigInt!
   profitCumulativeUSDC: BigInt!
   profitCumulativeARB: BigInt!
+  profitCumulativeBFR: BigInt!
   lossCumulative: BigInt!
   lossCumulativeUSDC: BigInt!
   lossCumulativeARB: BigInt!
+  lossCumulativeBFR: BigInt!
   longOpenInterest: BigInt!
   longOpenInterestUSDC: BigInt!
   longOpenInterestARB: BigInt!
+  longOpenInterestBFR: BigInt!
   shortOpenInterest: BigInt!
   shortOpenInterestUSDC: BigInt!
   shortOpenInterestARB: BigInt!
+  shortOpenInterestBFR: BigInt!
   timestamp: BigInt!
   period: Period!
 }
 
 type PoolStat @entity {
-  id: ID!
-  amount: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  rate: BigInt!
-}
-
-type ARBPoolStat @entity {
   id: ID!
   amount: BigInt!
   period: Period!

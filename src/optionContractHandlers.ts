@@ -43,6 +43,8 @@ export function _handleCreate(event: Create): void {
       tokenReferrenceID = "ARB";
     } else if (poolToken == "USDC") {
       tokenReferrenceID = "USDC";
+    } else if (poolToken == "BFR") {
+      tokenReferrenceID = "BFR";
     }
     let userOptionData = _loadOrCreateOptionDataEntity(
       optionID,

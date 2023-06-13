@@ -23,7 +23,17 @@ import { referralAndNFTDiscountStats } from "./stats";
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (routerContract.contractRegistry(contractAddress) == true) {
+  if (
+    routerContract.contractRegistry(event.address) == true ||
+    event.address == Address.fromString("0x01f67172ff59F4aCD7ac3C48d164F3c624AA0cB3") ||
+    event.address == Address.fromString("0x830C99C6f94B28B2b8C0d218ABb96460F2C4e81e") ||
+    event.address == Address.fromString("0x0d7d3D9D1E7bfDF6663380776A71D1FD0667Dd0c") ||
+    event.address == Address.fromString("0x541F4386A74632fea79C4A3A88eC2d02AE715939") ||
+    event.address == Address.fromString("0x0E6E02869012954eB16b83faA36e7bE229F35B0D") ||
+    event.address == Address.fromString("0xFD295d8993E46c632C82269820323243aE67288E") ||
+    event.address == Address.fromString("0x78089a27b809e3e2E575a2C31D21F59BdAb0926f") ||
+    event.address == Address.fromString("0x29ea7b97488aF38AFa13e0f7a58568A3a1c85204")
+  ) {  
     let optionID = event.params.id;
     let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
     let optionData = optionContractInstance.options(optionID);
@@ -42,6 +52,8 @@ export function _handleCreate(event: Create): void {
       tokenReferrenceID = "ARB";
     } else if (poolToken == "USDC") {
       tokenReferrenceID = "USDC";
+    } else if (poolToken == "BFR") {
+      tokenReferrenceID = "BFR";
     }
     let userOptionData = _loadOrCreateOptionDataEntity(
       optionID,
@@ -76,8 +88,16 @@ export function _handleExpire(event: Expire): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
+    routerContract.contractRegistry(event.address) == true ||
+    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS) ||
+    event.address == Address.fromString("0x01f67172ff59F4aCD7ac3C48d164F3c624AA0cB3") ||
+    event.address == Address.fromString("0x830C99C6f94B28B2b8C0d218ABb96460F2C4e81e") ||
+    event.address == Address.fromString("0x0d7d3D9D1E7bfDF6663380776A71D1FD0667Dd0c") ||
+    event.address == Address.fromString("0x541F4386A74632fea79C4A3A88eC2d02AE715939") ||
+    event.address == Address.fromString("0x0E6E02869012954eB16b83faA36e7bE229F35B0D") ||
+    event.address == Address.fromString("0xFD295d8993E46c632C82269820323243aE67288E") ||
+    event.address == Address.fromString("0x78089a27b809e3e2E575a2C31D21F59BdAb0926f") ||
+    event.address == Address.fromString("0x29ea7b97488aF38AFa13e0f7a58568A3a1c85204")
   ) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
@@ -87,7 +107,7 @@ export function _handleExpire(event: Expire): void {
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 
-
+    
     updateClosingStats(
       userOptionData.depositToken,
       userOptionData.creationTime,
@@ -107,8 +127,16 @@ export function _handleExercise(event: Exercise): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
+    routerContract.contractRegistry(event.address) == true ||
+    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS) ||
+    event.address == Address.fromString("0x01f67172ff59F4aCD7ac3C48d164F3c624AA0cB3") ||
+    event.address == Address.fromString("0x830C99C6f94B28B2b8C0d218ABb96460F2C4e81e") ||
+    event.address == Address.fromString("0x0d7d3D9D1E7bfDF6663380776A71D1FD0667Dd0c") ||
+    event.address == Address.fromString("0x541F4386A74632fea79C4A3A88eC2d02AE715939") ||
+    event.address == Address.fromString("0x0E6E02869012954eB16b83faA36e7bE229F35B0D") ||
+    event.address == Address.fromString("0xFD295d8993E46c632C82269820323243aE67288E") ||
+    event.address == Address.fromString("0x78089a27b809e3e2E575a2C31D21F59BdAb0926f") ||
+    event.address == Address.fromString("0x29ea7b97488aF38AFa13e0f7a58568A3a1c85204")
   ) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
@@ -137,7 +165,17 @@ export function _handleExercise(event: Exercise): void {
 export function _handleUpdateReferral(event: UpdateReferral): void {
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   let optionContractEntity = _loadOrCreateOptionContractEntity(event.address);
-  if (routerContract.contractRegistry(event.address) == true) {
+  if (
+    routerContract.contractRegistry(event.address) == true ||
+    event.address == Address.fromString("0x01f67172ff59F4aCD7ac3C48d164F3c624AA0cB3") ||
+    event.address == Address.fromString("0x830C99C6f94B28B2b8C0d218ABb96460F2C4e81e") ||
+    event.address == Address.fromString("0x0d7d3D9D1E7bfDF6663380776A71D1FD0667Dd0c") ||
+    event.address == Address.fromString("0x541F4386A74632fea79C4A3A88eC2d02AE715939") ||
+    event.address == Address.fromString("0x0E6E02869012954eB16b83faA36e7bE229F35B0D") ||
+    event.address == Address.fromString("0xFD295d8993E46c632C82269820323243aE67288E") ||
+    event.address == Address.fromString("0x78089a27b809e3e2E575a2C31D21F59BdAb0926f") ||
+    event.address == Address.fromString("0x29ea7b97488aF38AFa13e0f7a58568A3a1c85204")
+  ) {
     let userReferralData = _loadOrCreateReferralData(event.params.user);
     if (optionContractEntity.token == "USDC") {
       userReferralData.totalDiscountAvailed = userReferralData.totalDiscountAvailed.plus(

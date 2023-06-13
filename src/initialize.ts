@@ -131,16 +131,20 @@ export function _loadOrCreateAssetTradingStatEntity(
     entity.profit = ZERO;
     entity.profitARB = ZERO;
     entity.profitUSDC = ZERO;
+    entity.profitBFR = ZERO;
     entity.loss = ZERO;
     entity.lossUSDC = ZERO;
     entity.lossARB = ZERO;
+    entity.lossBFR = ZERO;
     entity.contractAddress = contractAddress;
     entity.profitCumulative = ZERO;
     entity.profitCumulativeARB = ZERO;
     entity.profitCumulativeUSDC = ZERO;
+    entity.profitCumulativeBFR = ZERO;
     entity.lossCumulative = ZERO;
     entity.lossCumulativeARB = ZERO;
     entity.lossCumulativeUSDC = ZERO;
+    entity.lossCumulativeBFR = ZERO;
     entity.periodID = periodID;
   }
   entity.timestamp = timestamp;

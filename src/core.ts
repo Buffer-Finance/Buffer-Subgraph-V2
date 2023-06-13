@@ -9,6 +9,8 @@ import {
   USDC_POL_POOL_CONTRACT,
   USDC_POOL_CONTRACT,
   ARB_POOL_CONTRACT,
+  BFR,
+  BFR_POOL_CONTRACT,
 } from "./config";
 import { ipfs, json, JSONValue } from "@graphprotocol/graph-ts";
 
@@ -43,6 +45,8 @@ export function updateOptionContractData(
     poolAddress = Address.fromString(ARB_POOL_CONTRACT);
   } else if (poolToken == "USDC") {
     poolAddress = Address.fromString(USDC_POOL_CONTRACT);
+  } else if (poolToken == "BFR") {
+    poolAddress = Address.fromString(BFR_POOL_CONTRACT);
   }
   optionContractData.save();
   return poolToken;

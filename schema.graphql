@@ -236,16 +236,20 @@ type AssetTradingStat @entity {
   periodID: String!
   profit: BigInt!
   profitARB: BigInt!
+  profitBFR: BigInt!
   profitUSDC: BigInt!
   loss: BigInt!
   lossARB: BigInt!
+  lossBFR: BigInt!
   lossUSDC: BigInt!
   profitCumulative: BigInt!
   profitCumulativeUSDC: BigInt!
   profitCumulativeARB: BigInt!
+  profitCumulativeBFR: BigInt!
   lossCumulative: BigInt!
   lossCumulativeUSDC: BigInt!
   lossCumulativeARB: BigInt!
+  lossCumulativeBFR: BigInt!
   timestamp: BigInt!
   period: Period!
 }

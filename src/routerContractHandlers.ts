@@ -5,6 +5,7 @@ import {
 } from "./initialize";
 import { State } from "./config";
 import { logUser } from "./core";
+import { UserOptionData } from "../generated/schema";
 import {
   InitiateTrade,
   CancelTrade,
@@ -47,16 +48,21 @@ export function _handleOpenTrade(event: OpenTrade): void {
   userQueuedData.processTime = event.block.timestamp;
   userQueuedData.state = State.opened;
   userQueuedData.save();
-  let userOptionData = _loadOrCreateOptionDataEntity(
-    event.params.optionId,
-    contractAddress
-  );
-  userOptionData.queueID = queueID;
-  userOptionData.queuedTimestamp = userQueuedData.queueTimestamp;
-  userOptionData.lag = event.block.timestamp.minus(
-    userQueuedData.queueTimestamp
-  );
-  userOptionData.save();
+
+  let referrenceID = `${event.params.optionId}${contractAddress}`;
+  let userOptionData = UserOptionData.load(referrenceID);
+  if (userOptionData != null) {
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      event.params.optionId,
+      contractAddress
+    );
+    userOptionData.queueID = queueID;
+    userOptionData.queuedTimestamp = userQueuedData.queueTimestamp;
+    userOptionData.lag = event.block.timestamp.minus(
+      userQueuedData.queueTimestamp
+    );
+    userOptionData.save();
+  }
 }
 
 export function _handleCancelTrade(event: CancelTrade): void {

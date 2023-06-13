@@ -82,26 +82,26 @@ export function _handleExpire(event: Expire): void {
     routerContract.contractRegistry(contractAddress) == true ||
     contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
   ) {
-    let userOptionData = _loadOrCreateOptionDataEntity(
-      event.params.id,
-      contractAddress
-    );
-    userOptionData.state = State.expired;
-    userOptionData.expirationPrice = event.params.priceAtExpiration;
-    userOptionData.save();
+    let referrenceID = `${event.params.id}${contractAddress}`;
+    let userOptionData = UserOptionData.load(referrenceID);
+    if (userOptionData != null) {
+      userOptionData.state = State.expired;
+      userOptionData.expirationPrice = event.params.priceAtExpiration;
+      userOptionData.save();
 
 
-    updateClosingStats(
-      userOptionData.depositToken,
-      userOptionData.creationTime,
-      userOptionData.totalFee,
-      userOptionData.settlementFee,
-      userOptionData.isAbove,
-      userOptionData.user,
-      contractAddress,
-      false,
-      userOptionData.totalFee
-    );
+      updateClosingStats(
+        userOptionData.depositToken,
+        userOptionData.creationTime,
+        userOptionData.totalFee,
+        userOptionData.settlementFee,
+        userOptionData.isAbove,
+        userOptionData.user,
+        contractAddress,
+        false,
+        userOptionData.totalFee
+        );
+    }
   }
 }
 
@@ -112,26 +112,26 @@ export function _handleExercise(event: Exercise): void {
     routerContract.contractRegistry(contractAddress) == true ||
     contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
   ) {
-    let userOptionData = _loadOrCreateOptionDataEntity(
-      event.params.id,
-      contractAddress
-    );
-    userOptionData.state = State.exercised;
-    userOptionData.payout = event.params.profit;
-    userOptionData.expirationPrice = event.params.priceAtExpiration;
-    userOptionData.save();
+    let referrenceID = `${event.params.id}${contractAddress}`;
+    let userOptionData = UserOptionData.load(referrenceID);
+    if (userOptionData != null) {
+      userOptionData.state = State.exercised;
+      userOptionData.payout = event.params.profit;
+      userOptionData.expirationPrice = event.params.priceAtExpiration;
+      userOptionData.save();
 
-    updateClosingStats(
-      userOptionData.depositToken,
-      userOptionData.creationTime,
-      userOptionData.totalFee,
-      userOptionData.settlementFee,
-      userOptionData.isAbove,
-      userOptionData.user,
-      contractAddress,
-      true,
-      event.params.profit.minus(userOptionData.totalFee)
-    );
+      updateClosingStats(
+        userOptionData.depositToken,
+        userOptionData.creationTime,
+        userOptionData.totalFee,
+        userOptionData.settlementFee,
+        userOptionData.isAbove,
+        userOptionData.user,
+        contractAddress,
+        true,
+        event.params.profit.minus(userOptionData.totalFee)
+      );
+    }
   }
 }
 

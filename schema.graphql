@@ -69,6 +69,7 @@ type UserOptionData @entity {
   settlementFee: BigInt!
   lag: BigInt!
   poolToken: String!
+  queueID: BigInt
 }
 
 type User @entity {

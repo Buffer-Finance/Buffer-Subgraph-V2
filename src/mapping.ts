@@ -18,12 +18,18 @@ import {
   _handleUpdateReferral,
   _handlePause,
 } from "./optionContractHandlers";
+import { _handleOpenTrade } from "./routerContractHandlers";
 import {
   _handleCreateOptionsContract,
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
 } from "./configContractHandlers";
+import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+
+export function handleOpenTrade(event: OpenTrade): void {
+  _handleOpenTrade(event);
+}
 
 export function handleCreate(event: Create): void {
   _handleCreate(event);

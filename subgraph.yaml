@@ -62,4 +62,25 @@ dataSources:
         - event: CreateOptionsContract(address,address,address,string,string,uint8[4])
           handler: handleCreateOptionsContract
       file: ./src/mapping.ts
-
+  - kind: ethereum/contract
+    name: BufferRouter
+    network: arbitrum-goerli
+    source:
+      address: "0xB1be98504D40d3644ef069A2543536a8Eb11dD87"
+      abi: BufferRouter
+      startBlock: 24783662
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - UserOptionData
+      abis:
+        - name: BufferBinaryOptions
+          file: ./abis/BufferBinaryOptions.json
+        - name: BufferRouter
+          file: ./abis/BufferRouter.json
+      eventHandlers:
+        - event: OpenTrade(indexed address,uint256,uint256,address)
+          handler: handleOpenTrade
+      file: ./src/mapping.ts

@@ -71,8 +71,8 @@ export function _loadOrCreateOptionContractEntity(
       optionContract.token = "BFR";
       optionContract.pool = "BFR";
     } else {
-      optionContract.token = "USDC";
-      optionContract.pool = "USDC";
+      optionContract.token = "";
+      optionContract.pool = "";
     }
     optionContract.save();
   }

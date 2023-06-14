@@ -29,7 +29,10 @@ export function _handleCreateOptionsContract(
   const address = event.params.config;
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (routerContract.contractRegistry(contractAddress) == true) {
+  if (
+    routerContract.try_contractRegistry(contractAddress).reverted == false &&
+    routerContract.try_contractRegistry(contractAddress).value == true
+  ) {
     const entity = new ConfigContract(address);
     // const poolContractEntity = new PoolContract(address);
     // poolContractEntity.address = event.params.pool;
@@ -47,8 +50,9 @@ export function _handleCreateOptionsContract(
     entity.id = address;
     entity.save();
 
-    const optionContractInstance =
-      _loadOrCreateOptionContractEntity(contractAddress);
+    const optionContractInstance = _loadOrCreateOptionContractEntity(
+      contractAddress
+    );
     optionContractInstance.category = 0;
     optionContractInstance.configContract = entity.id;
     optionContractInstance.poolContract = event.params.pool;

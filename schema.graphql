@@ -70,6 +70,7 @@ type UserOptionData @entity {
   lag: BigInt!
   poolToken: String!
   queueID: BigInt
+  # //TODO - add closeTime to store the time at which the option was closed
 }
 
 type User @entity {

@@ -5,10 +5,9 @@ enum Period {
   total
 }
 
-type OptionContract @entity {
+type BurnedBFR @entity {
   id: ID!
   timestamp: BigInt!
-  periodID: BigInt!
   period: Period!
   amount: BigInt!
 }

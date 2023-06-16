@@ -32,6 +32,7 @@ type ConfigContract @entity {
   maxPeriod: BigInt!
   minFee: BigInt!
   maxFee: BigInt!
+  platformFee: BigInt!
 }
 
 # type PoolContract @entity{

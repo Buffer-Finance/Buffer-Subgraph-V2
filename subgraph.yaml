@@ -25,6 +25,8 @@ dataSources:
           handler: handleUpdateMinPeriod
         - event: UpdateMaxPeriod(uint32)
           handler: handleUpdateMaxPeriod
+        - event: UpdatePlatformFee(uint256)
+          handler: handleUpdatePlatformFee
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions

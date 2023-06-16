@@ -10,6 +10,7 @@ import {
   UpdateMaxPeriod,
   UpdateMinFee,
   UpdateMinPeriod,
+  UpdatePlatformFee,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import {
   _handleCreate,
@@ -24,6 +25,7 @@ import {
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
+  _handleUpdatePlatformFee,
 } from "./configContractHandlers";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 
@@ -67,4 +69,8 @@ export function handleUpdateMaxPeriod(event: UpdateMaxPeriod): void {
 
 export function handleUpdateMinPeriod(event: UpdateMinPeriod): void {
   _handleUpdateMinPeriod(event);
+}
+
+export function handleUpdatePlatformFee(event: UpdatePlatformFee): void {
+  _handleUpdatePlatformFee(event);
 }

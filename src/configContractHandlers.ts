@@ -8,6 +8,7 @@ import {
   UpdateMinFee,
   UpdateMaxPeriod,
   UpdateMinPeriod,
+  UpdatePlatformFee,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { Address } from "@graphprotocol/graph-ts";
@@ -48,11 +49,11 @@ export function _handleCreateOptionsContract(
     entity.minPeriod = ZERO;
     entity.maxPeriod = ZERO;
     entity.id = address;
+    entity.platformFee = ZERO;
     entity.save();
 
-    const optionContractInstance = _loadOrCreateOptionContractEntity(
-      contractAddress
-    );
+    const optionContractInstance =
+      _loadOrCreateOptionContractEntity(contractAddress);
     optionContractInstance.category = 0;
     optionContractInstance.configContract = entity.id;
     optionContractInstance.poolContract = event.params.pool;
@@ -87,5 +88,15 @@ export function _handleUpdateMinPeriod(event: UpdateMinPeriod): void {
     return;
   }
   entity.minPeriod = event.params.value;
+  entity.save();
+}
+
+export function _handleUpdatePlatformFee(event: UpdatePlatformFee): void {
+  const address = event.address;
+  const entity = ConfigContract.load(address);
+  if (entity == null) {
+    return;
+  }
+  entity.platformFee = event.params._platformFee;
   entity.save();
 }

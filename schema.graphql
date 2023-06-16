@@ -71,7 +71,7 @@ type UserOptionData @entity {
   lag: BigInt!
   poolToken: String!
   queueID: BigInt
-  # //TODO - add closeTime to store the time at which the option was closed
+  closeTime: BigInt
 }
 
 type User @entity {
@@ -255,9 +255,4 @@ type BFRHolderData @entity {
   holders: Int!
   period: Period!
   timestamp: BigInt!
-}
-
-type BFRHolder @entity {
-  id: String!
-  balance: BigInt!
 }

@@ -32,5 +32,5 @@ export function _handleChangeInPool(
     totalPoolStat.amount = poolStat.amount;
     totalPoolStat.timestamp = timestamp;
     totalPoolStat.save();
-  } 
+  }
 }

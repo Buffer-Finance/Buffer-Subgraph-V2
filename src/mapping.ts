@@ -6,12 +6,6 @@ import {
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
-  Provide,
-  Withdraw,
-  Profit,
-  Loss,
-} from "../generated/BinaryPool/BinaryPool";
-import {
   InitiateTrade,
   CancelTrade,
   OpenTrade,
@@ -44,6 +38,13 @@ import {
   _handleNftTransfer,
   _handleTokenClaim,
 } from "./nftContractHandlers";
+import {
+  BinaryPool,
+  Provide,
+  Withdraw,
+  Profit,
+  Loss
+} from "../generated/BinaryPool/BinaryPool";
 
 export function handleInitiateTrade(event: InitiateTrade): void {
   _handleInitiateTrade(event);
@@ -94,7 +95,7 @@ export function handleTokenClaim(event: TokensClaimed): void {
 }
 
 export function handleProvide(event: Provide): void {
-  let a = "a";
+  _handleChangeInPool(event.block.timestamp, event.address);
 }
 
 export function handleWithdraw(event: Withdraw): void {

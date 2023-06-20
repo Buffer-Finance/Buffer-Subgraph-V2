@@ -23,7 +23,7 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
     queueID,
     contractAddress
   );
-  queuedOptionData.user = event.params.account;
+  queuedOptionData.user = event.params.account.toString();
   queuedOptionData.state = State.queued;
   queuedOptionData.strike = queuedTradeData.value7;
   queuedOptionData.totalFee = queuedTradeData.value3;

@@ -6,7 +6,7 @@ enum Period {
 }
 
 type OptionContract @entity {
-  id: Bytes!
+  id: String!
   address: Bytes
   isPaused: Boolean!
   openUp: BigInt!
@@ -70,12 +70,12 @@ type UserOptionData @entity {
 }
 
 type User @entity {
-  id: Bytes!
+  id: String!
   address: Bytes!
 }
 
 type UserStat @entity {
-  id: ID!
+  id: String!
   uniqueCount: Int!
   uniqueCountCumulative: Int!
   period: Period!
@@ -106,7 +106,7 @@ type WeeklyRevenueAndFee @entity {
 
 type Leaderboard @entity {
   id: String!
-  user: Bytes!
+  user: String!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -115,7 +115,7 @@ type Leaderboard @entity {
 
 type WeeklyLeaderboard @entity {
   id: String!
-  user: Bytes!
+  user: String!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -148,7 +148,7 @@ type DashboardStat @entity {
 }
 
 type FeeStat @entity {
-  id: ID!
+  id: String!
   fee: BigInt!
   period: Period!
   timestamp: BigInt!
@@ -168,7 +168,7 @@ type VolumeStat @entity {
 }
 
 type ReferralData @entity {
-  id: Bytes!
+  id: String!
   user: User!
   totalTradesReferred: Int!
   totalTradesReferredARB: Int!
@@ -193,7 +193,7 @@ type ReferralData @entity {
 }
 
 type TradingStat @entity {
-  id: ID!
+  id: String!
   profit: BigInt!
   profitUSDC: BigInt!
   profitARB: BigInt!
@@ -223,7 +223,7 @@ type TradingStat @entity {
 }
 
 type PoolStat @entity {
-  id: ID!
+  id: String!
   amount: BigInt!
   period: Period!
   timestamp: BigInt!
@@ -231,7 +231,7 @@ type PoolStat @entity {
 }
 
 type AssetTradingStat @entity {
-  id: ID!
+  id: String!
   contractAddress: Bytes!
   periodID: String!
   profit: BigInt!
@@ -255,7 +255,7 @@ type AssetTradingStat @entity {
 }
 
 type UserRewards @entity {
-  id: ID!
+  id: String!
   referralReward: BigInt!
   referralDiscount: BigInt!
   nftDiscount: BigInt!

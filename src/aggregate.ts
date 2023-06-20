@@ -183,7 +183,7 @@ export function updateClosingStats(
   totalFee: BigInt,
   settlementFee: BigInt,
   isAbove: boolean,
-  user: Bytes,
+  user: string,
   contractAddress: Bytes,
   isExercised: boolean,
   netPnL: BigInt,

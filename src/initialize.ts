@@ -43,12 +43,12 @@ export function calculatePayout(settlementFeePercent: BigInt): BigInt {
 export function _loadOrCreateOptionContractEntity(
   contractAddress: Address
 ): OptionContract {
-  let optionContract = OptionContract.load(contractAddress);
+  let optionContract = OptionContract.load(contractAddress.toString());
   if (optionContract == null) {
     let optionContractInstance = BufferBinaryOptions.bind(
       Address.fromBytes(contractAddress)
     );
-    optionContract = new OptionContract(contractAddress);
+    optionContract = new OptionContract(contractAddress.toString());
     optionContract.address = contractAddress;
     optionContract.isPaused = optionContractInstance.isPaused();
     optionContract.volume = ZERO;
@@ -160,7 +160,7 @@ export function _loadOrCreateQueuedOptionEntity(
   if (entity == null) {
     entity = new QueuedOptionData(referenceID);
     entity.queueID = queueID;
-    entity.optionContract = contractAddress;
+    entity.optionContract = contractAddress.toString();
     entity.queueTimestamp = ZERO;
     entity.cancelTimestamp = ZERO;
     entity.lag = ZERO;
@@ -174,12 +174,12 @@ export function _loadOrCreateOptionDataEntity(
   optionID: BigInt,
   contractAddress: Bytes
 ): UserOptionData {
-  let referrenceID = `${optionID}${contractAddress}`;
+  let referrenceID = `${optionID}${contractAddress.toString()}`;
   let entity = UserOptionData.load(referrenceID);
   if (entity == null) {
     entity = new UserOptionData(referrenceID);
     entity.optionID = optionID;
-    entity.optionContract = contractAddress;
+    entity.optionContract = contractAddress.toString();
     entity.amount = ZERO;
     entity.totalFee = ZERO;
     entity.queuedTimestamp = ZERO;
@@ -190,13 +190,13 @@ export function _loadOrCreateOptionDataEntity(
 
 export function _loadOrCreateLeaderboardEntity(
   dayId: string,
-  account: Bytes
+  account: string
 ): Leaderboard {
   let referenceID = `${dayId}${account}`;
   let entity = Leaderboard.load(referenceID);
   if (entity == null) {
     entity = new Leaderboard(referenceID);
-    entity.user = account;
+    entity.user = account.toString();
     entity.timestamp = dayId;
     entity.totalTrades = 0;
     entity.volume = ZERO;
@@ -208,13 +208,13 @@ export function _loadOrCreateLeaderboardEntity(
 
 export function _loadOrCreateWeeklyLeaderboardEntity(
   weekId: string,
-  account: Bytes
+  account: string
 ): WeeklyLeaderboard {
   let referenceID = `${weekId}${account}`;
   let entity = WeeklyLeaderboard.load(referenceID);
   if (entity == null) {
     entity = new WeeklyLeaderboard(referenceID);
-    entity.user = account;
+    entity.user = account.toString();
     entity.timestamp = weekId;
     entity.totalTrades = 0;
     entity.volume = ZERO;
@@ -298,10 +298,10 @@ export function _loadOrCreateFeeStat(
 }
 
 export function _loadOrCreateReferralData(user: Bytes): ReferralData {
-  let userReferralData = ReferralData.load(user);
+  let userReferralData = ReferralData.load(user.toString());
   if (userReferralData == null) {
-    userReferralData = new ReferralData(user);
-    userReferralData.user = user;
+    userReferralData = new ReferralData(user.toString());
+    userReferralData.user = user.toString();
     userReferralData.totalDiscountAvailed = ZERO;
     userReferralData.totalDiscountAvailedARB = ZERO;
     userReferralData.totalDiscountAvailedUSDC = ZERO;

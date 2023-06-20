@@ -11,7 +11,7 @@ import {
 export function updateLeaderboards(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isARB: boolean,
@@ -75,12 +75,12 @@ export function updateDailyAndWeeklyRevenue(
 function _updateDailyLeaderboard(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean
 ): void {
   let dailyLeaderboardEntity = _loadOrCreateLeaderboardEntity(
     _getDayId(timestamp),
-    user
+    user.toString()
   );
   dailyLeaderboardEntity.volume = dailyLeaderboardEntity.volume.plus(totalFee);
   dailyLeaderboardEntity.totalTrades += 1;
@@ -93,7 +93,7 @@ function _updateDailyLeaderboard(
 function _updateWeeklyLeaderboard(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isUSDC: boolean,
@@ -108,7 +108,7 @@ function _updateWeeklyLeaderboard(
 ): void {
   let weeklyLeaderboardEntity = _loadOrCreateWeeklyLeaderboardEntity(
     _getLeaderboardWeekId(timestamp),
-    user
+    user.toString()
   );
 
   weeklyLeaderboardEntity.volume = weeklyLeaderboardEntity.volume.plus(

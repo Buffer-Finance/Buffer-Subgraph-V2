@@ -59,7 +59,7 @@ export function _handleCreate(event: Create): void {
       optionID,
       contractAddress
     );
-    userOptionData.user = event.params.account;
+    userOptionData.user = event.params.account.toString();
     userOptionData.totalFee = totalFee;
     userOptionData.state = optionData.value0;
     userOptionData.strike = optionData.value1;

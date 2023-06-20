@@ -34,7 +34,7 @@ export function logVolumeAndSettlementFeePerContract(
     entity.period = period;
     entity.timestamp = timestamp;
     entity.amount = totalFee;
-    entity.optionContract = contractAddress;
+    entity.optionContract = contractAddress.toString();
     entity.depositToken = depositToken;
     entity.settlementFee = settlementFee;
     entity.save();

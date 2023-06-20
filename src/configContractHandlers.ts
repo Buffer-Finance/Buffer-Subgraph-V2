@@ -54,7 +54,7 @@ export function _handleCreateOptionsContract(
 
     const optionContractInstance =
       _loadOrCreateOptionContractEntity(contractAddress);
-    optionContractInstance.category = 0;
+    optionContractInstance.category = event.params.category;
     optionContractInstance.configContract = entity.id;
     optionContractInstance.poolContract = event.params.pool;
     optionContractInstance.save();

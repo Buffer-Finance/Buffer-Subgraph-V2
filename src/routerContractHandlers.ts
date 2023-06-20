@@ -34,6 +34,7 @@ export function _handleRegisterAccount(event: RegisterAccount): void {
   }
   eoaToOneCT.eoa = event.params.account;
   eoaToOneCT.oneCT = event.params.oneCT;
+  eoaToOneCT.updatedAt = event.block.timestamp;
   eoaToOneCT.save();
 }
 
@@ -47,5 +48,6 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   }
   eoaToOneCT.eoa = event.params.account;
   eoaToOneCT.oneCT = Address.fromString(ADDRESS_ZERO);
+  eoaToOneCT.updatedAt = event.block.timestamp;
   eoaToOneCT.save();
 }

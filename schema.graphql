@@ -45,6 +45,7 @@ type ConfigContract @entity {
 
 type EOAtoOneCT @entity {
   id: String!
+  updatedAt: BigInt!
   oneCT: Bytes!
   eoa: Bytes!
 }

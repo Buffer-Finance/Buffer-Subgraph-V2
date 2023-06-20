@@ -19,7 +19,7 @@ import {
   _handleUpdateReferral,
   _handlePause,
 } from "./optionContractHandlers";
-import { _handleOpenTrade } from "./routerContractHandlers";
+import { _handleOpenTrade, _handleDeregisterAccount, _handleRegisterAccount } from "./routerContractHandlers";
 import {
   _handleCreateOptionsContract,
   _handleUpdateMaxPeriod,
@@ -27,7 +27,7 @@ import {
   _handleUpdateMinPeriod,
   _handleUpdatePlatformFee,
 } from "./configContractHandlers";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import { OpenTrade, RegisterAccount, DeregisterAccount } from "../generated/BufferRouter/BufferRouter";
 
 export function handleOpenTrade(event: OpenTrade): void {
   _handleOpenTrade(event);
@@ -73,4 +73,12 @@ export function handleUpdateMinPeriod(event: UpdateMinPeriod): void {
 
 export function handleUpdatePlatformFee(event: UpdatePlatformFee): void {
   _handleUpdatePlatformFee(event);
+}
+
+export function handleRegisterAccount(event: RegisterAccount): void {
+  _handleRegisterAccount(event);
+}
+
+export function handleDeregisterAccount(event: DeregisterAccount): void {
+  _handleDeregisterAccount(event);
 }

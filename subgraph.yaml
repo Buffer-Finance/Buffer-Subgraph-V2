@@ -68,7 +68,7 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0xa47278Ade7a436C161cF406a46741e0ADFf65114"
+      address: "0x721B0485fC4e86e5CAfa25Be6F182754Ed55f9C5"
       abi: BufferRouter
       startBlock: 26304288
     mapping:
@@ -84,5 +84,9 @@ dataSources:
           file: ./abis/BufferRouter.json
       eventHandlers:
         - event: OpenTrade(indexed address,uint256,uint256,address)
+          handler: handleOpenTrade
+        - event: RegisterAccount(indexed address,indexed address)
+          handler: handleOpenTrade
+        - event: DeregisterAccount(indexed address)
           handler: handleOpenTrade
       file: ./src/mapping.ts

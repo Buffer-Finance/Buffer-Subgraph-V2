@@ -43,6 +43,12 @@ type ConfigContract @entity {
 #   decimals: Int!
 # }
 
+type EOAtoOneCT @entity {
+  id: String!
+  oneCT: Bytes!
+  eoa: Bytes!
+}
+
 type VolumePerContract @entity {
   id: String!
   amount: BigInt!

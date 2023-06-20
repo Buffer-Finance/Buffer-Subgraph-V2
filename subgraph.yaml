@@ -86,7 +86,7 @@ dataSources:
         - event: OpenTrade(indexed address,uint256,uint256,address)
           handler: handleOpenTrade
         - event: RegisterAccount(indexed address,indexed address)
-          handler: handleOpenTrade
+          handler: handleRegisterAccount
         - event: DeregisterAccount(indexed address)
-          handler: handleOpenTrade
+          handler: handleDeregisterAccount
       file: ./src/mapping.ts

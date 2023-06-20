@@ -61,7 +61,7 @@ dataSources:
           handler: handleUpdateReferral
         - event: Pause(bool)
           handler: handlePause
-        - event: CreateOptionsContract(address,address,address,string,string,uint8[4])
+        - event: CreateOptionsContract(address,address,address,string,string,uint8,uint8[4])
           handler: handleCreateOptionsContract
       file: ./src/mapping.ts
   - kind: ethereum/contract

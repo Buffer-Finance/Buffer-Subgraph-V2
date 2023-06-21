@@ -17,7 +17,7 @@ import {
   PoolStat,
   NFT,
   UserRewards,
-  NetPnLPerPool
+  NetPnLPerPool,
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
@@ -61,7 +61,7 @@ export function _loadOrCreateOptionContractEntity(
     if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
       optionContract.token = "USDC";
       optionContract.pool = "USDC_POL";
-    } else if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {   
+    } else if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
       optionContract.token = "ARB";
       optionContract.pool = "ARB";
     } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
@@ -174,7 +174,7 @@ export function _loadOrCreateOptionDataEntity(
   optionID: BigInt,
   contractAddress: Bytes
 ): UserOptionData {
-  let referrenceID = `${optionID}${contractAddress}`;
+  let referrenceID = `${optionID}${contractAddress.toHexString()}`;
   let entity = UserOptionData.load(referrenceID);
   if (entity == null) {
     entity = new UserOptionData(referrenceID);
@@ -421,7 +421,6 @@ export function _loadOrCreateNFT(tokenId: BigInt): NFT {
   }
   return entity as NFT;
 }
-
 
 export function _loadOrCreateNetPnLPerPool(
   contractAddress: Bytes,

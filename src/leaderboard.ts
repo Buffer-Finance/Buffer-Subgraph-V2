@@ -48,14 +48,16 @@ export function updateDailyAndWeeklyRevenue(
   totalFee: BigInt,
   timestamp: BigInt,
   settlementFee: BigInt,
-  token: string
+  token: string,
+  totalFeeUSDC: BigInt,
+  settlementFeeUSDC: BigInt
 ): void {
   // Daily
   let dayID = _getDayId(timestamp);
   let dailyRevenueAndFee = _loadOrCreateDailyRevenueAndFee(dayID, timestamp);
-  dailyRevenueAndFee.totalFee = dailyRevenueAndFee.totalFee.plus(totalFee);
+  dailyRevenueAndFee.totalFee = dailyRevenueAndFee.totalFee.plus(totalFeeUSDC);
   dailyRevenueAndFee.settlementFee = dailyRevenueAndFee.settlementFee.plus(
-    settlementFee
+    settlementFeeUSDC
   );
   dailyRevenueAndFee.save();
 

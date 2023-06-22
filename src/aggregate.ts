@@ -33,8 +33,8 @@ export function updateOpeningStats(
     updateDashboardOverviewStats(totalFee, settlementFee, "total");
 
     // Update daily and weekly volume and fees
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, "total");
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
+    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, "total", totalFee, settlementFee);
+    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token, totalFee, settlementFee);
 
     // Dashboard Page - markets table
     logVolumeAndSettlementFeePerContract(
@@ -83,9 +83,11 @@ export function updateOpeningStats(
       totalFeeUSDC,
       timestamp,
       settlementFeeUSDC,
-      "total"
+      "total",
+      totalFeeUSDC,
+      settlementFeeUSDC
     );
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
+    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token, totalFeeUSDC, settlementFeeUSDC);
 
     // Dashboard Page - markets table
     logVolumeAndSettlementFeePerContract(
@@ -135,9 +137,11 @@ export function updateOpeningStats(
       totalFeeUSDC,
       timestamp,
       settlementFeeUSDC,
-      "total"
+      "total",
+      totalFeeUSDC,
+      settlementFeeUSDC
     );
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
+    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token, totalFeeUSDC, settlementFeeUSDC);
 
     // Dashboard Page - markets table
     logVolumeAndSettlementFeePerContract(

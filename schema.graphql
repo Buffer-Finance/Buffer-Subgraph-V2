@@ -7,7 +7,7 @@ enum Period {
 
 type OptionContract @entity {
   id: Bytes!
-  address: Bytes
+  address: String!
   isPaused: Boolean!
   openUp: BigInt!
   openDown: BigInt!

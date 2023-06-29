@@ -49,7 +49,7 @@ export function _loadOrCreateOptionContractEntity(
       Address.fromBytes(contractAddress)
     );
     optionContract = new OptionContract(contractAddress);
-    optionContract.address = contractAddress;
+    optionContract.address = contractAddress.toHexString();
     optionContract.isPaused = optionContractInstance.isPaused();
     optionContract.volume = ZERO;
     optionContract.tradeCount = 0;

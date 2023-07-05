@@ -8,6 +8,7 @@ import {
   _loadOrCreateUserRewards,
 } from "./initialize";
 
+// Used for the plotting the volume chart
 export function logVolume(
   timestamp: BigInt,
   amount: BigInt,
@@ -47,6 +48,7 @@ export function logVolume(
   weekEntity.save();
 }
 
+// Used for the plotting the fees chart
 export function storeFees(
   timestamp: BigInt,
   fees: BigInt,
@@ -78,6 +80,7 @@ export function storeFees(
   totalEntity.save();
 }
 
+// Used for storing the open interest
 export function updateOpenInterest(
   timestamp: BigInt,
   increaseInOpenInterest: boolean,
@@ -103,6 +106,7 @@ export function updateOpenInterest(
   dailyEntity.save();
 }
 
+// Used for plotting the Traders NetPnL chart and Traders Profit vs Loss chart
 export function storePnl(
   timestamp: BigInt,
   pnl: BigInt,

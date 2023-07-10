@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferConfig
-      startBlock: 29126064
+      startBlock: 29936199
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -33,7 +33,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 29126064
+      startBlock: 29936199
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -68,9 +68,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0xb34459f1fa1e4C7B1307f68e5D5399A936178AC8"
+      address: "0x89747533546769b7fA4d666d4a98A40f3D774e16"
       abi: BufferRouter
-      startBlock: 29126064
+      startBlock: 29936199
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -85,8 +85,28 @@ dataSources:
       eventHandlers:
         - event: OpenTrade(indexed address,uint256,uint256,address)
           handler: handleOpenTrade
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: AccountRegistrar
+    network: arbitrum-goerli
+    source:
+      address: "0xB0BA28f15Ebc9685ec89Cbe8C5E6e960d14f488b"
+      abi: AccountRegistrar
+      startBlock: 29936199
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - UserOptionData
+      abis:
+        - name: BufferBinaryOptions
+          file: ./abis/BufferBinaryOptions.json
+        - name: BufferRouter
+          file: ./abis/BufferRouter.json
+        - name: AccountRegistrar
+          file: ./abis/AccountRegistrar.json
+      eventHandlers:
         - event: RegisterAccount(indexed address,indexed address)
           handler: handleRegisterAccount
-        - event: DeregisterAccount(indexed address)
-          handler: handleDeregisterAccount
       file: ./src/mapping.ts

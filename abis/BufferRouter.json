@@ -589,7 +589,8 @@
       { "internalType": "uint256", "name": "settlementFee", "type": "uint256" },
       { "internalType": "bool", "name": "isLimitOrder", "type": "bool" },
       { "internalType": "bool", "name": "isTradeResolved", "type": "bool" },
-      { "internalType": "uint256", "name": "optionId", "type": "uint256" }
+      { "internalType": "uint256", "name": "optionId", "type": "uint256" },
+      { "internalType": "bool", "name": "isEarlyCloseAllowed", "type": "bool" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -666,6 +667,23 @@
       { "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }
     ],
     "name": "supportsInterface",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "assetPair", "type": "string" },
+      { "internalType": "uint256", "name": "settlementFee", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "expiryTimestamp",
+        "type": "uint256"
+      },
+      { "internalType": "bytes", "name": "signature", "type": "bytes" },
+      { "internalType": "address", "name": "signer", "type": "address" }
+    ],
+    "name": "verifySF",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"

@@ -68,7 +68,7 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0xdF24F142ef01BaED2db4681Be071dE4b8f8702f2"
+      address: "0x4fdc32a6588612589020F1dd7F106f0Ac8F8Fe6e"
       abi: BufferRouter
       startBlock: 29936199
     mapping:

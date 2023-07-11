@@ -9,6 +9,8 @@ import {
   UpdateMaxPeriod,
   UpdateMinPeriod,
   UpdatePlatformFee,
+  UpdateEarlyClose,
+  UpdateEarlyCloseThreshold,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { Address } from "@graphprotocol/graph-ts";
@@ -50,6 +52,8 @@ export function _handleCreateOptionsContract(
     entity.maxPeriod = ZERO;
     entity.id = address;
     entity.platformFee = ZERO;
+    entity.isEarlyCloseEnabled = false;
+    entity.earlyCloseThreshold = ZERO;
     entity.save();
 
     const optionContractInstance =
@@ -98,5 +102,27 @@ export function _handleUpdatePlatformFee(event: UpdatePlatformFee): void {
     return;
   }
   entity.platformFee = event.params._platformFee;
+  entity.save();
+}
+
+export function _handleUpdateEarlyCloseThreshold(
+  event: UpdateEarlyCloseThreshold
+): void {
+  const address = event.address;
+  const entity = ConfigContract.load(address);
+  if (entity == null) {
+    return;
+  }
+  entity.earlyCloseThreshold = event.params.earlyCloseThreshold;
+  entity.save();
+}
+
+export function _handleUpdateEarlyClose(event: UpdateEarlyClose): void {
+  const address = event.address;
+  const entity = ConfigContract.load(address);
+  if (entity == null) {
+    return;
+  }
+  entity.isEarlyCloseEnabled = event.params.isAllowed;
   entity.save();
 }

@@ -27,6 +27,10 @@ dataSources:
           handler: handleUpdateMaxPeriod
         - event: UpdatePlatformFee(uint256)
           handler: handleUpdatePlatformFee
+        - event: UpdateEarlyCloseThreshold(uint32)
+          handler: handleUpdateEarlyCloseThreshold
+        - event: UpdateEarlyClose(bool)
+          handler: handleUpdateEarlyClose
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions

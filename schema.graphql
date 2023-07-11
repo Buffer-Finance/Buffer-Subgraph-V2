@@ -33,6 +33,8 @@ type ConfigContract @entity {
   minFee: BigInt!
   maxFee: BigInt!
   platformFee: BigInt!
+  earlyCloseThreshold: BigInt!
+  isEarlyCloseEnabled: Boolean!
 }
 
 # type PoolContract @entity{

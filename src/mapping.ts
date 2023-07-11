@@ -7,6 +7,8 @@ import {
   CreateOptionsContract,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
+  UpdateEarlyClose,
+  UpdateEarlyCloseThreshold,
   UpdateMaxPeriod,
   UpdateMinFee,
   UpdateMinPeriod,
@@ -19,15 +21,25 @@ import {
   _handleUpdateReferral,
   _handlePause,
 } from "./optionContractHandlers";
-import { _handleOpenTrade, _handleDeregisterAccount, _handleRegisterAccount } from "./routerContractHandlers";
+import {
+  _handleOpenTrade,
+  _handleDeregisterAccount,
+  _handleRegisterAccount,
+} from "./routerContractHandlers";
 import {
   _handleCreateOptionsContract,
+  _handleUpdateEarlyClose,
+  _handleUpdateEarlyCloseThreshold,
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
   _handleUpdatePlatformFee,
 } from "./configContractHandlers";
-import { OpenTrade, RegisterAccount, DeregisterAccount } from "../generated/BufferRouter/BufferRouter";
+import {
+  OpenTrade,
+  RegisterAccount,
+  DeregisterAccount,
+} from "../generated/BufferRouter/BufferRouter";
 
 export function handleOpenTrade(event: OpenTrade): void {
   _handleOpenTrade(event);
@@ -81,4 +93,14 @@ export function handleRegisterAccount(event: RegisterAccount): void {
 
 export function handleDeregisterAccount(event: DeregisterAccount): void {
   _handleDeregisterAccount(event);
+}
+
+export function handleUpdateEarlyCloseThreshold(
+  event: UpdateEarlyCloseThreshold
+): void {
+  _handleUpdateEarlyCloseThreshold(event);
+}
+
+export function handleUpdateEarlyClose(event: UpdateEarlyClose): void {
+  _handleUpdateEarlyClose(event);
 }

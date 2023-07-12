@@ -1,10 +1,11 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
+import { _getDayId, _getHourId, _getWeekId, _getDefillamaDayId } from "./helpers";
 import {
   _loadOrCreateVolumeStat,
   _loadOrCreateTradingStatEntity,
   _loadOrCreateAssetTradingStatEntity,
   _loadOrCreateFeeStat,
+  _loadOrCreateDefillamaFeeStat,
   _loadOrCreateUserRewards,
 } from "./initialize";
 
@@ -265,4 +266,14 @@ export function referralAndNFTDiscountStats(
     rebate
   );
   userRewardEntity.save();
+}
+
+export function storeDefillamaFees(
+  timestamp: BigInt,
+  fees: BigInt,
+): void {
+  let id = _getDefillamaDayId(timestamp);
+  let entity = _loadOrCreateDefillamaFeeStat(id, "daily", timestamp);
+  entity.fee = entity.fee.plus(fees);
+  entity.save();
 }

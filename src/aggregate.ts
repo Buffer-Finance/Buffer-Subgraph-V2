@@ -4,6 +4,7 @@ import { ZERO } from "./initialize";
 import {
   updateOpenInterest,
   storeFees,
+  storeDefillamaFees,
   logVolume,
   storePnl,
   storePnlPerContract,
@@ -58,6 +59,7 @@ export function updateOpeningStats(
 
     // Update daily & total fees
     storeFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
+    storeDefillamaFees(timestamp, settlementFee);
 
     // Update daily & total volume
     logVolume(timestamp, totalFee, ZERO, totalFee, ZERO);
@@ -112,6 +114,7 @@ export function updateOpeningStats(
 
     // Update daily & total fees
     storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
 
     // Update daily & total volume
     logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO, ZERO);
@@ -166,6 +169,7 @@ export function updateOpeningStats(
 
     // Update daily & total fees
     storeFees(timestamp, settlementFeeUSDC, ZERO, ZERO, settlementFeeUSDC);
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
 
     // Update daily & total volume
     logVolume(timestamp, totalFeeUSDC, ZERO, ZERO, totalFeeUSDC);

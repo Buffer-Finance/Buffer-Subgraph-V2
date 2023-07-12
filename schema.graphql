@@ -301,3 +301,10 @@ type NetPnLPerPool @entity {
   periodID: String!
   period: Period!
 }
+
+type DefillamaFeeStat @entity {
+  id: ID!
+  fee: BigInt!
+  period: Period!
+  timestamp: BigInt!
+}

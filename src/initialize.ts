@@ -18,6 +18,7 @@ import {
   NFT,
   UserRewards,
   NetPnLPerPool,
+  DefillamaFeeStat,
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
@@ -438,4 +439,20 @@ export function _loadOrCreateNetPnLPerPool(
     entity.save();
   }
   return entity as NetPnLPerPool;
+}
+
+export function _loadOrCreateDefillamaFeeStat(
+  id: string,
+  period: string,
+  timestamp: BigInt
+): DefillamaFeeStat {
+  let entity = DefillamaFeeStat.load(id);
+  if (entity === null) {
+    entity = new DefillamaFeeStat(id);
+    entity.period = period;
+    entity.timestamp = timestamp;
+    entity.fee = ZERO;
+    entity.save();
+  }
+  return entity as DefillamaFeeStat;
 }

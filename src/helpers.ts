@@ -19,3 +19,8 @@ export function _getLeaderboardWeekId(timestamp: BigInt): string {
   let weekTimestamp = (timestamp.toI32() - 4 * 86400 - 16 * 3600) / (86400 * 7);
   return weekTimestamp.toString();
 }
+
+export function _getDefillamaDayId(timestamp: BigInt): string {
+  let dayTimestamp = (timestamp.toI32()) / 86400;
+  return dayTimestamp.toString();
+}

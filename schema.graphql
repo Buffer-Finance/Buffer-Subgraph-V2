@@ -50,6 +50,7 @@ type EOAtoOneCT @entity {
   updatedAt: BigInt!
   oneCT: Bytes!
   eoa: Bytes!
+  nonce:BigInt!
 }
 
 type VolumePerContract @entity {

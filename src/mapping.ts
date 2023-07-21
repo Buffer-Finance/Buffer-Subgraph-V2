@@ -35,11 +35,11 @@ import {
   _handleUpdateMinPeriod,
   _handleUpdatePlatformFee,
 } from "./configContractHandlers";
+import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
-  OpenTrade,
   RegisterAccount,
   DeregisterAccount,
-} from "../generated/BufferRouter/BufferRouter";
+} from "../generated/AccountRegistrar/AccountRegistrar";
 
 export function handleOpenTrade(event: OpenTrade): void {
   _handleOpenTrade(event);

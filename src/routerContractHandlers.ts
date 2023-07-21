@@ -5,10 +5,14 @@ import {
   _loadOrCreateOptionDataEntity,
   _loadOrCreateReferralData,
 } from "./initialize";
-import { OpenTrade, RegisterAccount, DeregisterAccount } from "../generated/BufferRouter/BufferRouter";
+import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import { State, RouterAddress, ARBITRUM_SOLANA_ADDRESS } from "./config";
 import { updateClosingStats } from "./aggregate";
 import { UserOptionData, EOAtoOneCT } from "../generated/schema";
+import {
+  RegisterAccount,
+  DeregisterAccount,
+} from "../generated/AccountRegistrar/AccountRegistrar";
 
 const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
@@ -25,29 +29,27 @@ export function _handleOpenTrade(event: OpenTrade): void {
 }
 
 export function _handleRegisterAccount(event: RegisterAccount): void {
-  let account = event.params.account;
-  let eoaToOneCT = EOAtoOneCT.load(
-    account.toString()
-  );
+  let account = event.params.user;
+  let eoaToOneCT = EOAtoOneCT.load(account.toString());
   if (eoaToOneCT == null) {
     eoaToOneCT = new EOAtoOneCT(account.toString());
   }
-  eoaToOneCT.eoa = event.params.account;
+  eoaToOneCT.eoa = event.params.user;
   eoaToOneCT.oneCT = event.params.oneCT;
   eoaToOneCT.updatedAt = event.block.timestamp;
+  eoaToOneCT.nonce = event.params.nonce;
   eoaToOneCT.save();
 }
 
 export function _handleDeregisterAccount(event: DeregisterAccount): void {
   let account = event.params.account;
-  let eoaToOneCT = EOAtoOneCT.load(
-    account.toString()
-  );
+  let eoaToOneCT = EOAtoOneCT.load(account.toString());
   if (eoaToOneCT == null) {
     eoaToOneCT = new EOAtoOneCT(account.toString());
   }
   eoaToOneCT.eoa = event.params.account;
   eoaToOneCT.oneCT = Address.fromString(ADDRESS_ZERO);
   eoaToOneCT.updatedAt = event.block.timestamp;
+  eoaToOneCT.nonce = event.params.nonce;
   eoaToOneCT.save();
 }

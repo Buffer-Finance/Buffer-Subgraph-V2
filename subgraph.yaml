@@ -111,6 +111,6 @@ dataSources:
         - name: AccountRegistrar
           file: ./abis/AccountRegistrar.json
       eventHandlers:
-        - event: RegisterAccount(indexed address,indexed address)
+        - event: RegisterAccount(indexed address,indexed address,uint256)
           handler: handleRegisterAccount
       file: ./src/mapping.ts

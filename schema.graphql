@@ -35,6 +35,7 @@ type ConfigContract @entity {
   platformFee: BigInt!
   earlyCloseThreshold: BigInt!
   isEarlyCloseEnabled: Boolean!
+  marketOIaddress: Bytes!
 }
 
 # type PoolContract @entity{

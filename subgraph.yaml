@@ -31,6 +31,8 @@ dataSources:
           handler: handleUpdateEarlyCloseThreshold
         - event: UpdateEarlyClose(bool)
           handler: handleUpdateEarlyClose
+        - event: UpdateMarketOIConfigContract(address)
+          handler: handleUpdateOiconfigContract
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions

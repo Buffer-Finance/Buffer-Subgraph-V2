@@ -11,11 +11,12 @@ import {
   UpdatePlatformFee,
   UpdateEarlyClose,
   UpdateEarlyCloseThreshold,
+  UpdateMarketOIConfigContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { Address } from "@graphprotocol/graph-ts";
 import { RouterAddress } from "./config";
-
+const zeroAddress = "0x0000000000000000000000000000000000000000";
 function _getTokens(inputString: string, delimiter: string): string[] {
   const delimiterIndex = inputString.indexOf(delimiter);
   if (delimiterIndex !== -1) {
@@ -53,13 +54,14 @@ export function _handleCreateOptionsContract(
     entity.id = address;
     entity.platformFee = ZERO;
     entity.isEarlyCloseEnabled = false;
+    entity.marketOIaddress = Address.fromString(zeroAddress);
     entity.earlyCloseThreshold = ZERO;
     entity.save();
 
     const optionContractInstance =
       _loadOrCreateOptionContractEntity(contractAddress);
     optionContractInstance.category = event.params.category;
-    optionContractInstance.configContract = entity.id;
+    optionContractInstance.configContract = entity.id;  
     optionContractInstance.poolContract = event.params.pool;
     optionContractInstance.save();
   }
@@ -124,5 +126,17 @@ export function _handleUpdateEarlyClose(event: UpdateEarlyClose): void {
     return;
   }
   entity.isEarlyCloseEnabled = event.params.isAllowed;
+  entity.save();
+}
+
+export function _handleUpdateOiconfigContract(
+  event: UpdateMarketOIConfigContract
+): void {
+  const address = event.address;
+  const entity = ConfigContract.load(address);
+  if (entity == null) {
+    return;
+  }
+  entity.marketOIaddress = event.params._marketOIConfigContract;
   entity.save();
 }

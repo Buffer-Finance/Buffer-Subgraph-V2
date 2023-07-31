@@ -9,6 +9,7 @@ import {
 import {
   UpdateEarlyClose,
   UpdateEarlyCloseThreshold,
+  UpdateMarketOIConfigContract,
   UpdateMaxPeriod,
   UpdateMinFee,
   UpdateMinPeriod,
@@ -33,6 +34,7 @@ import {
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
+  _handleUpdateOiconfigContract,
   _handleUpdatePlatformFee,
 } from "./configContractHandlers";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
@@ -103,4 +105,10 @@ export function handleUpdateEarlyCloseThreshold(
 
 export function handleUpdateEarlyClose(event: UpdateEarlyClose): void {
   _handleUpdateEarlyClose(event);
+}
+
+export function handleUpdateOiconfigContract(
+  event: UpdateMarketOIConfigContract
+): void {
+  _handleUpdateOiconfigContract(event);
 }

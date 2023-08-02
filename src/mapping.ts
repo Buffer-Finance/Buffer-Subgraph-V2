@@ -13,7 +13,7 @@ import {
   Profit,
   Loss,
 } from "../generated/BinaryPool/BinaryPool";
-import { USDC } from "../generated/USDC/USDC";
+import { USDC } from "../generated/BinaryPool/USDC";
 import {
   InitiateTrade,
   CancelTrade,
@@ -258,22 +258,20 @@ export function handleUpdateReferral(event: UpdateReferral): void {
     let referrer = event.params.referrer;
 
     let userReferralData = _loadOrCreateReferralData(user);
-    userReferralData.totalDiscountAvailed = userReferralData.totalDiscountAvailed.plus(
-      event.params.rebate
-    );
-    userReferralData.totalTradingVolume = userReferralData.totalTradingVolume.plus(
-      event.params.totalFee
-    );
+    userReferralData.totalDiscountAvailed =
+      userReferralData.totalDiscountAvailed.plus(event.params.rebate);
+    userReferralData.totalTradingVolume =
+      userReferralData.totalTradingVolume.plus(event.params.totalFee);
     userReferralData.save();
 
     let referrerReferralData = _loadOrCreateReferralData(referrer);
     referrerReferralData.totalTradesReferred += 1;
-    referrerReferralData.totalVolumeOfReferredTrades = referrerReferralData.totalVolumeOfReferredTrades.plus(
-      event.params.totalFee
-    );
-    referrerReferralData.totalRebateEarned = referrerReferralData.totalRebateEarned.plus(
-      event.params.referrerFee
-    );
+    referrerReferralData.totalVolumeOfReferredTrades =
+      referrerReferralData.totalVolumeOfReferredTrades.plus(
+        event.params.totalFee
+      );
+    referrerReferralData.totalRebateEarned =
+      referrerReferralData.totalRebateEarned.plus(event.params.referrerFee);
     referrerReferralData.save();
 
     let dayID = _getDayId(event.block.timestamp);
@@ -390,8 +388,12 @@ export function handleLoss(event: Loss): void {
 }
 
 export function handlePause(event: Pause): void {
-  let isPaused = event.params.isPaused;
-  let optionContract = _loadOrCreateOptionContractEntity(event.address);
-  optionContract.isPaused = isPaused;
-  optionContract.save();
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  if (routerContract.contractRegistry(event.address) == true) {
+    let isPaused = event.params.isPaused;
+
+    let optionContract = _loadOrCreateOptionContractEntity(event.address);
+    optionContract.isPaused = isPaused;
+    optionContract.save();
+  }
 }

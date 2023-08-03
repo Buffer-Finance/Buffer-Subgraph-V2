@@ -14,6 +14,7 @@ import {
   UpdateMinFee,
   UpdateMinPeriod,
   UpdatePlatformFee,
+  UpdatePoolOIConfigContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import {
   _handleCreate,
@@ -36,6 +37,7 @@ import {
   _handleUpdateMinPeriod,
   _handleUpdateOiconfigContract,
   _handleUpdatePlatformFee,
+  _handleUpdatePoolOIContract,
 } from "./configContractHandlers";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -111,4 +113,9 @@ export function handleUpdateOiconfigContract(
   event: UpdateMarketOIConfigContract
 ): void {
   _handleUpdateOiconfigContract(event);
+}
+export function handleUpdatePoolOIContract(
+  event: UpdatePoolOIConfigContract
+): void {
+  _handleUpdatePoolOIContract(event);
 }

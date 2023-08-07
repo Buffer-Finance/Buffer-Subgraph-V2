@@ -9,6 +9,7 @@ import {
 import {
   UpdateEarlyClose,
   UpdateEarlyCloseThreshold,
+  UpdateIV,
   UpdateMarketOIConfigContract,
   UpdateMaxPeriod,
   UpdateMinFee,
@@ -32,6 +33,7 @@ import {
   _handleCreateOptionsContract,
   _handleUpdateEarlyClose,
   _handleUpdateEarlyCloseThreshold,
+  _handleUpdateIV,
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
@@ -118,4 +120,8 @@ export function handleUpdatePoolOIContract(
   event: UpdatePoolOIConfigContract
 ): void {
   _handleUpdatePoolOIContract(event);
+}
+
+export function handleUpdateIV(event: UpdateIV): void {
+  _handleUpdateIV(event);
 }

@@ -37,6 +37,7 @@ type ConfigContract @entity {
   isEarlyCloseEnabled: Boolean!
   marketOIaddress: Bytes!
   poolOIaddress: Bytes!
+  IV:BigInt!
 }
 
 # type PoolContract @entity{

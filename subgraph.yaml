@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferConfig
-      startBlock: 29936199
+      startBlock: 32910610 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -35,13 +35,15 @@ dataSources:
           handler: handleUpdateOiconfigContract
         - event: UpdatePoolOIConfigContract(address)
           handler: handleUpdatePoolOIContract
+        - event: UpdateIV(uint256)
+          handler: handleUpdateIV
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 29936199
+      startBlock: 32910610 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -78,7 +80,7 @@ dataSources:
     source:
       address: "0x4fdc32a6588612589020F1dd7F106f0Ac8F8Fe6e"
       abi: BufferRouter
-      startBlock: 29936199
+      startBlock: 32910610 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -100,7 +102,7 @@ dataSources:
     source:
       address: "0xB0BA28f15Ebc9685ec89Cbe8C5E6e960d14f488b"
       abi: AccountRegistrar
-      startBlock: 29936199
+      startBlock: 32910610 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

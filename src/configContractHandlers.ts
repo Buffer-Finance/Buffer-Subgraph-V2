@@ -13,6 +13,7 @@ import {
   UpdateEarlyCloseThreshold,
   UpdateMarketOIConfigContract,
   UpdatePoolOIConfigContract,
+  UpdateIV,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { Address } from "@graphprotocol/graph-ts";
@@ -58,6 +59,7 @@ export function _handleCreateOptionsContract(
     entity.marketOIaddress = Address.fromString(zeroAddress);
     entity.poolOIaddress = Address.fromString(zeroAddress);
     entity.earlyCloseThreshold = ZERO;
+    entity.IV = ZERO;
     entity.save();
 
     const optionContractInstance =
@@ -152,5 +154,15 @@ export function _handleUpdatePoolOIContract(
     return;
   }
   entity.poolOIaddress = event.params._poolOIConfigContract;
+  entity.save();
+}
+
+export function _handleUpdateIV(event: UpdateIV): void {
+  const address = event.address;
+  const entity = ConfigContract.load(address);
+  if (entity == null) {
+    return;
+  }
+  entity.IV = event.params._iv;
   entity.save();
 }

@@ -23,7 +23,6 @@ import {
   _handleInitiateTrade,
 } from "./routerContractHandlers";
 import { _handleChangeInPool } from "./poolContractHandlers";
-import { SetFeeProtocol } from "../generated/UniswapPool/UniswapPool";
 import { _updateNFTMetadata } from "./core";
 import {
   TokensLazyMinted,
@@ -43,7 +42,7 @@ import {
   Provide,
   Withdraw,
   Profit,
-  Loss
+  Loss,
 } from "../generated/BinaryPool/BinaryPool";
 
 export function handleInitiateTrade(event: InitiateTrade): void {

@@ -1,5 +1,5 @@
 import { ARB_UNISWAP_POOL_CONTRACT, BFR_UNISWAP_POOL_CONTRACT } from "./config";
-import { UniswapPool } from "../generated/UniswapPool/UniswapPool";
+import { UniswapPool } from "../generated/BufferBinaryOptions/UniswapPool";
 import { BigInt, Address } from "@graphprotocol/graph-ts";
 
 export function convertARBToUSDC(amount: BigInt): BigInt {

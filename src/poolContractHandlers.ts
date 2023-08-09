@@ -1,7 +1,7 @@
 import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
 import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import { _loadOrCreatePoolStat } from "./initialize";
-import { USDC } from "../generated/USDC/USDC";
+import { USDC } from "../generated/BinaryPool/USDC";
 import {
   USDC_ADDRESS,
   ARB_POOL_CONTRACT,

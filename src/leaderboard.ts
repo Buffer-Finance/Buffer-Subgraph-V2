@@ -19,7 +19,10 @@ export function updateLeaderboards(
   isUSDC: boolean,
   netPnL: BigInt,
   arbNetPnL: BigInt,
-  usdcNetPnL: BigInt
+  usdcNetPnL: BigInt,
+  bfrNetPnL: BigInt,
+  isBFR: boolean,
+  bfrVolume: BigInt
 ): void {
   _updateDailyLeaderboard(totalFee, timestamp, user, isExercised);
   _updateWeeklyLeaderboard(
@@ -33,7 +36,10 @@ export function updateLeaderboards(
     isARB,
     netPnL,
     arbNetPnL,
-    usdcNetPnL
+    usdcNetPnL,
+    bfrNetPnL,
+    isBFR,
+    bfrVolume
   );
 }
 
@@ -48,9 +54,8 @@ export function updateDailyAndWeeklyRevenue(
   let dayID = _getDayId(timestamp);
   let dailyRevenueAndFee = _loadOrCreateDailyRevenueAndFee(dayID, timestamp);
   dailyRevenueAndFee.totalFee = dailyRevenueAndFee.totalFee.plus(totalFee);
-  dailyRevenueAndFee.settlementFee = dailyRevenueAndFee.settlementFee.plus(
-    settlementFee
-  );
+  dailyRevenueAndFee.settlementFee =
+    dailyRevenueAndFee.settlementFee.plus(settlementFee);
   dailyRevenueAndFee.save();
 
   // Weekly
@@ -60,9 +65,8 @@ export function updateDailyAndWeeklyRevenue(
     token
   );
   weeklyFeeAndRevenue.totalFee = weeklyFeeAndRevenue.totalFee.plus(totalFee);
-  weeklyFeeAndRevenue.settlementFee = weeklyFeeAndRevenue.settlementFee.plus(
-    settlementFee
-  );
+  weeklyFeeAndRevenue.settlementFee =
+    weeklyFeeAndRevenue.settlementFee.plus(settlementFee);
   weeklyFeeAndRevenue.save();
 }
 
@@ -95,16 +99,18 @@ function _updateWeeklyLeaderboard(
   isARB: boolean,
   netPnL: BigInt,
   arbNetPnL: BigInt,
-  usdcNetPnL: BigInt
+  usdcNetPnL: BigInt,
+  bfrNetPnL: BigInt,
+  isBFR: boolean,
+  bfrVolume: BigInt
 ): void {
   let weeklyLeaderboardEntity = _loadOrCreateWeeklyLeaderboardEntity(
     _getWeekId(timestamp),
     user
   );
 
-  weeklyLeaderboardEntity.volume = weeklyLeaderboardEntity.volume.plus(
-    totalFee
-  );
+  weeklyLeaderboardEntity.volume =
+    weeklyLeaderboardEntity.volume.plus(totalFee);
   weeklyLeaderboardEntity.totalTrades += 1;
   weeklyLeaderboardEntity.netPnL = isExercised
     ? weeklyLeaderboardEntity.netPnL.plus(netPnL)
@@ -116,24 +122,43 @@ function _updateWeeklyLeaderboard(
     (weeklyLeaderboardEntity.tradesWon * 100000) /
     weeklyLeaderboardEntity.totalTrades;
 
-  weeklyLeaderboardEntity.arbVolume = weeklyLeaderboardEntity.arbVolume.plus(
-    arbVolume
-  );
+  weeklyLeaderboardEntity.arbVolume =
+    weeklyLeaderboardEntity.arbVolume.plus(arbVolume);
+
+  weeklyLeaderboardEntity.bfrVolume =
+    weeklyLeaderboardEntity.bfrVolume.plus(bfrVolume);
+
   weeklyLeaderboardEntity.arbNetPnL = isExercised
     ? weeklyLeaderboardEntity.arbNetPnL.plus(arbNetPnL)
     : weeklyLeaderboardEntity.arbNetPnL.minus(arbNetPnL);
+
+  weeklyLeaderboardEntity.bfrNetPnL = isExercised
+    ? weeklyLeaderboardEntity.bfrNetPnL.plus(bfrNetPnL)
+    : weeklyLeaderboardEntity.bfrNetPnL.minus(bfrNetPnL);
+
   let arbTotalTrades = isARB ? 1 : 0;
+  let bfrTotalTrades = isBFR ? 1 : 0;
+
   weeklyLeaderboardEntity.arbTotalTrades += arbTotalTrades;
+  weeklyLeaderboardEntity.bfrTotalTrades += bfrTotalTrades;
+
   weeklyLeaderboardEntity.arbTradesWon += isExercised ? arbTotalTrades : 0;
+  weeklyLeaderboardEntity.bfrTradesWon += isExercised ? bfrTotalTrades : 0;
+
   if (weeklyLeaderboardEntity.arbTotalTrades > 0) {
     weeklyLeaderboardEntity.arbWinRate =
       (weeklyLeaderboardEntity.arbTradesWon * 100000) /
       weeklyLeaderboardEntity.arbTotalTrades;
   }
 
-  weeklyLeaderboardEntity.usdcVolume = weeklyLeaderboardEntity.usdcVolume.plus(
-    usdcVolume
-  );
+  if (weeklyLeaderboardEntity.bfrTotalTrades > 0) {
+    weeklyLeaderboardEntity.bfrWinRate =
+      (weeklyLeaderboardEntity.bfrTradesWon * 100000) /
+      weeklyLeaderboardEntity.bfrTotalTrades;
+  }
+
+  weeklyLeaderboardEntity.usdcVolume =
+    weeklyLeaderboardEntity.usdcVolume.plus(usdcVolume);
   weeklyLeaderboardEntity.usdcNetPnL = isExercised
     ? weeklyLeaderboardEntity.usdcNetPnL.plus(usdcNetPnL)
     : weeklyLeaderboardEntity.usdcNetPnL.minus(usdcNetPnL);

@@ -15,7 +15,7 @@ import {
   updateDashboardOverviewStats,
   logOpenInterest,
 } from "./dashboard";
-import { convertARBToUSDC } from "./convertToUSDC";
+import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { updateOptionContractData } from "./core";
 
 export function updateOpeningStats(
@@ -121,6 +121,58 @@ export function updateOpeningStats(
 
     logOpenInterest(token, totalFee, true);
     logOpenInterest("total", totalFeeUSDC, true);
+  } else if (token == "BFR") {
+    let totalFeeUSDC = convertBFRToUSDC(totalFee);
+    let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+
+    // Dashboard Page - overview
+    updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
+    updateDashboardOverviewStats(totalFeeUSDC, settlementFeeUSDC, "total");
+
+    // Update daily and weekly volume and fees
+    updateDailyAndWeeklyRevenue(
+      totalFeeUSDC,
+      timestamp,
+      settlementFeeUSDC,
+      "total"
+    );
+    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
+
+    // Dashboard Page - markets table
+    logVolumeAndSettlementFeePerContract(
+      _getHourId(timestamp),
+      "hourly",
+      timestamp,
+      contractAddress,
+      token,
+      totalFee,
+      settlementFee
+    );
+    // Dashboard Page - markets table
+    logVolumeAndSettlementFeePerContract(
+      _getHourId(timestamp),
+      "hourly",
+      timestamp,
+      contractAddress,
+      "total",
+      totalFeeUSDC,
+      settlementFeeUSDC
+    );
+
+    // Update daily & total fees
+    storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO);
+
+    // Update daily & total volume
+    logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO);
+
+    // Update daily & total open interest
+    updateOpenInterest(timestamp, true, totalFeeUSDC);
+
+    // Updates referral & NFT discounts tracking
+    saveSettlementFeeDiscount(timestamp, totalFeeUSDC, settlementFeeUSDC);
+
+    logOpenInterest(token, totalFee, true);
+    logOpenInterest("total", totalFeeUSDC, true);
   }
 }
 
@@ -164,7 +216,10 @@ export function updateClosingStats(
       true,
       netPnL,
       ZERO,
-      netPnL
+      netPnL,
+      ZERO,
+      false,
+      ZERO
     );
     updateOptionContractData(
       false,
@@ -207,7 +262,56 @@ export function updateClosingStats(
       false,
       netPnLUSDC,
       netPnL,
+      ZERO,
+      ZERO,
+      false,
       ZERO
+    );
+    updateOptionContractData(
+      false,
+      totalFee,
+      Address.fromBytes(contractAddress)
+    );
+    logOpenInterest(token, totalFee, false);
+    logOpenInterest("total", totalFeeUSDC, false);
+  } else if (token == "BFR") {
+    let totalFeeUSDC = convertBFRToUSDC(totalFee);
+    let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+    let netPnLUSDC = convertBFRToUSDC(netPnL);
+
+    // Update daily & total open interest
+    updateOpenInterest(timestamp, false, totalFeeUSDC);
+    // Update daily & total PnL for stats page
+    storePnl(
+      timestamp,
+      totalFeeUSDC.minus(settlementFeeUSDC),
+      isExercised,
+      ZERO,
+      totalFeeUSDC.minus(settlementFeeUSDC)
+    );
+    // Update daily & total PnL per contracts for stats page
+    storePnlPerContract(
+      timestamp,
+      totalFeeUSDC.minus(settlementFeeUSDC),
+      isExercised,
+      contractAddress
+    );
+    // Update Leaderboards
+    updateLeaderboards(
+      totalFeeUSDC,
+      timestamp,
+      user,
+      isExercised,
+      ZERO,
+      false,
+      ZERO,
+      false,
+      netPnLUSDC,
+      ZERO,
+      ZERO,
+      netPnL,
+      true,
+      totalFee
     );
     updateOptionContractData(
       false,

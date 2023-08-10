@@ -14,8 +14,13 @@ import {
   _loadOrCreateReferralData,
 } from "./initialize";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { convertARBToUSDC } from "./convertToUSDC";
-import { State, RouterAddress, ARBITRUM_SOLANA_ADDRESS } from "./config";
+import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
+import {
+  State,
+  RouterAddress,
+  ARBITRUM_SOLANA_ADDRESS,
+  V2_RouterAddress,
+} from "./config";
 import { updateOptionContractData } from "./core";
 import { updateOpeningStats, updateClosingStats } from "./aggregate";
 import { referralAndNFTDiscountStats } from "./stats";
@@ -25,9 +30,13 @@ import { logUser } from "./core";
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
   if (
-    routerContract.try_contractRegistry(contractAddress).reverted == false &&
-    routerContract.try_contractRegistry(contractAddress).value == true
+    routerContract.contractRegistry(contractAddress) == true ||
+    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true)
   ) {
     logUser(event.block.timestamp, event.params.account);
     let optionID = event.params.id;
@@ -42,6 +51,12 @@ export function _handleCreate(event: Create): void {
       tokenReferrenceID = "ARB";
     } else if (poolToken == "USDC") {
       tokenReferrenceID = "USDC";
+    } else if (poolToken == "BFR") {
+      tokenReferrenceID = "BFR";
+    } else if (poolToken == "V2_USDC") {
+      tokenReferrenceID = "USDC";
+    } else if (poolToken == "V2_ARB") {
+      tokenReferrenceID = "ARB";
     }
     let userOptionData = _loadOrCreateOptionDataEntity(
       optionID,
@@ -73,9 +88,14 @@ export function _handleCreate(event: Create): void {
 export function _handleExpire(event: Expire): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+
   if (
-    (routerContract.try_contractRegistry(contractAddress).reverted == false &&
-      routerContract.try_contractRegistry(contractAddress).value) ||
+    routerContract.contractRegistry(contractAddress) == true ||
+    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true) ||
     contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
   ) {
     let userOptionData = _loadOrCreateOptionDataEntity(
@@ -103,9 +123,13 @@ export function _handleExpire(event: Expire): void {
 export function _handleExercise(event: Exercise): void {
   let contractAddress = event.address;
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
   if (
-    (routerContract.try_contractRegistry(contractAddress).reverted == false &&
-      routerContract.try_contractRegistry(contractAddress).value) ||
+    routerContract.contractRegistry(contractAddress) == true ||
+    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true) ||
     contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
   ) {
     let userOptionData = _loadOrCreateOptionDataEntity(
@@ -133,9 +157,13 @@ export function _handleExercise(event: Exercise): void {
 
 export function _handleUpdateReferral(event: UpdateReferral): void {
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
   if (
-    routerContract.try_contractRegistry(event.address).reverted == false &&
-    routerContract.try_contractRegistry(event.address).value == true
+    routerContract.contractRegistry(event.address) == true ||
+    (v2RouterContract.try_contractRegistry(event.address).reverted == false &&
+      v2RouterContract.try_contractRegistry(event.address).value == true)
   ) {
     let optionContractEntity = _loadOrCreateOptionContractEntity(event.address);
     let userReferralData = _loadOrCreateReferralData(event.params.user);
@@ -220,15 +248,64 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
         convertARBToUSDC(event.params.rebate),
         convertARBToUSDC(event.params.referrerFee)
       );
+    } else if (optionContractEntity.token == "BFR") {
+      userReferralData.totalDiscountAvailed =
+        userReferralData.totalDiscountAvailed.plus(
+          convertBFRToUSDC(event.params.rebate)
+        );
+      userReferralData.totalDiscountAvailedBFR =
+        userReferralData.totalDiscountAvailedBFR.plus(event.params.rebate);
+      userReferralData.totalTradingVolume =
+        userReferralData.totalTradingVolume.plus(
+          convertBFRToUSDC(event.params.totalFee)
+        );
+      userReferralData.totalTradingVolumeBFR =
+        userReferralData.totalTradingVolumeBFR.plus(event.params.totalFee);
+      userReferralData.save();
+
+      let referrerReferralData = _loadOrCreateReferralData(
+        event.params.referrer
+      );
+      referrerReferralData.totalTradesReferred += 1;
+      referrerReferralData.totalTradesReferredBFR += 1;
+
+      referrerReferralData.totalVolumeOfReferredTrades =
+        referrerReferralData.totalVolumeOfReferredTrades.plus(
+          convertBFRToUSDC(event.params.totalFee)
+        );
+      referrerReferralData.totalVolumeOfReferredTradesBFR =
+        referrerReferralData.totalVolumeOfReferredTradesBFR.plus(
+          event.params.totalFee
+        );
+      referrerReferralData.totalRebateEarned =
+        referrerReferralData.totalRebateEarned.plus(
+          convertBFRToUSDC(event.params.referrerFee)
+        );
+      referrerReferralData.totalRebateEarnedBFR =
+        referrerReferralData.totalRebateEarnedBFR.plus(
+          event.params.referrerFee
+        );
+      referrerReferralData.save();
+
+      referralAndNFTDiscountStats(
+        event.block.timestamp,
+        convertBFRToUSDC(event.params.rebate),
+        convertBFRToUSDC(event.params.referrerFee)
+      );
     }
   }
 }
 
 export function _handlePause(event: Pause): void {
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+
   if (
-    routerContract.try_contractRegistry(event.address).reverted == false &&
-    routerContract.try_contractRegistry(event.address).value == true
+    routerContract.contractRegistry(event.address) == true ||
+    (v2RouterContract.try_contractRegistry(event.address).reverted == false &&
+      v2RouterContract.try_contractRegistry(event.address).value == true)
   ) {
     let isPaused = event.params.isPaused;
     let optionContract = _loadOrCreateOptionContractEntity(event.address);

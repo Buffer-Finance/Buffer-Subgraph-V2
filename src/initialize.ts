@@ -19,7 +19,14 @@ import {
 } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { ARB_POOL_CONTRACT, USDC_POOL_CONTRACT } from "./config";
+import {
+  ARB_POOL_CONTRACT,
+  USDC_POOL_CONTRACT,
+  BFR_POOL_CONTRACT,
+  USDC_POL_POOL_CONTRACT,
+  V2_ARB_POOL_CONTRACT,
+  V2_USDC_POOL_CONTRACT,
+} from "./config";
 
 export const ZERO = BigInt.fromI32(0);
 
@@ -53,26 +60,30 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.category = -1;
     optionContract.asset = optionContractInstance.assetPair();
     let optionContractPool = optionContractInstance.pool();
-    if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
+    if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
+      optionContract.token = "USDC";
+      optionContract.pool = "USDC_POL";
+    } else if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
       optionContract.token = "ARB";
       optionContract.pool = "ARB";
     } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
       optionContract.token = "USDC";
       optionContract.pool = "USDC";
-    } else {
+    } else if (optionContractPool == Address.fromString(BFR_POOL_CONTRACT)) {
+      optionContract.token = "BFR";
+      optionContract.pool = "BFR";
+    } else if (optionContractPool == Address.fromString(V2_ARB_POOL_CONTRACT)) {
+      optionContract.token = "ARB";
+      optionContract.pool = "V2_ARB";
+    } else if (
+      optionContractPool == Address.fromString(V2_USDC_POOL_CONTRACT)
+    ) {
       optionContract.token = "USDC";
-      optionContract.pool = "USDC";
+      optionContract.pool = "V2_USDC";
+    } else {
+      optionContract.token = "";
+      optionContract.pool = "";
     }
-    // optionContract.payoutForDown = calculatePayout(
-    //   BigInt.fromI32(
-    //     optionContractInstance.baseSettlementFeePercentageForBelow()
-    //   )
-    // );
-    // optionContract.payoutForUp = calculatePayout(
-    //   BigInt.fromI32(
-    //     optionContractInstance.baseSettlementFeePercentageForAbove()
-    //   )
-    // );
     optionContract.save();
   }
   return optionContract as OptionContract;
@@ -99,6 +110,10 @@ export function _loadOrCreateTradingStatEntity(
     entity.lossARB = ZERO;
     entity.profitCumulativeARB = ZERO;
     entity.lossCumulativeARB = ZERO;
+    entity.profitBFR = ZERO;
+    entity.lossBFR = ZERO;
+    entity.profitCumulativeBFR = ZERO;
+    entity.lossCumulativeBFR = ZERO;
     entity.openInterest = ZERO;
   }
   entity.timestamp = timestamp;
@@ -119,16 +134,20 @@ export function _loadOrCreateAssetTradingStatEntity(
     entity.profit = ZERO;
     entity.profitARB = ZERO;
     entity.profitUSDC = ZERO;
+    entity.profitBFR = ZERO;
     entity.loss = ZERO;
     entity.lossUSDC = ZERO;
     entity.lossARB = ZERO;
+    entity.lossBFR = ZERO;
     entity.contractAddress = contractAddress;
     entity.profitCumulative = ZERO;
     entity.profitCumulativeARB = ZERO;
     entity.profitCumulativeUSDC = ZERO;
+    entity.profitCumulativeBFR = ZERO;
     entity.lossCumulative = ZERO;
     entity.lossCumulativeARB = ZERO;
     entity.lossCumulativeUSDC = ZERO;
+    entity.lossCumulativeBFR = ZERO;
     entity.periodID = periodID;
   }
   entity.timestamp = timestamp;
@@ -195,6 +214,11 @@ export function _loadOrCreateWeeklyLeaderboardEntity(
     entity.usdcTotalTrades = 0;
     entity.usdcTradesWon = 0;
     entity.usdcWinRate = 0;
+    entity.bfrVolume = ZERO;
+    entity.bfrNetPnL = ZERO;
+    entity.bfrTotalTrades = 0;
+    entity.bfrTradesWon = 0;
+    entity.bfrWinRate = 0;
     entity.save();
   }
   return entity as WeeklyLeaderboard;
@@ -231,6 +255,7 @@ export function _loadOrCreateVolumeStat(
     entity.amount = ZERO;
     entity.VolumeUSDC = ZERO;
     entity.VolumeARB = ZERO;
+    entity.VolumeBFR = ZERO;
     entity.save();
   }
   return entity as VolumeStat;
@@ -249,6 +274,7 @@ export function _loadOrCreateFeeStat(
     entity.fee = ZERO;
     entity.feeARB = ZERO;
     entity.feeUSDC = ZERO;
+    entity.feeBFR = ZERO;
     entity.save();
   }
   return entity as FeeStat;
@@ -262,18 +288,23 @@ export function _loadOrCreateReferralData(user: Bytes): ReferralData {
     userReferralData.totalDiscountAvailed = ZERO;
     userReferralData.totalDiscountAvailedARB = ZERO;
     userReferralData.totalDiscountAvailedUSDC = ZERO;
+    userReferralData.totalDiscountAvailedBFR = ZERO;
     userReferralData.totalRebateEarned = ZERO;
     userReferralData.totalRebateEarnedUSDC = ZERO;
     userReferralData.totalRebateEarnedARB = ZERO;
+    userReferralData.totalRebateEarnedBFR = ZERO;
     userReferralData.totalTradesReferred = 0;
     userReferralData.totalTradesReferredUSDC = 0;
     userReferralData.totalTradesReferredARB = 0;
+    userReferralData.totalTradesReferredBFR = 0;
     userReferralData.totalTradingVolume = ZERO;
     userReferralData.totalTradingVolumeARB = ZERO;
     userReferralData.totalTradingVolumeUSDC = ZERO;
+    userReferralData.totalTradingVolumeBFR = ZERO;
     userReferralData.totalVolumeOfReferredTrades = ZERO;
     userReferralData.totalVolumeOfReferredTradesUSDC = ZERO;
     userReferralData.totalVolumeOfReferredTradesARB = ZERO;
+    userReferralData.totalVolumeOfReferredTradesBFR = ZERO;
 
     userReferralData.save();
   }

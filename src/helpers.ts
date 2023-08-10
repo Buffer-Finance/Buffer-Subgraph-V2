@@ -6,11 +6,16 @@ export function _getDayId(timestamp: BigInt): string {
 }
 
 export function _getWeekId(timestamp: BigInt): string {
-  let weekTimestamp = (timestamp.toI32() - 4 * 86400 - 16 * 3600) / (86400 * 7);
+  let weekTimestamp = (timestamp.toI32() - 6 * 86400 - 16 * 3600) / (86400 * 7);
   return weekTimestamp.toString();
 }
 
 export function _getHourId(timestamp: BigInt): string {
   let hourTimestamp = (timestamp.toI32() - 16 * 3600) / 3600;
   return hourTimestamp.toString();
+}
+
+export function _getLeaderboardWeekId(timestamp: BigInt): string {
+  let weekTimestamp = (timestamp.toI32() - 4 * 86400 - 16 * 3600) / (86400 * 7);
+  return weekTimestamp.toString();
 }

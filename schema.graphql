@@ -150,6 +150,11 @@ type WeeklyLeaderboard @entity {
   usdcTotalTrades: Int!
   usdcTradesWon: Int!
   usdcWinRate: Int!
+  bfrVolume: BigInt!
+  bfrNetPnL: BigInt!
+  bfrTotalTrades: Int!
+  bfrTradesWon: Int!
+  bfrWinRate: Int!
 }
 
 type DashboardStat @entity {
@@ -167,6 +172,7 @@ type FeeStat @entity {
   timestamp: BigInt!
   feeARB: BigInt!
   feeUSDC: BigInt!
+  feeBFR: BigInt!
 }
 
 type VolumeStat @entity {
@@ -176,6 +182,7 @@ type VolumeStat @entity {
   timestamp: BigInt!
   VolumeARB: BigInt!
   VolumeUSDC: BigInt!
+  VolumeBFR: BigInt!
 }
 
 type ReferralData @entity {
@@ -184,18 +191,23 @@ type ReferralData @entity {
   totalTradesReferred: Int!
   totalTradesReferredARB: Int!
   totalTradesReferredUSDC: Int!
+  totalTradesReferredBFR: Int!
   totalVolumeOfReferredTrades: BigInt!
   totalVolumeOfReferredTradesARB: BigInt!
   totalVolumeOfReferredTradesUSDC: BigInt!
+  totalVolumeOfReferredTradesBFR: BigInt!
   totalRebateEarned: BigInt!
   totalRebateEarnedARB: BigInt!
   totalRebateEarnedUSDC: BigInt!
+  totalRebateEarnedBFR: BigInt!
   totalTradingVolume: BigInt!
   totalTradingVolumeARB: BigInt!
   totalTradingVolumeUSDC: BigInt!
+  totalTradingVolumeBFR: BigInt!
   totalDiscountAvailed: BigInt!
   totalDiscountAvailedARB: BigInt!
   totalDiscountAvailedUSDC: BigInt!
+  totalDiscountAvailedBFR: BigInt!
 }
 
 type TradingStat @entity {
@@ -203,15 +215,19 @@ type TradingStat @entity {
   profit: BigInt!
   profitUSDC: BigInt!
   profitARB: BigInt!
+  profitBFR: BigInt!
   loss: BigInt!
   lossUSDC: BigInt!
   lossARB: BigInt!
+  lossBFR: BigInt!
   profitCumulative: BigInt!
   profitCumulativeUSDC: BigInt!
   profitCumulativeARB: BigInt!
+  profitCumulativeBFR: BigInt!
   lossCumulative: BigInt!
   lossCumulativeUSDC: BigInt!
   lossCumulativeARB: BigInt!
+  lossCumulativeBFR: BigInt!
   openInterest: BigInt!
   timestamp: BigInt!
   period: Period!
@@ -239,16 +255,20 @@ type AssetTradingStat @entity {
   periodID: String!
   profit: BigInt!
   profitARB: BigInt!
+  profitBFR: BigInt!
   profitUSDC: BigInt!
   loss: BigInt!
   lossARB: BigInt!
+  lossBFR: BigInt!
   lossUSDC: BigInt!
   profitCumulative: BigInt!
   profitCumulativeUSDC: BigInt!
   profitCumulativeARB: BigInt!
+  profitCumulativeBFR: BigInt!
   lossCumulative: BigInt!
   lossCumulativeUSDC: BigInt!
   lossCumulativeARB: BigInt!
+  lossCumulativeBFR: BigInt!
   timestamp: BigInt!
   period: Period!
 }

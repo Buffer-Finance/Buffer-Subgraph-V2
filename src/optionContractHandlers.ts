@@ -45,18 +45,25 @@ export function _handleCreate(event: Create): void {
     let totalFee = event.params.totalFee;
     let poolToken = updateOptionContractData(true, totalFee, contractAddress);
     let tokenReferrenceID = "";
+    let poolReferrenceID = "";
     if (poolToken == "USDC_POL") {
       tokenReferrenceID = "USDC";
+      poolReferrenceID = "USDC_POL";
     } else if (poolToken == "ARB") {
       tokenReferrenceID = "ARB";
+      poolReferrenceID = "ARB";
     } else if (poolToken == "USDC") {
       tokenReferrenceID = "USDC";
+      poolReferrenceID = "USDC";
     } else if (poolToken == "BFR") {
       tokenReferrenceID = "BFR";
+      poolReferrenceID = "BFR";
     } else if (poolToken == "V2_USDC") {
       tokenReferrenceID = "USDC";
+      poolReferrenceID = "USDC";
     } else if (poolToken == "V2_ARB") {
       tokenReferrenceID = "ARB";
+      poolReferrenceID = "ARB";
     }
     let userOptionData = _loadOrCreateOptionDataEntity(
       optionID,
@@ -71,7 +78,7 @@ export function _handleCreate(event: Create): void {
     userOptionData.creationTime = optionData.value7;
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.depositToken = tokenReferrenceID;
-    userOptionData.poolToken = poolToken;
+    userOptionData.poolToken = poolReferrenceID;
     userOptionData.save();
 
     updateOpeningStats(

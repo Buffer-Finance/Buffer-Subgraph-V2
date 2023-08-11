@@ -26,27 +26,27 @@ export function updateOptionContractData(
 ): string {
   let optionContractData = _loadOrCreateOptionContractEntity(contractAddress);
   let poolToken = optionContractData.pool;
-  let poolAddress = Address.fromString(ADDRESS_ZERO);
-  let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
+  // let poolAddress = Address.fromString(ADDRESS_ZERO);
+  // let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
   optionContractData.tradeCount += 1;
   optionContractData.volume = optionContractData.volume.plus(totalFee);
   optionContractData.openInterest = increaseInOpenInterest
     ? optionContractData.openInterest.plus(totalFee)
     : optionContractData.openInterest.minus(totalFee);
   optionContractData.currentUtilization = ZERO;
-  if (poolToken == "USDC_POL") {
-    poolAddress = Address.fromString(USDC_POL_POOL_CONTRACT);
-  } else if (poolToken == "ARB") {
-    poolAddress = Address.fromString(ARB_POOL_CONTRACT);
-  } else if (poolToken == "USDC") {
-    poolAddress = Address.fromString(USDC_POOL_CONTRACT);
-  } else if (poolToken == "BFR") {
-    poolAddress = Address.fromString(BFR_POOL_CONTRACT);
-  } else if (poolToken == "V2_ARB") {
-    poolAddress = Address.fromString(V2_ARB_POOL_CONTRACT);
-  } else if (poolToken == "V2_USDC") {
-    poolAddress = Address.fromString(V2_USDC_POOL_CONTRACT);
-  }
+  // if (poolToken == "USDC_POL") {
+  //   poolAddress = Address.fromString(USDC_POL_POOL_CONTRACT);
+  // } else if (poolToken == "ARB") {
+  //   poolAddress = Address.fromString(ARB_POOL_CONTRACT);
+  // } else if (poolToken == "USDC") {
+  //   poolAddress = Address.fromString(USDC_POOL_CONTRACT);
+  // } else if (poolToken == "BFR") {
+  //   poolAddress = Address.fromString(BFR_POOL_CONTRACT);
+  // } else if (poolToken == "V2_ARB") {
+  //   poolAddress = Address.fromString(V2_ARB_POOL_CONTRACT);
+  // } else if (poolToken == "V2_USDC") {
+  //   poolAddress = Address.fromString(V2_USDC_POOL_CONTRACT);
+  // }
 
   optionContractData.save();
   return poolToken;

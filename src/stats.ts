@@ -65,7 +65,6 @@ export function updateOpenInterest(
   totalEntity.openInterest = increaseInOpenInterest
     ? totalEntity.openInterest.plus(amount)
     : totalEntity.openInterest.minus(amount);
-
   totalEntity.save();
   let dayID = _getDayId(timestamp);
   let dailyEntity = _loadOrCreateTradingStatEntity(dayID, "daily", timestamp);
@@ -86,16 +85,17 @@ export function storePnl(
 
   if (isProfit) {
     totalEntity.profitCumulative = totalEntity.profitCumulative.plus(pnl);
-    totalEntity.profitCumulativeUSDC = totalEntity.profitCumulativeUSDC.plus(
-      pnlUSDC
-    );
-    totalEntity.profitCumulativeARB = totalEntity.profitCumulativeARB.plus(pnlARB);
+    totalEntity.profitCumulativeUSDC =
+      totalEntity.profitCumulativeUSDC.plus(pnlUSDC);
+    totalEntity.profitCumulativeARB =
+      totalEntity.profitCumulativeARB.plus(pnlARB);
     dailyEntity.profit = dailyEntity.profit.plus(pnl);
     dailyEntity.profitUSDC = dailyEntity.profitUSDC.plus(pnlUSDC);
     dailyEntity.profitARB = dailyEntity.profitARB.plus(pnlARB);
   } else {
     totalEntity.lossCumulative = totalEntity.lossCumulative.plus(pnl);
-    totalEntity.lossCumulativeUSDC = totalEntity.lossCumulativeUSDC.plus(pnlUSDC);
+    totalEntity.lossCumulativeUSDC =
+      totalEntity.lossCumulativeUSDC.plus(pnlUSDC);
     totalEntity.lossCumulativeARB = totalEntity.lossCumulativeARB.plus(pnlARB);
     dailyEntity.loss = dailyEntity.loss.plus(pnl);
     dailyEntity.lossARB = dailyEntity.lossARB.plus(pnlARB);
@@ -184,14 +184,11 @@ export function referralAndNFTDiscountStats(
 ): void {
   let dayID = _getDayId(timestamp);
   let userRewardEntity = _loadOrCreateUserRewards(dayID, timestamp);
-  userRewardEntity.referralDiscount = userRewardEntity.referralDiscount.plus(
-    rebate
-  );
-  userRewardEntity.referralReward = userRewardEntity.referralReward.plus(
-    referrerFee
-  );
-  userRewardEntity.nftDiscount = userRewardEntity.cumulativeReward.minus(
-    rebate
-  );
+  userRewardEntity.referralDiscount =
+    userRewardEntity.referralDiscount.plus(rebate);
+  userRewardEntity.referralReward =
+    userRewardEntity.referralReward.plus(referrerFee);
+  userRewardEntity.nftDiscount =
+    userRewardEntity.cumulativeReward.minus(rebate);
   userRewardEntity.save();
 }

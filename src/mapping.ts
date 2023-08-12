@@ -23,6 +23,8 @@ import {
   _handleExercise,
   _handleUpdateReferral,
   _handlePause,
+  _handleExpireV1,
+  _handleExerciseV1,
 } from "./optionContractHandlers";
 import {
   _handleOpenTrade,
@@ -46,6 +48,10 @@ import {
   RegisterAccount,
   DeregisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
+import {
+  Expire as ExpireV1,
+  Exercise as ExerciseV1,
+} from "../generated/V1Options/V1Options";
 
 export function handleOpenTrade(event: OpenTrade): void {
   _handleOpenTrade(event);
@@ -124,4 +130,12 @@ export function handleUpdatePoolOIContract(
 
 export function handleUpdateIV(event: UpdateIV): void {
   _handleUpdateIV(event);
+}
+
+export function handleExpireV1(event: ExpireV1): void {
+  _handleExpireV1(event);
+}
+
+export function handleExerciseV1(event: ExerciseV1): void {
+  _handleExerciseV1(event);
 }

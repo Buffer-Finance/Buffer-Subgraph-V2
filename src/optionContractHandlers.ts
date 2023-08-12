@@ -26,6 +26,12 @@ import { updateOpeningStats, updateClosingStats } from "./aggregate";
 import { referralAndNFTDiscountStats } from "./stats";
 import { UserOptionData } from "../generated/schema";
 import { logUser } from "./core";
+import {
+  Expire as ExpireV1,
+  Exercise as ExerciseV1,
+  Create as Create1,
+  V1Options,
+} from "../generated/V1Options/V1Options";
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
@@ -34,9 +40,8 @@ export function _handleCreate(event: Create): void {
     Address.fromString(V2_RouterAddress)
   );
   if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-      v2RouterContract.try_contractRegistry(contractAddress).value == true)
+    v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+    v2RouterContract.try_contractRegistry(contractAddress).value == true
   ) {
     logUser(event.block.timestamp, event.params.account);
     let optionID = event.params.id;
@@ -79,6 +84,50 @@ export function _handleCreate(event: Create): void {
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.depositToken = tokenReferrenceID;
     userOptionData.poolToken = poolReferrenceID;
+    userOptionData.save();
+
+    updateOpeningStats(
+      userOptionData.depositToken,
+      event.block.timestamp,
+      totalFee,
+      userOptionData.settlementFee,
+      contractAddress,
+      userOptionData.poolToken
+    );
+  }
+
+  if (routerContract.contractRegistry(contractAddress) == true) {
+    logUser(event.block.timestamp, event.params.account);
+    let optionID = event.params.id;
+    let optionContractInstance = V1Options.bind(contractAddress);
+    let optionData = optionContractInstance.options(optionID);
+    let totalFee = event.params.totalFee;
+    let poolToken = updateOptionContractData(true, totalFee, contractAddress);
+    let tokenReferrenceID = "";
+    if (poolToken == "USDC_POL") {
+      tokenReferrenceID = "USDC";
+    } else if (poolToken == "ARB") {
+      tokenReferrenceID = "ARB";
+    } else if (poolToken == "USDC") {
+      tokenReferrenceID = "USDC";
+    } else if (poolToken == "BFR") {
+      tokenReferrenceID = "BFR";
+    }
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      optionID,
+      contractAddress
+    );
+    userOptionData.user = event.params.account;
+    userOptionData.totalFee = totalFee;
+    userOptionData.state = optionData.value0;
+    userOptionData.strike = optionData.value1;
+    userOptionData.amount = optionData.value2;
+    userOptionData.expirationTime = optionData.value5;
+    // userOptionData.isAbove = isAbove;
+    userOptionData.creationTime = optionData.value8;
+    userOptionData.settlementFee = event.params.settlementFee;
+    userOptionData.depositToken = tokenReferrenceID;
+    userOptionData.poolToken = poolToken;
     userOptionData.save();
 
     updateOpeningStats(
@@ -318,5 +367,65 @@ export function _handlePause(event: Pause): void {
     let optionContract = _loadOrCreateOptionContractEntity(event.address);
     optionContract.isPaused = isPaused;
     optionContract.save();
+  }
+}
+
+export function _handleExpireV1(event: ExpireV1): void {
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+
+  if (
+    routerContract.contractRegistry(contractAddress) == true ||
+    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
+  ) {
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      event.params.id,
+      contractAddress
+    );
+    userOptionData.state = State.expired;
+    userOptionData.expirationPrice = event.params.priceAtExpiration;
+    userOptionData.closeTime = event.block.timestamp;
+    userOptionData.save();
+
+    updateClosingStats(
+      userOptionData.depositToken,
+      userOptionData.creationTime,
+      userOptionData.totalFee,
+      userOptionData.settlementFee,
+      userOptionData.user,
+      contractAddress,
+      false,
+      userOptionData.totalFee
+    );
+  }
+}
+
+export function _handleExerciseV1(event: ExerciseV1): void {
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+
+  if (
+    routerContract.contractRegistry(contractAddress) == true ||
+    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
+  ) {
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      event.params.id,
+      contractAddress
+    );
+    userOptionData.state = State.exercised;
+    userOptionData.payout = event.params.profit;
+    userOptionData.expirationPrice = event.params.priceAtExpiration;
+    userOptionData.save();
+
+    updateClosingStats(
+      userOptionData.depositToken,
+      userOptionData.creationTime,
+      userOptionData.totalFee,
+      userOptionData.settlementFee,
+      userOptionData.user,
+      contractAddress,
+      true,
+      event.params.profit.minus(userOptionData.totalFee)
+    );
   }
 }

@@ -60,6 +60,8 @@ dataSources:
           file: ./abis/BinaryPool.json
         - name: BufferRouter
           file: ./abis/BufferRouter.json
+        - name: V1Options
+          file: ./abis/V1Options.json
       eventHandlers:
         - event: Create(indexed address,indexed uint256,uint256,uint256)
           handler: handleCreate
@@ -73,6 +75,34 @@ dataSources:
           handler: handlePause
         - event: CreateOptionsContract(address,address,address,string,string,uint8)
           handler: handleCreateOptionsContract
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: V1Options
+    network: arbitrum-goerli
+    source:
+      abi: V1Options
+      startBlock: 25576390 
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - UserOptionData
+        - OptionContract
+        - User
+        - ConfigContract
+      abis:
+        - name: V1Options
+          file: ./abis/V1Options.json
+        - name: BinaryPool
+          file: ./abis/BinaryPool.json
+        - name: BufferRouter
+          file: ./abis/BufferRouter.json
+      eventHandlers:
+        - event: Expire(indexed uint256,uint256,uint256)
+          handler: handleExpireV1
+        - event: Exercise(indexed address,indexed uint256,uint256,uint256)
+          handler: handleExerciseV1
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferRouter

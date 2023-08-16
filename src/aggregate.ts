@@ -56,10 +56,10 @@ export function updateOpeningStats(
     );
 
     // Update daily & total fees
-    storeFees(timestamp, settlementFee, ZERO, settlementFee);
+    storeFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
 
     // Update daily & total volume
-    logVolume(timestamp, totalFee, ZERO, totalFee);
+    logVolume(timestamp, totalFee, ZERO, totalFee, ZERO);
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, true, totalFee);
@@ -108,10 +108,10 @@ export function updateOpeningStats(
     );
 
     // Update daily & total fees
-    storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO);
+    storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
 
     // Update daily & total volume
-    logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO);
+    logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO, ZERO);
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, true, totalFeeUSDC);
@@ -160,10 +160,10 @@ export function updateOpeningStats(
     );
 
     // Update daily & total fees
-    storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO);
+    storeFees(timestamp, settlementFeeUSDC, ZERO, ZERO, settlementFeeUSDC);
 
     // Update daily & total volume
-    logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO);
+    logVolume(timestamp, totalFeeUSDC, ZERO, ZERO, totalFeeUSDC);
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, true, totalFeeUSDC);
@@ -195,6 +195,7 @@ export function updateClosingStats(
       totalFee.minus(settlementFee),
       isExercised,
       totalFee.minus(settlementFee),
+      ZERO,
       ZERO
     );
     // Update daily & total PnL per contracts for stats page
@@ -241,7 +242,8 @@ export function updateClosingStats(
       totalFeeUSDC.minus(settlementFeeUSDC),
       isExercised,
       ZERO,
-      totalFeeUSDC.minus(settlementFeeUSDC)
+      totalFeeUSDC.minus(settlementFeeUSDC),
+      ZERO
     );
     // Update daily & total PnL per contracts for stats page
     storePnlPerContract(
@@ -286,6 +288,7 @@ export function updateClosingStats(
       timestamp,
       totalFeeUSDC.minus(settlementFeeUSDC),
       isExercised,
+      ZERO,
       ZERO,
       totalFeeUSDC.minus(settlementFeeUSDC)
     );

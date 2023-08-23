@@ -60,6 +60,7 @@ export function _handleCreateOptionsContract(
     entity.poolOIaddress = Address.fromString(zeroAddress);
     entity.earlyCloseThreshold = ZERO;
     entity.IV = ZERO;
+    entity.IVchangeTimestamp = ZERO;
     entity.save();
 
     const optionContractInstance =
@@ -164,5 +165,6 @@ export function _handleUpdateIV(event: UpdateIV): void {
     return;
   }
   entity.IV = event.params._iv;
+  entity.IVchangeTimestamp = event.block.timestamp;
   entity.save();
 }

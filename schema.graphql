@@ -38,6 +38,7 @@ type ConfigContract @entity {
   marketOIaddress: Bytes!
   poolOIaddress: Bytes!
   IV:BigInt!
+  IVchangeTimestamp:BigInt!
 }
 
 # type PoolContract @entity{

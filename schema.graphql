@@ -57,6 +57,13 @@ type EOAtoOneCT @entity {
   nonce:BigInt!
 }
 
+type DeregisteredAccount @entity {
+  id: String!
+  updatedAt: BigInt!
+  eoa: Bytes!
+  nonce:BigInt!
+}
+
 type VolumePerContract @entity {
   id: String!
   amount: BigInt!

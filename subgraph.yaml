@@ -139,6 +139,8 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - UserOptionData
+        - EOAtoOneCT
+        - DeregisteredAccount
       abis:
         - name: BufferBinaryOptions
           file: ./abis/BufferBinaryOptions.json

@@ -8,10 +8,14 @@ import {
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import { State, RouterAddress, ARBITRUM_SOLANA_ADDRESS } from "./config";
 import { updateClosingStats } from "./aggregate";
-import { UserOptionData, EOAtoOneCT } from "../generated/schema";
 import {
-  RegisterAccount,
+  UserOptionData,
+  EOAtoOneCT,
+  DeregisteredAccount,
+} from "../generated/schema";
+import {
   DeregisterAccount,
+  RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
 
 const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
@@ -52,4 +56,13 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   eoaToOneCT.updatedAt = event.block.timestamp;
   eoaToOneCT.nonce = event.params.nonce;
   eoaToOneCT.save();
+
+  let deRegisteredAccount = DeregisteredAccount.load(account.toString());
+  if (deRegisteredAccount == null) {
+    deRegisteredAccount = new DeregisteredAccount(account.toString());
+  }
+  deRegisteredAccount.nonce = event.params.nonce;
+  deRegisteredAccount.updatedAt = event.block.timestamp;
+  deRegisteredAccount.eoa = event.params.account;
+  deRegisteredAccount.save();
 }

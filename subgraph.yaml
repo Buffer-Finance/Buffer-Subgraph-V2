@@ -149,4 +149,6 @@ dataSources:
       eventHandlers:
         - event: RegisterAccount(indexed address,indexed address,uint256)
           handler: handleRegisterAccount
+        - event: DeregisterAccount(indexed address,uint256)
+          handler: handleDeregisterAccount
       file: ./src/mapping.ts

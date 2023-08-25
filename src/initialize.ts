@@ -184,6 +184,23 @@ export function _loadOrCreateLeaderboardEntity(
     entity.totalTrades = 0;
     entity.volume = ZERO;
     entity.netPnL = ZERO;
+    entity.tradesWon = 0;
+    entity.winRate = 0;
+    entity.arbVolume = ZERO;
+    entity.arbNetPnL = ZERO;
+    entity.arbTotalTrades = 0;
+    entity.arbTradesWon = 0;
+    entity.arbWinRate = 0;
+    entity.usdcVolume = ZERO;
+    entity.usdcNetPnL = ZERO;
+    entity.usdcTotalTrades = 0;
+    entity.usdcTradesWon = 0;
+    entity.usdcWinRate = 0;
+    entity.bfrVolume = ZERO;
+    entity.bfrNetPnL = ZERO;
+    entity.bfrTotalTrades = 0;
+    entity.bfrTradesWon = 0;
+    entity.bfrWinRate = 0;
     entity.save();
   }
   return entity as Leaderboard;
@@ -351,14 +368,18 @@ export function _loadOrCreateARBPoolStat(
 
 export function _loadOrCreateDailyRevenueAndFee(
   id: string,
-  timestamp: BigInt
+  timestamp: BigInt,
+  tokenId: string
 ): DailyRevenueAndFee {
-  let entity = DailyRevenueAndFee.load(id);
+  let lookUpId = `${id}${tokenId}`;
+  let entity = DailyRevenueAndFee.load(lookUpId);
   if (entity === null) {
-    entity = new DailyRevenueAndFee(id);
+    entity = new DailyRevenueAndFee(lookUpId);
     entity.totalFee = ZERO;
     entity.settlementFee = ZERO;
     entity.timestamp = timestamp;
+    entity.dayId = id;
+    entity.tokenId = tokenId;
     entity.save();
   }
   return entity as DailyRevenueAndFee;

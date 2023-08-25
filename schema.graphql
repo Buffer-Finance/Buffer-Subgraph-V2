@@ -116,6 +116,8 @@ type DailyUserStat @entity {
 
 type DailyRevenueAndFee @entity {
   id: String!
+  dayId: String!
+  tokenId: String!
   totalFee: BigInt!
   settlementFee: BigInt!
   timestamp: BigInt!
@@ -137,6 +139,23 @@ type Leaderboard @entity {
   totalTrades: Int!
   volume: BigInt!
   timestamp: String!
+  tradesWon: Int!
+  winRate: Int!
+  arbVolume: BigInt!
+  arbNetPnL: BigInt!
+  arbTotalTrades: Int!
+  arbTradesWon: Int!
+  arbWinRate: Int!
+  usdcVolume: BigInt!
+  usdcNetPnL: BigInt!
+  usdcTotalTrades: Int!
+  usdcTradesWon: Int!
+  usdcWinRate: Int!
+  bfrVolume: BigInt!
+  bfrNetPnL: BigInt!
+  bfrTotalTrades: Int!
+  bfrTradesWon: Int!
+  bfrWinRate: Int!
 }
 
 type WeeklyLeaderboard @entity {

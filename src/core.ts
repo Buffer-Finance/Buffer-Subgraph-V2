@@ -70,15 +70,15 @@ export function logUser(timestamp: BigInt, account: Address): void {
     user.address = account;
     user.save();
 
-    let dailyUserStat = new DailyUserStat(dailyUserStatid);
-    dailyUserStat.save();
+    // let dailyUserStat = new DailyUserStat(dailyUserStatid);
+    // dailyUserStat.save();
   } else {
     let entity = DailyUserStat.load(dailyUserStatid);
     if (entity == null) {
       userStat.existingCount += 1;
       userStat.save();
-      entity = new DailyUserStat(dailyUserStatid);
-      entity.save();
+      // entity = new DailyUserStat(dailyUserStatid);
+      // entity.save();
     }
   }
 }

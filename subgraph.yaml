@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-one
     source:
       abi: BufferConfig
-      startBlock: 25576390 # change the block number to v2 router deployment block
+      startBlock: 125803097  
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -108,9 +108,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-one
     source:
-      address: "0xeacA681888D0BDA1D055785596e00FDD2d7e0F4F" # change to v2 router address 
+      address: "0x7aB579436c6cf932e3cDe1E2cd68C074747BE69C" # change to v2 router address 
       abi: BufferRouter
-      startBlock: 25576390 
+      startBlock: 125803097  
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -130,9 +130,9 @@ dataSources:
     name: AccountRegistrar
     network: arbitrum-one
     source:
-      address: "0x03eA2B7eb5147981Ea12d8101A3fDd59fc02262F" # change to v2 account registrar address 
+      address: "0xC2fa406F8149Eb2c5a0bA9Cc9b7eD0339792c7c4" # change to v2 account registrar address 
       abi: AccountRegistrar
-      startBlock: 25576390 # change the block number to v2 router deployment block
+      startBlock: 125802793  # change the block number to v2 router deployment block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

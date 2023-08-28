@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: BufferConfigUpdates
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
       abi: BufferConfig
-      startBlock: 25576390 
+      startBlock: 25576390 # change the block number to v2 router deployment block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -40,10 +40,10 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
       abi: BufferBinaryOptions
-      startBlock: 25576390 
+      startBlock: 56585555 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -78,10 +78,10 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: V1Options
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
       abi: V1Options
-      startBlock: 25576390 
+      startBlock: 56585555 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -106,9 +106,9 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferRouter
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
-      address: "0xeacA681888D0BDA1D055785596e00FDD2d7e0F4F"
+      address: "0xeacA681888D0BDA1D055785596e00FDD2d7e0F4F" # change to v2 router address 
       abi: BufferRouter
       startBlock: 25576390 
     mapping:
@@ -128,11 +128,11 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: AccountRegistrar
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
-      address: "0x03eA2B7eb5147981Ea12d8101A3fDd59fc02262F"
+      address: "0x03eA2B7eb5147981Ea12d8101A3fDd59fc02262F" # change to v2 account registrar address 
       abi: AccountRegistrar
-      startBlock: 25576390 
+      startBlock: 25576390 # change the block number to v2 router deployment block
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

@@ -112,7 +112,7 @@ dataSources:
     name: BufferRouter
     network: arbitrum-one
     source:
-      address: "0x7aB579436c6cf932e3cDe1E2cd68C074747BE69C" # change to v2 router address 
+      address: "0x3890F9664188a2A7292319Ce67320037BE634D3a" 
       abi: BufferRouter
       startBlock: 125803097  
     mapping:
@@ -134,7 +134,7 @@ dataSources:
     name: AccountRegistrar
     network: arbitrum-one
     source:
-      address: "0xC2fa406F8149Eb2c5a0bA9Cc9b7eD0339792c7c4" # change to v2 account registrar address 
+      address: "0x983adc3d8853C4792Da5581C5e711d25BAC19042" # change to v2 account registrar address 
       abi: AccountRegistrar
       startBlock: 125802793  # change the block number to v2 router deployment block
     mapping:

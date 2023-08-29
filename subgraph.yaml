@@ -62,6 +62,8 @@ dataSources:
           file: ./abis/BufferRouter.json
         - name: V1Options
           file: ./abis/V1Options.json
+        - name: UniswapPool
+          file: ./abis/UniswapPool.json
       eventHandlers:
         - event: Create(indexed address,indexed uint256,uint256,uint256)
           handler: handleCreate
@@ -98,6 +100,8 @@ dataSources:
           file: ./abis/BinaryPool.json
         - name: BufferRouter
           file: ./abis/BufferRouter.json
+        - name: UniswapPool
+          file: ./abis/UniswapPool.json
       eventHandlers:
         - event: Expire(indexed uint256,uint256,uint256)
           handler: handleExpireV1

@@ -7,6 +7,7 @@ import {
   CreateOptionsContract,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
+  UpdateCreationWindowContract,
   UpdateEarlyClose,
   UpdateEarlyCloseThreshold,
   UpdateIV,
@@ -33,6 +34,7 @@ import {
 } from "./routerContractHandlers";
 import {
   _handleCreateOptionsContract,
+  _handleUpdateCreationWindowContract,
   _handleUpdateEarlyClose,
   _handleUpdateEarlyCloseThreshold,
   _handleUpdateIV,
@@ -138,4 +140,10 @@ export function handleExpireV1(event: ExpireV1): void {
 
 export function handleExerciseV1(event: ExerciseV1): void {
   _handleExerciseV1(event);
+}
+
+export function handleUpdateCreationWindowContract(
+  event: UpdateCreationWindowContract
+): void {
+  _handleUpdateCreationWindowContract(event);
 }

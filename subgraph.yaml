@@ -37,6 +37,8 @@ dataSources:
           handler: handleUpdatePoolOIContract
         - event: UpdateIV(uint256)
           handler: handleUpdateIV
+        - event: UpdateCreationWindowContract(address)
+          handler: handleUpdateCreationWindowContract
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions

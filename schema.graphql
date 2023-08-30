@@ -39,6 +39,7 @@ type ConfigContract @entity {
   poolOIaddress: Bytes!
   IV:BigInt!
   IVchangeTimestamp:BigInt!
+  creationWindowAddress: Bytes!
 }
 
 # type PoolContract @entity{

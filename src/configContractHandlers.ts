@@ -152,8 +152,6 @@ export function _handleUpdateCreationWindowContract(
   const address = event.address;
   const entity = _loadorCreateConfigContractEntity(address);
 
-  entity.creationWindowAddress = Address.fromString(
-    "0xf486d4a21598ca287faaa6ebff4c9e32d82c9401"
-  );
+  entity.creationWindowAddress = event.params.value;
   entity.save();
 }

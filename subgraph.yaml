@@ -110,7 +110,7 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0xffA2ad9fDaCECC15BE8C41009f61F7760a299092"
+      address: "0x5aB93573B2153bC954B7bcA7281021b0F73DFbe2"
       abi: BufferRouter
       startBlock: 25576390 
     mapping:
@@ -132,7 +132,7 @@ dataSources:
     name: AccountRegistrar
     network: arbitrum-goerli
     source:
-      address: "0xa31fAFF32b20B5AF11688953489A201d38421873"
+      address: "0x812e21Cc74F89EF18DE89810908380A95Dd13807"
       abi: AccountRegistrar
       startBlock: 25576390 
     mapping:

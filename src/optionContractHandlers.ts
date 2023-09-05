@@ -1,37 +1,33 @@
 import { Address } from "@graphprotocol/graph-ts";
 import {
-  Create,
-  Expire,
-  Exercise,
-  UpdateReferral,
-  Pause,
   BufferBinaryOptions,
+  Create,
+  Exercise,
+  Expire,
+  Pause,
+  UpdateReferral,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
+import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import {
+  Exercise as ExerciseV1,
+  Expire as ExpireV1,
+  V1Options,
+} from "../generated/V1Options/V1Options";
+import { updateClosingStats, updateOpeningStats } from "./aggregate";
+import {
+  ARBITRUM_SOLANA_ADDRESS,
+  RouterAddress,
+  State,
+  V2_RouterAddress,
+} from "./config";
+import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
+import { logUser, updateOptionContractData } from "./core";
 import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
   _loadOrCreateReferralData,
 } from "./initialize";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
-import {
-  State,
-  RouterAddress,
-  ARBITRUM_SOLANA_ADDRESS,
-  V2_RouterAddress,
-} from "./config";
-import { updateOptionContractData } from "./core";
-import { updateOpeningStats, updateClosingStats } from "./aggregate";
 import { referralAndNFTDiscountStats } from "./stats";
-import { UserOptionData } from "../generated/schema";
-import { logUser } from "./core";
-import {
-  Expire as ExpireV1,
-  Exercise as ExerciseV1,
-  Create as Create1,
-  V1Options,
-} from "../generated/V1Options/V1Options";
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
@@ -84,6 +80,10 @@ export function _handleCreate(event: Create): void {
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.depositToken = tokenReferrenceID;
     userOptionData.poolToken = poolReferrenceID;
+    userOptionData.creationEventTimeStamp = event.block.timestamp;
+    userOptionData.lag = userOptionData.creationEventTimeStamp.minus(
+      userOptionData.creationTime
+    );
     userOptionData.save();
 
     updateOpeningStats(
@@ -128,6 +128,10 @@ export function _handleCreate(event: Create): void {
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.depositToken = tokenReferrenceID;
     userOptionData.poolToken = poolToken;
+    userOptionData.creationEventTimeStamp = event.block.timestamp;
+    userOptionData.lag = userOptionData.creationEventTimeStamp.minus(
+      userOptionData.creationTime
+    );
     userOptionData.save();
 
     updateOpeningStats(

@@ -1,22 +1,23 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getHourId } from "./helpers";
-import { ZERO } from "./initialize";
-import {
-  updateOpenInterest,
-  storeFees,
-  logVolume,
-  storePnl,
-  storePnlPerContract,
-  saveSettlementFeeDiscount,
-} from "./stats";
-import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
-import {
-  logVolumeAndSettlementFeePerContract,
-  updateDashboardOverviewStats,
-  logOpenInterest,
-} from "./dashboard";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { updateOptionContractData } from "./core";
+import {
+  logOpenInterest,
+  logVolumeAndSettlementFeePerContract,
+  updateDashboardOverviewStats,
+} from "./dashboard";
+import { _getHourId } from "./helpers";
+import { ZERO } from "./initialize";
+import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
+import {
+  logVolume,
+  saveSettlementFeeDiscount,
+  storeDefillamaFees,
+  storeFees,
+  storePnl,
+  storePnlPerContract,
+  updateOpenInterest,
+} from "./stats";
 
 export function updateOpeningStats(
   token: string,
@@ -57,6 +58,7 @@ export function updateOpeningStats(
 
     // Update daily & total fees
     storeFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
+    storeDefillamaFees(timestamp, settlementFee);
 
     // Update daily & total volume
     logVolume(timestamp, totalFee, ZERO, totalFee, ZERO);
@@ -109,6 +111,7 @@ export function updateOpeningStats(
 
     // Update daily & total fees
     storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
 
     // Update daily & total volume
     logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO, ZERO);
@@ -161,6 +164,7 @@ export function updateOpeningStats(
 
     // Update daily & total fees
     storeFees(timestamp, settlementFeeUSDC, ZERO, ZERO, settlementFeeUSDC);
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
 
     // Update daily & total volume
     logVolume(timestamp, totalFeeUSDC, ZERO, ZERO, totalFeeUSDC);

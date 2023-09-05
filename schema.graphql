@@ -318,3 +318,10 @@ type BFRHolderData @entity {
   period: Period!
   timestamp: BigInt!
 }
+
+type DefillamaFeeStat @entity {
+  id: ID!
+  fee: BigInt!
+  period: Period!
+  timestamp: BigInt!
+}

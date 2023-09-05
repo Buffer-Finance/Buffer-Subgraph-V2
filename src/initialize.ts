@@ -5,6 +5,7 @@ import {
   AssetTradingStat,
   DailyRevenueAndFee,
   DashboardStat,
+  DefillamaFeeStat,
   FeeStat,
   Leaderboard,
   OptionContract,
@@ -420,4 +421,20 @@ export function _loadOrCreateUserRewards(
     entity.save();
   }
   return entity as UserRewards;
+}
+
+export function _loadOrCreateDefillamaFeeStat(
+  id: string,
+  period: string,
+  timestamp: BigInt
+): DefillamaFeeStat {
+  let entity = DefillamaFeeStat.load(id);
+  if (entity === null) {
+    entity = new DefillamaFeeStat(id);
+    entity.period = period;
+    entity.timestamp = timestamp;
+    entity.fee = ZERO;
+    entity.save();
+  }
+  return entity as DefillamaFeeStat;
 }

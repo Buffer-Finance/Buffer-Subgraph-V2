@@ -188,40 +188,29 @@ export function updateClosingStats(
   user: Bytes,
   contractAddress: Bytes,
   isExercised: boolean,
-  netPnL: BigInt
+  netPnL: BigInt,
+  leaderboardPnl: BigInt
 ): void {
   if (token == "USDC") {
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFee);
     // Update daily & total PnL for stats page
-    storePnl(
-      timestamp,
-      totalFee.minus(settlementFee),
-      isExercised,
-      totalFee.minus(settlementFee),
-      ZERO,
-      ZERO
-    );
+    storePnl(timestamp, netPnL, isExercised, netPnL, ZERO, ZERO);
     // Update daily & total PnL per contracts for stats page
-    storePnlPerContract(
-      timestamp,
-      totalFee.minus(settlementFee),
-      isExercised,
-      contractAddress
-    );
+    storePnlPerContract(timestamp, netPnL, isExercised, contractAddress);
     // Update Leaderboards
     updateLeaderboards(
       totalFee,
       timestamp,
       user,
-      isExercised,
+      leaderboardPnl.gt(ZERO),
       ZERO,
       false,
       totalFee,
       true,
-      netPnL,
+      leaderboardPnl,
       ZERO,
-      netPnL,
+      leaderboardPnl,
       ZERO,
       false,
       ZERO
@@ -236,38 +225,27 @@ export function updateClosingStats(
   } else if (token == "ARB") {
     let totalFeeUSDC = convertARBToUSDC(totalFee);
     let settlementFeeUSDC = convertARBToUSDC(settlementFee);
-    let netPnLUSDC = convertARBToUSDC(netPnL);
+    let leaderboardPnlUSDC = convertARBToUSDC(leaderboardPnl);
+    const netPnLUSDC = convertARBToUSDC(netPnL);
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
     // Update daily & total PnL for stats page
-    storePnl(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      ZERO,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      ZERO
-    );
+    storePnl(timestamp, netPnLUSDC, isExercised, ZERO, netPnLUSDC, ZERO);
     // Update daily & total PnL per contracts for stats page
-    storePnlPerContract(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      contractAddress
-    );
+    storePnlPerContract(timestamp, netPnLUSDC, isExercised, contractAddress);
     // Update Leaderboards
     updateLeaderboards(
       totalFeeUSDC,
       timestamp,
       user,
-      isExercised,
+      leaderboardPnl.gt(ZERO),
       totalFee,
       true,
       ZERO,
       false,
-      netPnLUSDC,
-      netPnL,
+      leaderboardPnlUSDC,
+      leaderboardPnl,
       ZERO,
       ZERO,
       false,
@@ -283,40 +261,29 @@ export function updateClosingStats(
   } else if (token == "BFR") {
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
     let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
-    let netPnLUSDC = convertBFRToUSDC(netPnL);
+    let leaderboardPnlUSDC = convertBFRToUSDC(leaderboardPnl);
+    const netPnLUSDC = convertBFRToUSDC(netPnL);
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
     // Update daily & total PnL for stats page
-    storePnl(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      ZERO,
-      ZERO,
-      totalFeeUSDC.minus(settlementFeeUSDC)
-    );
+    storePnl(timestamp, netPnLUSDC, isExercised, ZERO, ZERO, netPnLUSDC);
     // Update daily & total PnL per contracts for stats page
-    storePnlPerContract(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      contractAddress
-    );
+    storePnlPerContract(timestamp, netPnLUSDC, isExercised, contractAddress);
     // Update Leaderboards
     updateLeaderboards(
       totalFeeUSDC,
       timestamp,
       user,
-      isExercised,
+      leaderboardPnl.gt(ZERO),
       ZERO,
       false,
       ZERO,
       false,
-      netPnLUSDC,
+      leaderboardPnlUSDC,
       ZERO,
       ZERO,
-      netPnL,
+      leaderboardPnl,
       true,
       totalFee
     );

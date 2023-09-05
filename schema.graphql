@@ -37,8 +37,8 @@ type ConfigContract @entity {
   isEarlyCloseEnabled: Boolean!
   marketOIaddress: Bytes!
   poolOIaddress: Bytes!
-  IV:BigInt!
-  IVchangeTimestamp:BigInt!
+  IV: BigInt!
+  IVchangeTimestamp: BigInt!
   creationWindowAddress: Bytes!
 }
 
@@ -55,14 +55,14 @@ type EOAtoOneCT @entity {
   updatedAt: BigInt!
   oneCT: Bytes!
   eoa: Bytes!
-  nonce:BigInt!
+  nonce: BigInt!
 }
 
 type DeregisteredAccount @entity {
   id: String!
   updatedAt: BigInt!
   eoa: Bytes!
-  nonce:BigInt!
+  nonce: BigInt!
 }
 
 type VolumePerContract @entity {
@@ -94,6 +94,7 @@ type UserOptionData @entity {
   poolToken: String!
   queueID: BigInt
   closeTime: BigInt
+  creationEventTimeStamp: BigInt!
 }
 
 type User @entity {

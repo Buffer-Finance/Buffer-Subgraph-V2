@@ -1,12 +1,11 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
+import { _getDayId, _getLeaderboardWeekId } from "./helpers";
 import {
   _loadOrCreateDailyRevenueAndFee,
-  _loadOrCreateWeeklyRevenueAndFee,
   _loadOrCreateLeaderboardEntity,
   _loadOrCreateWeeklyLeaderboardEntity,
+  _loadOrCreateWeeklyRevenueAndFee,
 } from "./initialize";
-import { Leaderboard, WeeklyLeaderboard } from "../generated/schema";
 
 //To update the current leaderboard : Daily & Weekly
 export function updateLeaderboards(
@@ -79,7 +78,7 @@ export function updateDailyAndWeeklyRevenue(
 
   // Weekly
   let weeklyFeeAndRevenue = _loadOrCreateWeeklyRevenueAndFee(
-    _getWeekId(timestamp),
+    _getLeaderboardWeekId(timestamp),
     timestamp,
     token
   );
@@ -176,7 +175,7 @@ function _updateWeeklyLeaderboard(
   bfrVolume: BigInt
 ): void {
   let entity = _loadOrCreateWeeklyLeaderboardEntity(
-    _getWeekId(timestamp),
+    _getLeaderboardWeekId(timestamp),
     user
   );
   entity.volume = entity.volume.plus(totalFee);

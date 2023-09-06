@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-one
     source:
       abi: BufferConfig
-      startBlock: 125803097  
+      startBlock: 125803097
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -45,7 +45,7 @@ dataSources:
     network: arbitrum-one
     source:
       abi: BufferBinaryOptions
-      startBlock: 56585555 
+      startBlock: 56585555
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -79,13 +79,17 @@ dataSources:
           handler: handlePause
         - event: CreateOptionsContract(address,address,address,string,string,uint8)
           handler: handleCreateOptionsContract
+        - event: LpProfit(indexed uint256,uint256)
+          handler: handleLpProfit
+        - event: LpLoss(indexed uint256,uint256)
+          handler: handleLpLoss
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: V1Options
     network: arbitrum-one
     source:
       abi: V1Options
-      startBlock: 56585555 
+      startBlock: 56585555
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -114,9 +118,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-one
     source:
-      address: "0x3890F9664188a2A7292319Ce67320037BE634D3a" 
+      address: "0x3890F9664188a2A7292319Ce67320037BE634D3a"
       abi: BufferRouter
-      startBlock: 125803097  
+      startBlock: 125803097
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -138,7 +142,7 @@ dataSources:
     source:
       address: "0x983adc3d8853C4792Da5581C5e711d25BAC19042"
       abi: AccountRegistrar
-      startBlock: 125802793  
+      startBlock: 125802793
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

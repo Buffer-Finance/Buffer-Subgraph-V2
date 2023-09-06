@@ -180,6 +180,140 @@ export function updateOpeningStats(
   }
 }
 
+export function updateClosingStatsV2(
+  token: string,
+  timestamp: BigInt,
+  totalFee: BigInt,
+  user: Bytes,
+  isExercised: boolean,
+  netPnL: BigInt,
+  contractAddress: Bytes
+): void {
+  if (token == "USDC") {
+    // Update daily & total open interest
+    updateOpenInterest(timestamp, false, totalFee);
+
+    // Update Leaderboards
+    updateLeaderboards(
+      totalFee,
+      timestamp,
+      user,
+      isExercised,
+      ZERO,
+      false,
+      totalFee,
+      true,
+      netPnL,
+      ZERO,
+      netPnL,
+      ZERO,
+      false,
+      ZERO
+    );
+
+    updateOptionContractData(
+      false,
+      totalFee,
+      Address.fromBytes(contractAddress)
+    );
+    logOpenInterest(token, totalFee, false);
+    logOpenInterest("total", totalFee, false);
+  } else if (token == "ARB") {
+    let totalFeeUSDC = convertARBToUSDC(totalFee);
+    let netPnLUSDC = convertARBToUSDC(netPnL);
+
+    // Update daily & total open interest
+    updateOpenInterest(timestamp, false, totalFeeUSDC);
+
+    // Update Leaderboards
+    updateLeaderboards(
+      totalFeeUSDC,
+      timestamp,
+      user,
+      isExercised,
+      totalFee,
+      true,
+      ZERO,
+      false,
+      netPnLUSDC,
+      netPnL,
+      ZERO,
+      ZERO,
+      false,
+      ZERO
+    );
+
+    updateOptionContractData(
+      false,
+      totalFee,
+      Address.fromBytes(contractAddress)
+    );
+    logOpenInterest(token, totalFee, false);
+    logOpenInterest("total", totalFeeUSDC, false);
+  } else if (token == "BFR") {
+    let totalFeeUSDC = convertBFRToUSDC(totalFee);
+    let netPnLUSDC = convertBFRToUSDC(netPnL);
+
+    // Update daily & total open interest
+    updateOpenInterest(timestamp, false, totalFeeUSDC);
+
+    // Update Leaderboards
+    updateLeaderboards(
+      totalFeeUSDC,
+      timestamp,
+      user,
+      isExercised,
+      ZERO,
+      false,
+      ZERO,
+      false,
+      netPnLUSDC,
+      ZERO,
+      ZERO,
+      netPnL,
+      true,
+      totalFee
+    );
+
+    updateOptionContractData(
+      false,
+      totalFee,
+      Address.fromBytes(contractAddress)
+    );
+    logOpenInterest(token, totalFee, false);
+    logOpenInterest("total", totalFeeUSDC, false);
+  }
+}
+
+export function updateLpProfitAndLoss(
+  token: string,
+  timestamp: BigInt,
+  contractAddress: Bytes,
+  isExercised: boolean,
+  netPnL: BigInt
+): void {
+  if (token == "USDC") {
+    // Update daily & total PnL for stats page
+    storePnl(timestamp, netPnL, isExercised, netPnL, ZERO, ZERO);
+    // Update daily & total PnL per contracts for stats page
+    storePnlPerContract(timestamp, netPnL, isExercised, contractAddress);
+  } else if (token == "ARB") {
+    let netPnLUSDC = convertARBToUSDC(netPnL);
+
+    // Update daily & total PnL for stats page
+    storePnl(timestamp, netPnLUSDC, isExercised, ZERO, netPnLUSDC, ZERO);
+    // Update daily & total PnL per contracts for stats page
+    storePnlPerContract(timestamp, netPnLUSDC, isExercised, contractAddress);
+  } else if (token == "BFR") {
+    let netPnLUSDC = convertBFRToUSDC(netPnL);
+
+    // Update daily & total PnL for stats page
+    storePnl(timestamp, netPnLUSDC, isExercised, ZERO, ZERO, netPnLUSDC);
+    // Update daily & total PnL per contracts for stats page
+    storePnlPerContract(timestamp, netPnLUSDC, isExercised, contractAddress);
+  }
+}
+
 export function updateClosingStats(
   token: string,
   timestamp: BigInt,

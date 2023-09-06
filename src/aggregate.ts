@@ -189,7 +189,8 @@ export function updateClosingStats(
   contractAddress: Bytes,
   isExercised: boolean,
   netPnL: BigInt,
-  leaderboardPnl: BigInt
+  leaderboardPnl: BigInt,
+  isWintradeLeaderboard: boolean
 ): void {
   if (token == "USDC") {
     // Update daily & total open interest
@@ -203,7 +204,7 @@ export function updateClosingStats(
       totalFee,
       timestamp,
       user,
-      leaderboardPnl.gt(ZERO),
+      isWintradeLeaderboard,
       ZERO,
       false,
       totalFee,
@@ -239,7 +240,7 @@ export function updateClosingStats(
       totalFeeUSDC,
       timestamp,
       user,
-      leaderboardPnl.gt(ZERO),
+      isWintradeLeaderboard,
       totalFee,
       true,
       ZERO,
@@ -275,7 +276,7 @@ export function updateClosingStats(
       totalFeeUSDC,
       timestamp,
       user,
-      leaderboardPnl.gt(ZERO),
+      isWintradeLeaderboard,
       ZERO,
       false,
       ZERO,

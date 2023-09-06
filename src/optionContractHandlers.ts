@@ -177,7 +177,8 @@ export function _handleExpire(event: Expire): void {
       contractAddress,
       false,
       userOptionData.totalFee.minus(userOptionData.settlementFee),
-      userOptionData.totalFee
+      userOptionData.totalFee,
+      false
     );
   }
 }
@@ -217,7 +218,8 @@ export function _handleExercise(event: Exercise): void {
           .minus(userOptionData.settlementFee)
           .minus(event.params.profit)
       ),
-      event.params.profit.minus(userOptionData.totalFee)
+      event.params.profit.minus(userOptionData.totalFee),
+      event.params.profit.minus(userOptionData.totalFee).gt(ZERO)
     );
   }
 }
@@ -407,7 +409,8 @@ export function _handleExpireV1(event: ExpireV1): void {
       contractAddress,
       false,
       userOptionData.totalFee.minus(userOptionData.settlementFee),
-      userOptionData.totalFee
+      userOptionData.totalFee,
+      false
     );
   }
 }
@@ -438,7 +441,8 @@ export function _handleExerciseV1(event: ExerciseV1): void {
       contractAddress,
       true,
       userOptionData.totalFee.minus(userOptionData.settlementFee),
-      event.params.profit.minus(userOptionData.totalFee)
+      event.params.profit.minus(userOptionData.totalFee),
+      true
     );
   }
 }

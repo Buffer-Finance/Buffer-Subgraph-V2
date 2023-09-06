@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferConfig
-      startBlock: 38083990 
+      startBlock: 38083990
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -45,7 +45,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 38083990 
+      startBlock: 38083990
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -77,13 +77,17 @@ dataSources:
           handler: handlePause
         - event: CreateOptionsContract(address,address,address,string,string,uint8)
           handler: handleCreateOptionsContract
+        - event: LpProfit(indexed uint256,uint256)
+          handler: handleLpProfit
+        - event: LpLoss(indexed uint256,uint256)
+          handler: handleLpLoss
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: V1Options
     network: arbitrum-goerli
     source:
       abi: V1Options
-      startBlock: 38083990 
+      startBlock: 38083990
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -112,7 +116,7 @@ dataSources:
     source:
       address: "0x5aB93573B2153bC954B7bcA7281021b0F73DFbe2"
       abi: BufferRouter
-      startBlock: 38083990 
+      startBlock: 38083990
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -134,7 +138,7 @@ dataSources:
     source:
       address: "0x812e21Cc74F89EF18DE89810908380A95Dd13807"
       abi: AccountRegistrar
-      startBlock: 38083990 
+      startBlock: 38083990
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

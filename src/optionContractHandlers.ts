@@ -1,37 +1,40 @@
 import { Address } from "@graphprotocol/graph-ts";
 import {
-  Create,
-  Expire,
-  Exercise,
-  UpdateReferral,
-  Pause,
   BufferBinaryOptions,
+  Create,
+  Exercise,
+  Expire,
+  LpLoss,
+  LpProfit,
+  Pause,
+  UpdateReferral,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
+import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import {
+  Exercise as ExerciseV1,
+  Expire as ExpireV1,
+  V1Options,
+} from "../generated/V1Options/V1Options";
+import {
+  updateClosingStats,
+  updateClosingStatsV2,
+  updateLpProfitAndLoss,
+  updateOpeningStats,
+} from "./aggregate";
+import {
+  ARBITRUM_SOLANA_ADDRESS,
+  RouterAddress,
+  State,
+  V2_RouterAddress,
+} from "./config";
+import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
+import { logUser, updateOptionContractData } from "./core";
 import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
   _loadOrCreateReferralData,
 } from "./initialize";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
-import {
-  State,
-  RouterAddress,
-  ARBITRUM_SOLANA_ADDRESS,
-  V2_RouterAddress,
-} from "./config";
-import { updateOptionContractData } from "./core";
-import { updateOpeningStats, updateClosingStats } from "./aggregate";
 import { referralAndNFTDiscountStats } from "./stats";
-import { UserOptionData } from "../generated/schema";
-import { logUser } from "./core";
-import {
-  Expire as ExpireV1,
-  Exercise as ExerciseV1,
-  Create as Create1,
-  V1Options,
-} from "../generated/V1Options/V1Options";
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
@@ -198,15 +201,75 @@ export function _handleExercise(event: Exercise): void {
     userOptionData.closeTime = event.block.timestamp;
     userOptionData.save();
 
-    updateClosingStats(
+    // updateClosingStats(
+    //   userOptionData.depositToken,
+    //   userOptionData.creationTime,
+    //   userOptionData.totalFee,
+    //   userOptionData.settlementFee,
+    //   userOptionData.user,
+    //   contractAddress,
+    //   true,
+    //   event.params.profit.minus(userOptionData.totalFee)
+    // );
+
+    updateClosingStatsV2(
       userOptionData.depositToken,
       userOptionData.creationTime,
       userOptionData.totalFee,
-      userOptionData.settlementFee,
       userOptionData.user,
+      true,
+      event.params.profit.minus(userOptionData.totalFee),
+      contractAddress
+    );
+  }
+}
+
+export function _handleLpProfit(event: LpProfit): void {
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+  if (
+    routerContract.contractRegistry(contractAddress) == true ||
+    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true)
+  ) {
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      event.params.id,
+      contractAddress
+    );
+    updateLpProfitAndLoss(
+      userOptionData.depositToken,
+      userOptionData.creationTime,
+      contractAddress,
+      false,
+      event.params.amount
+    );
+  }
+}
+
+export function _handleLpLoss(event: LpLoss): void {
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+  if (
+    routerContract.contractRegistry(contractAddress) == true ||
+    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true)
+  ) {
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      event.params.id,
+      contractAddress
+    );
+    updateLpProfitAndLoss(
+      userOptionData.depositToken,
+      userOptionData.creationTime,
       contractAddress,
       true,
-      event.params.profit.minus(userOptionData.totalFee)
+      event.params.amount
     );
   }
 }

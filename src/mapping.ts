@@ -1,10 +1,16 @@
 import {
+  DeregisterAccount,
+  RegisterAccount,
+} from "../generated/AccountRegistrar/AccountRegistrar";
+import {
   Create,
-  Expire,
-  Exercise,
-  UpdateReferral,
-  Pause,
   CreateOptionsContract,
+  Exercise,
+  Expire,
+  LpLoss,
+  LpProfit,
+  Pause,
+  UpdateReferral,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
   UpdateCreationWindowContract,
@@ -18,20 +24,11 @@ import {
   UpdatePlatformFee,
   UpdatePoolOIConfigContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
+import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
-  _handleCreate,
-  _handleExpire,
-  _handleExercise,
-  _handleUpdateReferral,
-  _handlePause,
-  _handleExpireV1,
-  _handleExerciseV1,
-} from "./optionContractHandlers";
-import {
-  _handleOpenTrade,
-  _handleDeregisterAccount,
-  _handleRegisterAccount,
-} from "./routerContractHandlers";
+  Exercise as ExerciseV1,
+  Expire as ExpireV1,
+} from "../generated/V1Options/V1Options";
 import {
   _handleCreateOptionsContract,
   _handleUpdateCreationWindowContract,
@@ -45,15 +42,22 @@ import {
   _handleUpdatePlatformFee,
   _handleUpdatePoolOIContract,
 } from "./configContractHandlers";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
-  RegisterAccount,
-  DeregisterAccount,
-} from "../generated/AccountRegistrar/AccountRegistrar";
+  _handleCreate,
+  _handleExercise,
+  _handleExerciseV1,
+  _handleExpire,
+  _handleExpireV1,
+  _handleLpLoss,
+  _handleLpProfit,
+  _handlePause,
+  _handleUpdateReferral,
+} from "./optionContractHandlers";
 import {
-  Expire as ExpireV1,
-  Exercise as ExerciseV1,
-} from "../generated/V1Options/V1Options";
+  _handleDeregisterAccount,
+  _handleOpenTrade,
+  _handleRegisterAccount,
+} from "./routerContractHandlers";
 
 export function handleOpenTrade(event: OpenTrade): void {
   _handleOpenTrade(event);
@@ -146,4 +150,12 @@ export function handleUpdateCreationWindowContract(
   event: UpdateCreationWindowContract
 ): void {
   _handleUpdateCreationWindowContract(event);
+}
+
+export function handleLpProfit(event: LpProfit): void {
+  _handleLpProfit(event);
+}
+
+export function handleLpLoss(event: LpLoss): void {
+  _handleLpLoss(event);
 }

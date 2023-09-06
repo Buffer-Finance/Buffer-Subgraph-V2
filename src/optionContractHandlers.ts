@@ -4,6 +4,8 @@ import {
   Create,
   Exercise,
   Expire,
+  LpLoss,
+  LpProfit,
   Pause,
   UpdateReferral,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
@@ -13,7 +15,12 @@ import {
   Expire as ExpireV1,
   V1Options,
 } from "../generated/V1Options/V1Options";
-import { updateClosingStats, updateOpeningStats } from "./aggregate";
+import {
+  updateClosingStats,
+  updateClosingStatsV2,
+  updateLpProfitAndLoss,
+  updateOpeningStats,
+} from "./aggregate";
 import {
   ARBITRUM_SOLANA_ADDRESS,
   RouterAddress,
@@ -202,15 +209,75 @@ export function _handleExercise(event: Exercise): void {
     userOptionData.closeTime = event.block.timestamp;
     userOptionData.save();
 
-    updateClosingStats(
+    // updateClosingStats(
+    //   userOptionData.depositToken,
+    //   userOptionData.creationTime,
+    //   userOptionData.totalFee,
+    //   userOptionData.settlementFee,
+    //   userOptionData.user,
+    //   contractAddress,
+    //   true,
+    //   event.params.profit.minus(userOptionData.totalFee)
+    // );
+
+    updateClosingStatsV2(
       userOptionData.depositToken,
       userOptionData.creationTime,
       userOptionData.totalFee,
-      userOptionData.settlementFee,
       userOptionData.user,
+      true,
+      event.params.profit.minus(userOptionData.totalFee),
+      contractAddress
+    );
+  }
+}
+
+export function _handleLpProfit(event: LpProfit): void {
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+  if (
+    routerContract.contractRegistry(contractAddress) == true ||
+    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true)
+  ) {
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      event.params.id,
+      contractAddress
+    );
+    updateLpProfitAndLoss(
+      userOptionData.depositToken,
+      userOptionData.creationTime,
+      contractAddress,
+      false,
+      event.params.amount
+    );
+  }
+}
+
+export function _handleLpLoss(event: LpLoss): void {
+  let contractAddress = event.address;
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+  if (
+    routerContract.contractRegistry(contractAddress) == true ||
+    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true)
+  ) {
+    let userOptionData = _loadOrCreateOptionDataEntity(
+      event.params.id,
+      contractAddress
+    );
+    updateLpProfitAndLoss(
+      userOptionData.depositToken,
+      userOptionData.creationTime,
       contractAddress,
       true,
-      event.params.profit.minus(userOptionData.totalFee)
+      event.params.amount
     );
   }
 }

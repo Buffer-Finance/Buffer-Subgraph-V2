@@ -1,4 +1,4 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -197,6 +197,11 @@ export function _handleExercise(event: Exercise): void {
     );
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
+
+    userOptionData.payout_usd = updatePayout(
+      event.params.profit,
+      userOptionData.depositToken
+    );
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.closeTime = event.block.timestamp;
     userOptionData.save();
@@ -477,6 +482,10 @@ export function _handleExerciseV1(event: ExerciseV1): void {
     );
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
+    userOptionData.payout_usd = updatePayout(
+      event.params.profit,
+      userOptionData.depositToken
+    );
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 
@@ -491,4 +500,15 @@ export function _handleExerciseV1(event: ExerciseV1): void {
       event.params.profit.minus(userOptionData.totalFee)
     );
   }
+}
+
+function updatePayout(payoutInToken: BigInt, depositToken: string): BigInt {
+  if (depositToken == "USDC") {
+    return payoutInToken;
+  } else if (depositToken == "ARB") {
+    return convertARBToUSDC(payoutInToken);
+  } else if (depositToken == "BFR") {
+    return convertBFRToUSDC(payoutInToken);
+  }
+  return payoutInToken;
 }

@@ -81,6 +81,7 @@ type UserOptionData @entity {
   optionID: BigInt
   strike: BigInt
   totalFee: BigInt!
+  totalFee_usd: BigInt!
   user: User!
   creationTime: BigInt!
   expirationPrice: BigInt

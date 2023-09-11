@@ -79,6 +79,7 @@ export function _handleCreate(event: Create): void {
     );
     userOptionData.user = event.params.account;
     userOptionData.totalFee = totalFee;
+    userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
     userOptionData.state = optionData.value0;
     userOptionData.strike = optionData.value1;
     userOptionData.amount = optionData.value2;
@@ -122,6 +123,7 @@ export function _handleCreate(event: Create): void {
     );
     userOptionData.user = event.params.account;
     userOptionData.totalFee = totalFee;
+    userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
     userOptionData.state = optionData.value0;
     userOptionData.strike = optionData.value1;
     userOptionData.amount = optionData.value2;
@@ -198,7 +200,7 @@ export function _handleExercise(event: Exercise): void {
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
 
-    userOptionData.payout_usd = updatePayout(
+    userOptionData.payout_usd = convertToUSD(
       event.params.profit,
       userOptionData.depositToken
     );
@@ -482,7 +484,7 @@ export function _handleExerciseV1(event: ExerciseV1): void {
     );
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
-    userOptionData.payout_usd = updatePayout(
+    userOptionData.payout_usd = convertToUSD(
       event.params.profit,
       userOptionData.depositToken
     );
@@ -502,7 +504,7 @@ export function _handleExerciseV1(event: ExerciseV1): void {
   }
 }
 
-function updatePayout(payoutInToken: BigInt, depositToken: string): BigInt {
+function convertToUSD(payoutInToken: BigInt, depositToken: string): BigInt {
   if (depositToken == "USDC") {
     return payoutInToken;
   } else if (depositToken == "ARB") {

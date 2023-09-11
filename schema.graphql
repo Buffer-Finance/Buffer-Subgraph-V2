@@ -85,6 +85,7 @@ type UserOptionData @entity {
   creationTime: BigInt!
   expirationPrice: BigInt
   payout: BigInt
+  payout_usd: BigInt
   state: Int
   amount: BigInt!
   expirationTime: BigInt

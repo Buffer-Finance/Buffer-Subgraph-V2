@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -9,24 +9,19 @@ import {
   Pause,
   UpdateReferral,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
   V1Options,
 } from "../generated/V1Options/V1Options";
+import { OptionContract } from "../generated/schema";
 import {
   updateClosingStats,
   updateClosingStatsV2,
   updateLpProfitAndLoss,
   updateOpeningStats,
 } from "./aggregate";
-import {
-  ARBITRUM_SOLANA_ADDRESS,
-  RouterAddress,
-  State,
-  V2_RouterAddress,
-} from "./config";
+import { RouterAddress, State, V2_RouterAddress } from "./config";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { logUser, updateOptionContractData } from "./core";
 import {
@@ -36,16 +31,22 @@ import {
 } from "./initialize";
 import { referralAndNFTDiscountStats } from "./stats";
 
+function isContractRegisteredToRouter(
+  optionContractInstance: OptionContract
+): boolean {
+  return optionContractInstance.routerContract == RouterAddress;
+}
+function isContractRegisteredToV2Router(
+  optionContractInstance: OptionContract
+): boolean {
+  return optionContractInstance.routerContract == V2_RouterAddress;
+}
+
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  let v2RouterContract = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress)
-  );
-  if (
-    v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterContract.try_contractRegistry(contractAddress).value == true
-  ) {
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
     logUser(event.block.timestamp, event.params.account);
     let optionID = event.params.id;
     let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
@@ -104,7 +105,7 @@ export function _handleCreate(event: Create): void {
     );
   }
 
-  if (routerContract.contractRegistry(contractAddress) == true) {
+  if (isContractRegisteredToRouter(optionContractInstance)) {
     logUser(event.block.timestamp, event.params.account);
     let optionID = event.params.id;
     let optionContractInstance = V1Options.bind(contractAddress);
@@ -156,17 +157,10 @@ export function _handleCreate(event: Create): void {
 
 export function _handleExpire(event: Expire): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  let v2RouterContract = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress)
-  );
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
 
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-      v2RouterContract.try_contractRegistry(contractAddress).value == true) ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
-  ) {
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress
@@ -191,16 +185,10 @@ export function _handleExpire(event: Expire): void {
 
 export function _handleExercise(event: Exercise): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  let v2RouterContract = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress)
-  );
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-      v2RouterContract.try_contractRegistry(contractAddress).value == true) ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
-  ) {
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress
@@ -241,15 +229,10 @@ export function _handleExercise(event: Exercise): void {
 
 export function _handleLpProfit(event: LpProfit): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  let v2RouterContract = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress)
-  );
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-      v2RouterContract.try_contractRegistry(contractAddress).value == true)
-  ) {
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress
@@ -266,15 +249,10 @@ export function _handleLpProfit(event: LpProfit): void {
 
 export function _handleLpLoss(event: LpLoss): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  let v2RouterContract = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress)
-  );
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    (v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-      v2RouterContract.try_contractRegistry(contractAddress).value == true)
-  ) {
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress
@@ -290,15 +268,11 @@ export function _handleLpLoss(event: LpLoss): void {
 }
 
 export function _handleUpdateReferral(event: UpdateReferral): void {
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  let v2RouterContract = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress)
+  const optionContractInstance = _loadOrCreateOptionContractEntity(
+    event.address
   );
-  if (
-    routerContract.contractRegistry(event.address) == true ||
-    (v2RouterContract.try_contractRegistry(event.address).reverted == false &&
-      v2RouterContract.try_contractRegistry(event.address).value == true)
-  ) {
+
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
     let optionContractEntity = _loadOrCreateOptionContractEntity(event.address);
     let userReferralData = _loadOrCreateReferralData(event.params.user);
     if (optionContractEntity.token == "USDC") {
@@ -431,16 +405,11 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
 }
 
 export function _handlePause(event: Pause): void {
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  let v2RouterContract = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress)
+  const optionContractInstance = _loadOrCreateOptionContractEntity(
+    event.address
   );
 
-  if (
-    routerContract.contractRegistry(event.address) == true ||
-    (v2RouterContract.try_contractRegistry(event.address).reverted == false &&
-      v2RouterContract.try_contractRegistry(event.address).value == true)
-  ) {
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
     let isPaused = event.params.isPaused;
     let optionContract = _loadOrCreateOptionContractEntity(event.address);
     optionContract.isPaused = isPaused;
@@ -450,12 +419,10 @@ export function _handlePause(event: Pause): void {
 
 export function _handleExpireV1(event: ExpireV1): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
 
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
-  ) {
+  if (isContractRegisteredToRouter(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress
@@ -480,12 +447,10 @@ export function _handleExpireV1(event: ExpireV1): void {
 
 export function _handleExerciseV1(event: ExerciseV1): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
 
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
-  ) {
+  if (isContractRegisteredToRouter(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress

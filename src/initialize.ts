@@ -1,5 +1,24 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
+import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import {
+  ARBPoolStat,
+  AssetTradingStat,
+  DailyRevenueAndFee,
+  DashboardStat,
+  FeeStat,
+  Leaderboard,
+  OptionContract,
+  PoolStat,
+  ReferralData,
+  TradingStat,
+  UserOptionData,
+  UserRewards,
+  UserStat,
+  VolumeStat,
+  WeeklyLeaderboard,
+  WeeklyRevenueAndFee,
+} from "../generated/schema";
 import {
   ARBPoolStat,
   AssetTradingStat,
@@ -22,9 +41,11 @@ import {
 import {
   ARB_POOL_CONTRACT,
   BFR_POOL_CONTRACT,
+  RouterAddress,
   USDC_POL_POOL_CONTRACT,
   USDC_POOL_CONTRACT,
   V2_ARB_POOL_CONTRACT,
+  V2_RouterAddress,
   V2_USDC_POOL_CONTRACT,
 } from "./config";
 
@@ -83,6 +104,20 @@ export function _loadOrCreateOptionContractEntity(
     } else {
       optionContract.token = "";
       optionContract.pool = "";
+    }
+
+    const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+    const v2RouterContract = BufferRouter.bind(
+      Address.fromString(V2_RouterAddress)
+    );
+    if (routerContract.contractRegistry(contractAddress) == true) {
+      optionContract.routerContract = RouterAddress;
+    } else if (
+      v2RouterContract.try_contractRegistry(contractAddress).reverted ==
+        false &&
+      v2RouterContract.try_contractRegistry(contractAddress).value == true
+    ) {
+      optionContract.routerContract = V2_RouterAddress;
     }
     optionContract.save();
   }

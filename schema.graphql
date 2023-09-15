@@ -23,6 +23,7 @@ type OptionContract @entity {
   pool: String!
   configContract: ConfigContract
   poolContract: Bytes
+  routerContract: String
 }
 
 type ConfigContract @entity {

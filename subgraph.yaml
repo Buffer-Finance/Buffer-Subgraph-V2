@@ -100,6 +100,8 @@ dataSources:
         - User
         - ConfigContract
       abis:
+        - name: BufferBinaryOptions
+          file: ./abis/BufferBinaryOptions.json
         - name: V1Options
           file: ./abis/V1Options.json
         - name: BinaryPool

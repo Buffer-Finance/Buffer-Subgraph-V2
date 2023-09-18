@@ -1,24 +1,15 @@
 import { Address } from "@graphprotocol/graph-ts";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
-import {
-  _loadOrCreateOptionContractEntity,
-  _loadOrCreateOptionDataEntity,
-  _loadOrCreateReferralData,
-} from "./initialize";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
-import { State, RouterAddress, ARBITRUM_SOLANA_ADDRESS } from "./config";
-import { updateClosingStats } from "./aggregate";
-import {
-  UserOptionData,
-  EOAtoOneCT,
-  DeregisteredAccount,
-} from "../generated/schema";
 import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
-
-const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
+import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import {
+  DeregisteredAccount,
+  EOAtoOneCT,
+  UserOptionData,
+} from "../generated/schema";
+import { ADDRESS_ZERO } from "./config";
 
 export function _handleOpenTrade(event: OpenTrade): void {
   let queueID = event.params.queueId;

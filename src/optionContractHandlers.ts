@@ -403,11 +403,12 @@ export function _handlePause(event: Pause): void {
     event.address
   );
 
-  if (isContractRegisteredToV2Router(optionContractInstance)) {
-    let isPaused = event.params.isPaused;
-    let optionContract = _loadOrCreateOptionContractEntity(event.address);
-    optionContract.isPaused = isPaused;
-    optionContract.save();
+  if (
+    isContractRegisteredToV2Router(optionContractInstance) ||
+    isContractRegisteredToRouter(optionContractInstance)
+  ) {
+    optionContractInstance.isPaused = event.params.isPaused;
+    optionContractInstance.save();
   }
 }
 

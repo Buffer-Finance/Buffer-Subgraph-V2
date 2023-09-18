@@ -8,7 +8,7 @@ export enum State {
 }
 
 //V2 contracts
-export const V2_RouterAddress = "0x5C5C3a4BC8612361FCf052A1fe8D427fE37ef6e6";
+export const V2_RouterAddress = "0xeCd09Fd889E1Dd16AAB913Df3d640F4D69E4Cf8a";
 
 export const V2_USDC_ADDRESS = "0x1A2BD639F4E113242f9e75ce39FE3eD7D42C9e2e";
 export const V2_ARB_TOKEN_ADDRESS =

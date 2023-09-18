@@ -129,7 +129,7 @@ export function _handleCreate(event: Create): void {
     userOptionData.strike = optionData.value1;
     userOptionData.amount = optionData.value2;
     userOptionData.expirationTime = optionData.value5;
-    // userOptionData.isAbove = isAbove;
+    userOptionData.isAbove = optionData.value6;
     userOptionData.creationTime = optionData.value8;
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.depositToken = tokenReferrenceID;
@@ -160,6 +160,7 @@ export function _handleExpire(event: Expire): void {
     userOptionData.state = State.expired;
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.closeTime = event.block.timestamp;
+    userOptionData.isAbove = event.params.isAbove;
     userOptionData.save();
 
     updateClosingStats(
@@ -194,6 +195,7 @@ export function _handleExercise(event: Exercise): void {
     );
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.closeTime = event.block.timestamp;
+    userOptionData.isAbove = event.params.isAbove;
     userOptionData.save();
 
     // updateClosingStats(

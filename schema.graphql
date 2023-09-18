@@ -41,6 +41,10 @@ type ConfigContract @entity {
   IV: BigInt!
   IVchangeTimestamp: BigInt!
   creationWindowAddress: Bytes!
+  IVFactorOTM: BigInt!
+  IVFactorITM: BigInt!
+  SpreadConfig1: BigInt!
+  SpreadConfig2: BigInt!
 }
 
 # type PoolContract @entity{
@@ -97,6 +101,7 @@ type UserOptionData @entity {
   poolToken: String!
   queueID: BigInt
   closeTime: BigInt
+  isAbove: Boolean
 }
 
 type User @entity {

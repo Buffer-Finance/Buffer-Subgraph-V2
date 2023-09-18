@@ -17,12 +17,16 @@ import {
   UpdateEarlyClose,
   UpdateEarlyCloseThreshold,
   UpdateIV,
+  UpdateIVFactorITM,
+  UpdateIVFactorOTM,
   UpdateMarketOIConfigContract,
   UpdateMaxPeriod,
   UpdateMinFee,
   UpdateMinPeriod,
   UpdatePlatformFee,
   UpdatePoolOIConfigContract,
+  UpdateSpreadConfig1,
+  UpdateSpreadConfig2,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -35,12 +39,16 @@ import {
   _handleUpdateEarlyClose,
   _handleUpdateEarlyCloseThreshold,
   _handleUpdateIV,
+  _handleUpdateIVFactorITM,
+  _handleUpdateIVFactorOTM,
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
   _handleUpdateOiconfigContract,
   _handleUpdatePlatformFee,
   _handleUpdatePoolOIContract,
+  _handleUpdateSpreadConfig1,
+  _handleUpdateSpreadConfig2,
 } from "./configContractHandlers";
 import {
   _handleCreate,
@@ -158,4 +166,20 @@ export function handleLpProfit(event: LpProfit): void {
 
 export function handleLpLoss(event: LpLoss): void {
   _handleLpLoss(event);
+}
+
+export function handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
+  _handleUpdateIVFactorOTM(event);
+}
+
+export function handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
+  _handleUpdateIVFactorITM(event);
+}
+
+export function handleUpdateSpreadConfig1(event: UpdateSpreadConfig1): void {
+  _handleUpdateSpreadConfig1(event);
+}
+
+export function handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
+  _handleUpdateSpreadConfig2(event);
 }

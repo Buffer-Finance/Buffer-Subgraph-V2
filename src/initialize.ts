@@ -28,6 +28,9 @@ import {
   USDC_POOL_CONTRACT,
   V2_ARB_POOL_CONTRACT,
   V2_RouterAddress,
+  V2_RouterAddress_2,
+  V2_RouterAddress_3,
+  V2_RouterAddress_4,
   V2_USDC_POOL_CONTRACT,
 } from "./config";
 
@@ -39,6 +42,48 @@ export function calculatePayout(settlementFeePercent: BigInt): BigInt {
     settlementFeePercent.times(BigInt.fromI64(200000000000000))
   );
   return payout;
+}
+
+export function findRouterContract(contractAddress: Address): string {
+  const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  const v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+  const v2RouterContract_2 = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress_2)
+  );
+  const v2RouterAddress_3 = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress_3)
+  );
+  const v2RouterAddress_4 = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress_4)
+  );
+  if (routerContract.contractRegistry(contractAddress) == true) {
+    return RouterAddress;
+  } else if (
+    v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+    v2RouterContract.try_contractRegistry(contractAddress).value == true
+  ) {
+    return V2_RouterAddress;
+  } else if (
+    v2RouterContract_2.try_contractRegistry(contractAddress).reverted ==
+      false &&
+    v2RouterContract_2.try_contractRegistry(contractAddress).value == true
+  ) {
+    return V2_RouterAddress_2;
+  } else if (
+    v2RouterAddress_3.try_contractRegistry(contractAddress).reverted == false &&
+    v2RouterAddress_3.try_contractRegistry(contractAddress).value == true
+  ) {
+    return V2_RouterAddress_3;
+  } else if (
+    v2RouterAddress_4.try_contractRegistry(contractAddress).reverted == false &&
+    v2RouterAddress_4.try_contractRegistry(contractAddress).value == true
+  ) {
+    return V2_RouterAddress_4;
+  } else {
+    return ADDRESS_ZERO;
+  }
 }
 
 export function _loadOrCreateOptionContractEntity(
@@ -58,26 +103,13 @@ export function _loadOrCreateOptionContractEntity(
     //    optionContract.payoutForUp = ZERO;
     optionContract.category = -1;
 
-    const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-    const v2RouterContract = BufferRouter.bind(
-      Address.fromString(V2_RouterAddress)
-    );
-    if (routerContract.contractRegistry(contractAddress) == true) {
-      optionContract.routerContract = RouterAddress;
-    } else if (
-      v2RouterContract.try_contractRegistry(contractAddress).reverted ==
-        false &&
-      v2RouterContract.try_contractRegistry(contractAddress).value == true
-    ) {
-      optionContract.routerContract = V2_RouterAddress;
-    } else {
-      optionContract.routerContract = ADDRESS_ZERO;
-    }
+    if (optionContract.routerContract == ADDRESS_ZERO)
+      optionContract.routerContract = findRouterContract(contractAddress);
 
     let optionContractPool = Address.fromString(ADDRESS_ZERO);
     if (optionContract.routerContract == ADDRESS_ZERO) {
       optionContract.isPaused = true;
-      optionContract.asset = "";
+      optionContract.asset = "unknown";
     } else {
       let optionContractInstance = BufferBinaryOptions.bind(
         Address.fromBytes(contractAddress)
@@ -90,26 +122,24 @@ export function _loadOrCreateOptionContractEntity(
     if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
       optionContract.token = "USDC";
       optionContract.pool = "USDC_POL";
-    } else if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
+    } else if (
+      optionContractPool == Address.fromString(ARB_POOL_CONTRACT) ||
+      optionContractPool == Address.fromString(V2_ARB_POOL_CONTRACT)
+    ) {
       optionContract.token = "ARB";
       optionContract.pool = "ARB";
-    } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
+    } else if (
+      optionContractPool == Address.fromString(USDC_POOL_CONTRACT) ||
+      optionContractPool == Address.fromString(V2_USDC_POOL_CONTRACT)
+    ) {
       optionContract.token = "USDC";
       optionContract.pool = "USDC";
     } else if (optionContractPool == Address.fromString(BFR_POOL_CONTRACT)) {
       optionContract.token = "BFR";
       optionContract.pool = "BFR";
-    } else if (optionContractPool == Address.fromString(V2_ARB_POOL_CONTRACT)) {
-      optionContract.token = "ARB";
-      optionContract.pool = "V2_ARB";
-    } else if (
-      optionContractPool == Address.fromString(V2_USDC_POOL_CONTRACT)
-    ) {
-      optionContract.token = "USDC";
-      optionContract.pool = "V2_USDC";
     } else {
-      optionContract.token = "";
-      optionContract.pool = "";
+      optionContract.token = "unknown";
+      optionContract.pool = "unknown";
     }
     optionContract.save();
   }

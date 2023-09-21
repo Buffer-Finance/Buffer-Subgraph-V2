@@ -21,7 +21,14 @@ import {
   updateLpProfitAndLoss,
   updateOpeningStats,
 } from "./aggregate";
-import { RouterAddress, State, V2_RouterAddress } from "./config";
+import {
+  RouterAddress,
+  State,
+  V2_RouterAddress,
+  V2_RouterAddress_2,
+  V2_RouterAddress_3,
+  V2_RouterAddress_4,
+} from "./config";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { logUser, updateOptionContractData } from "./core";
 import {
@@ -31,15 +38,20 @@ import {
 } from "./initialize";
 import { referralAndNFTDiscountStats } from "./stats";
 
-function isContractRegisteredToRouter(
+export function isContractRegisteredToRouter(
   optionContractInstance: OptionContract
 ): boolean {
   return optionContractInstance.routerContract == RouterAddress;
 }
-function isContractRegisteredToV2Router(
+export function isContractRegisteredToV2Router(
   optionContractInstance: OptionContract
 ): boolean {
-  return optionContractInstance.routerContract == V2_RouterAddress;
+  return (
+    optionContractInstance.routerContract == V2_RouterAddress ||
+    optionContractInstance.routerContract == V2_RouterAddress_2 ||
+    optionContractInstance.routerContract == V2_RouterAddress_3 ||
+    optionContractInstance.routerContract == V2_RouterAddress_4
+  );
 }
 
 export function _handleCreate(event: Create): void {

@@ -10,16 +10,23 @@ import {
   UserOptionData,
 } from "../generated/schema";
 import { ADDRESS_ZERO } from "./config";
+import { _loadOrCreateOptionContractEntity } from "./initialize";
+import { isContractRegisteredToV2Router } from "./optionContractHandlers";
 
 export function _handleOpenTrade(event: OpenTrade): void {
   let queueID = event.params.queueId;
   let contractAddress = event.params.targetContract;
-  let userOptionData = UserOptionData.load(
-    `${event.params.optionId}${contractAddress}`
-  );
-  if (userOptionData != null) {
-    userOptionData.queueID = queueID;
-    userOptionData.save();
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+
+  if (isContractRegisteredToV2Router(optionContractInstance)) {
+    let userOptionData = UserOptionData.load(
+      `${event.params.optionId}${contractAddress}`
+    );
+    if (userOptionData != null) {
+      userOptionData.queueID = queueID;
+      userOptionData.save();
+    }
   }
 }
 

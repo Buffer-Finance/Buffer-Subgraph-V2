@@ -16,10 +16,13 @@ import {
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
 } from "../generated/BufferConfigUpdates/BufferConfig";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { ConfigContract } from "../generated/schema";
-import { V2_RouterAddress } from "./config";
-import { ZERO, _loadOrCreateOptionContractEntity } from "./initialize";
+import { ADDRESS_ZERO } from "./config";
+import {
+  ZERO,
+  _loadOrCreateOptionContractEntity,
+  findRouterContract,
+} from "./initialize";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -52,22 +55,18 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
 export function _handleCreateOptionsContract(
   event: CreateOptionsContract
 ): void {
-  const address = event.params.config;
-  let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(V2_RouterAddress));
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted == false &&
-    routerContract.try_contractRegistry(contractAddress).value == true
-  ) {
-    const entity = _loadorCreateConfigContractEntity(address);
-
-    entity.save();
-
-    const optionContractInstance =
-      _loadOrCreateOptionContractEntity(contractAddress);
+  const routerContract = findRouterContract(event.address);
+  if (routerContract !== ADDRESS_ZERO) {
+    const optionContractInstance = _loadOrCreateOptionContractEntity(
+      event.address
+    );
+    optionContractInstance.routerContract = routerContract;
     optionContractInstance.category = event.params.category;
-    optionContractInstance.configContract = entity.id;
+    optionContractInstance.configContract = _loadorCreateConfigContractEntity(
+      event.params.config
+    ).id;
     optionContractInstance.poolContract = event.params.pool;
+    optionContractInstance.asset = event.params.token0 + event.params.token1;
     optionContractInstance.save();
   }
 }

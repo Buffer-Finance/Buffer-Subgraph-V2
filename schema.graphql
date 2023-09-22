@@ -45,6 +45,7 @@ type ConfigContract @entity {
   IVFactorITM: BigInt!
   SpreadConfig1: BigInt!
   SpreadConfig2: BigInt!
+  SpreadFactor: BigInt!
 }
 
 # type PoolContract @entity{

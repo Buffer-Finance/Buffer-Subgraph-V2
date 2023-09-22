@@ -28,6 +28,7 @@ import {
   V2_RouterAddress_2,
   V2_RouterAddress_3,
   V2_RouterAddress_4,
+  V2_RouterAddress_5,
 } from "./config";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { logUser, updateOptionContractData } from "./core";
@@ -50,7 +51,8 @@ export function isContractRegisteredToV2Router(
     optionContractInstance.routerContract == V2_RouterAddress ||
     optionContractInstance.routerContract == V2_RouterAddress_2 ||
     optionContractInstance.routerContract == V2_RouterAddress_3 ||
-    optionContractInstance.routerContract == V2_RouterAddress_4
+    optionContractInstance.routerContract == V2_RouterAddress_4 ||
+    optionContractInstance.routerContract == V2_RouterAddress_5
   );
 }
 

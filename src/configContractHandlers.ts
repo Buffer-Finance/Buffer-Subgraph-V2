@@ -15,6 +15,7 @@ import {
   UpdatePoolOIConfigContract,
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
+  UpdateSpreadFactor,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { ConfigContract } from "../generated/schema";
 import { ADDRESS_ZERO } from "./config";
@@ -48,6 +49,7 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
     entity.IVFactorOTM = ZERO;
     entity.SpreadConfig1 = ZERO;
     entity.SpreadConfig2 = ZERO;
+    entity.SpreadFactor = ZERO;
   }
   return entity;
 }
@@ -189,5 +191,13 @@ export function _handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
   const entity = _loadorCreateConfigContractEntity(address);
 
   entity.IVFactorOTM = event.params.ivFactorOTM;
+  entity.save();
+}
+
+export function _handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
+  const address = event.address;
+  const entity = _loadorCreateConfigContractEntity(address);
+
+  entity.SpreadFactor = event.params.ivFactorOTM;
   entity.save();
 }

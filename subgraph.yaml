@@ -47,6 +47,8 @@ dataSources:
           handler: handleUpdateSpreadConfig1
         - event: UpdateSpreadConfig2(uint256)
           handler: handleUpdateSpreadConfig2
+        - event: UpdateSpreadFactor(uint32)
+          handler: handleUpdateSpreadFactor
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions

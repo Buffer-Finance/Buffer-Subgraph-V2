@@ -27,6 +27,7 @@ import {
   UpdatePoolOIConfigContract,
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
+  UpdateSpreadFactor,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -49,6 +50,7 @@ import {
   _handleUpdatePoolOIContract,
   _handleUpdateSpreadConfig1,
   _handleUpdateSpreadConfig2,
+  _handleUpdateSpreadFactor,
 } from "./configContractHandlers";
 import {
   _handleCreate,
@@ -182,4 +184,7 @@ export function handleUpdateSpreadConfig1(event: UpdateSpreadConfig1): void {
 
 export function handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
   _handleUpdateSpreadConfig2(event);
+}
+export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
+  _handleUpdateSpreadFactor(event);
 }

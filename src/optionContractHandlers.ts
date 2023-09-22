@@ -31,17 +31,16 @@ import {
 } from "./initialize";
 import { referralAndNFTDiscountStats } from "./stats";
 
-function isContractRegisteredToRouter(
+export function isContractRegisteredToRouter(
   optionContractInstance: OptionContract
 ): boolean {
   return optionContractInstance.routerContract == RouterAddress;
 }
-function isContractRegisteredToV2Router(
+export function isContractRegisteredToV2Router(
   optionContractInstance: OptionContract
 ): boolean {
   return optionContractInstance.routerContract == V2_RouterAddress;
 }
-
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
   const optionContractInstance =
@@ -133,7 +132,7 @@ export function _handleCreate(event: Create): void {
     userOptionData.strike = optionData.value1;
     userOptionData.amount = optionData.value2;
     userOptionData.expirationTime = optionData.value5;
-    // userOptionData.isAbove = isAbove;
+    userOptionData.isAbove = optionData.value6;
     userOptionData.creationTime = optionData.value8;
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.depositToken = tokenReferrenceID;
@@ -168,6 +167,7 @@ export function _handleExpire(event: Expire): void {
     userOptionData.state = State.expired;
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.closeTime = event.block.timestamp;
+    userOptionData.isAbove = event.params.isAbove;
     userOptionData.save();
 
     updateClosingStats(
@@ -202,6 +202,7 @@ export function _handleExercise(event: Exercise): void {
     );
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.closeTime = event.block.timestamp;
+    userOptionData.isAbove = event.params.isAbove;
     userOptionData.save();
 
     // updateClosingStats(
@@ -272,7 +273,10 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
     event.address
   );
 
-  if (isContractRegisteredToV2Router(optionContractInstance)) {
+  if (
+    isContractRegisteredToV2Router(optionContractInstance) ||
+    isContractRegisteredToRouter(optionContractInstance)
+  ) {
     let optionContractEntity = _loadOrCreateOptionContractEntity(event.address);
     let userReferralData = _loadOrCreateReferralData(event.params.user);
     if (optionContractEntity.token == "USDC") {

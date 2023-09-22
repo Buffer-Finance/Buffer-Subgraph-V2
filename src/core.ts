@@ -1,23 +1,11 @@
-import { BigInt, Address } from "@graphprotocol/graph-ts";
-import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { User } from "../generated/schema";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { DailyUserStat, User } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import {
+  ZERO,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateUserStat,
-  ZERO,
 } from "./initialize";
-import { DailyUserStat } from "../generated/schema";
-import {
-  USDC_POOL_CONTRACT,
-  ARB_POOL_CONTRACT,
-  USDC_POL_POOL_CONTRACT,
-  BFR_POOL_CONTRACT,
-  V2_ARB_POOL_CONTRACT,
-  V2_USDC_POOL_CONTRACT,
-} from "./config";
-
-const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
 export function updateOptionContractData(
   increaseInOpenInterest: boolean,

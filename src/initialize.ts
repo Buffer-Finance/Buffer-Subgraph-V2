@@ -42,6 +42,24 @@ export function calculatePayout(settlementFeePercent: BigInt): BigInt {
   return payout;
 }
 
+export function findRouterContract(contractAddress: Address): string {
+  const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  const v2RouterContract = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress)
+  );
+
+  if (routerContract.contractRegistry(contractAddress) == true) {
+    return RouterAddress;
+  } else if (
+    v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
+    v2RouterContract.try_contractRegistry(contractAddress).value == true
+  ) {
+    return V2_RouterAddress;
+  } else {
+    return ADDRESS_ZERO;
+  }
+}
+
 export function _loadOrCreateOptionContractEntity(
   contractAddress: Address
 ): OptionContract {
@@ -59,26 +77,13 @@ export function _loadOrCreateOptionContractEntity(
     //    optionContract.payoutForUp = ZERO;
     optionContract.category = -1;
 
-    const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-    const v2RouterContract = BufferRouter.bind(
-      Address.fromString(V2_RouterAddress)
-    );
-    if (routerContract.contractRegistry(contractAddress) == true) {
-      optionContract.routerContract = RouterAddress;
-    } else if (
-      v2RouterContract.try_contractRegistry(contractAddress).reverted ==
-        false &&
-      v2RouterContract.try_contractRegistry(contractAddress).value == true
-    ) {
-      optionContract.routerContract = V2_RouterAddress;
-    } else {
-      optionContract.routerContract = ADDRESS_ZERO;
-    }
+    if (optionContract.routerContract == ADDRESS_ZERO)
+      optionContract.routerContract = findRouterContract(contractAddress);
 
     let optionContractPool = Address.fromString(ADDRESS_ZERO);
     if (optionContract.routerContract == ADDRESS_ZERO) {
       optionContract.isPaused = true;
-      optionContract.asset = "";
+      optionContract.asset = "unknown";
     } else {
       let optionContractInstance = BufferBinaryOptions.bind(
         Address.fromBytes(contractAddress)

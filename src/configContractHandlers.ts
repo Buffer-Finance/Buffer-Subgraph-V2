@@ -1,24 +1,29 @@
+import { Address } from "@graphprotocol/graph-ts";
+import { CreateOptionsContract } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
-  BufferBinaryOptions,
-  CreateOptionsContract,
-} from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { ConfigContract, OptionContract } from "../generated/schema";
-import { ZERO, _loadOrCreateOptionContractEntity } from "./initialize";
-import {
-  UpdateMinFee,
-  UpdateMaxPeriod,
-  UpdateMinPeriod,
-  UpdatePlatformFee,
+  UpdateCreationWindowContract,
   UpdateEarlyClose,
   UpdateEarlyCloseThreshold,
-  UpdateMarketOIConfigContract,
-  UpdatePoolOIConfigContract,
   UpdateIV,
-  UpdateCreationWindowContract,
+  UpdateIVFactorITM,
+  UpdateIVFactorOTM,
+  UpdateMarketOIConfigContract,
+  UpdateMaxPeriod,
+  UpdateMinFee,
+  UpdateMinPeriod,
+  UpdatePlatformFee,
+  UpdatePoolOIConfigContract,
+  UpdateSpreadConfig1,
+  UpdateSpreadConfig2,
+  UpdateSpreadFactor,
 } from "../generated/BufferConfigUpdates/BufferConfig";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { Address } from "@graphprotocol/graph-ts";
-import { V2_RouterAddress } from "./config";
+import { ConfigContract } from "../generated/schema";
+import { ADDRESS_ZERO } from "./config";
+import {
+  ZERO,
+  _loadOrCreateOptionContractEntity,
+  findRouterContract,
+} from "./initialize";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -40,6 +45,11 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
     entity.IV = ZERO;
     entity.IVchangeTimestamp = ZERO;
     entity.creationWindowAddress = Address.fromString(zeroAddress);
+    entity.IVFactorITM = ZERO;
+    entity.IVFactorOTM = ZERO;
+    entity.SpreadConfig1 = ZERO;
+    entity.SpreadConfig2 = ZERO;
+    entity.SpreadFactor = ZERO;
   }
   return entity;
 }
@@ -47,22 +57,18 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
 export function _handleCreateOptionsContract(
   event: CreateOptionsContract
 ): void {
-  const address = event.params.config;
-  let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(V2_RouterAddress));
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted == false &&
-    routerContract.try_contractRegistry(contractAddress).value == true
-  ) {
-    const entity = _loadorCreateConfigContractEntity(address);
-
-    entity.save();
-
-    const optionContractInstance =
-      _loadOrCreateOptionContractEntity(contractAddress);
+  const routerContract = findRouterContract(event.address);
+  if (routerContract !== ADDRESS_ZERO) {
+    const optionContractInstance = _loadOrCreateOptionContractEntity(
+      event.address
+    );
+    optionContractInstance.routerContract = routerContract;
     optionContractInstance.category = event.params.category;
-    optionContractInstance.configContract = entity.id;
+    optionContractInstance.configContract = _loadorCreateConfigContractEntity(
+      event.params.config
+    ).id;
     optionContractInstance.poolContract = event.params.pool;
+    optionContractInstance.asset = event.params.token0 + event.params.token1;
     optionContractInstance.save();
   }
 }
@@ -153,5 +159,45 @@ export function _handleUpdateCreationWindowContract(
   const entity = _loadorCreateConfigContractEntity(address);
 
   entity.creationWindowAddress = event.params.value;
+  entity.save();
+}
+
+export function _handleUpdateSpreadConfig1(event: UpdateSpreadConfig1): void {
+  const address = event.address;
+  const entity = _loadorCreateConfigContractEntity(address);
+
+  entity.SpreadConfig1 = event.params.spreadConfig1;
+  entity.save();
+}
+
+export function _handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
+  const address = event.address;
+  const entity = _loadorCreateConfigContractEntity(address);
+
+  entity.SpreadConfig2 = event.params.spreadConfig2;
+  entity.save();
+}
+
+export function _handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
+  const address = event.address;
+  const entity = _loadorCreateConfigContractEntity(address);
+
+  entity.IVFactorITM = event.params.ivFactorITM;
+  entity.save();
+}
+
+export function _handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
+  const address = event.address;
+  const entity = _loadorCreateConfigContractEntity(address);
+
+  entity.IVFactorOTM = event.params.ivFactorOTM;
+  entity.save();
+}
+
+export function _handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
+  const address = event.address;
+  const entity = _loadorCreateConfigContractEntity(address);
+
+  entity.SpreadFactor = event.params.ivFactorOTM;
   entity.save();
 }

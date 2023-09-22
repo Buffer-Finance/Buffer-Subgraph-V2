@@ -35,10 +35,20 @@ dataSources:
           handler: handleUpdateOiconfigContract
         - event: UpdatePoolOIConfigContract(address)
           handler: handleUpdatePoolOIContract
-        - event: UpdateIV(uint256)
+        - event: UpdateIV(uint32)
           handler: handleUpdateIV
         - event: UpdateCreationWindowContract(address)
           handler: handleUpdateCreationWindowContract
+        - event: UpdateIVFactorOTM(uint256)
+          handler: handleUpdateIVFactorOTM
+        - event: UpdateIVFactorITM(uint256)
+          handler: handleUpdateIVFactorITM
+        - event: UpdateSpreadConfig1(uint256)
+          handler: handleUpdateSpreadConfig1
+        - event: UpdateSpreadConfig2(uint256)
+          handler: handleUpdateSpreadConfig2
+        - event: UpdateSpreadFactor(uint32)
+          handler: handleUpdateSpreadFactor
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions
@@ -114,7 +124,6 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0xffA2ad9fDaCECC15BE8C41009f61F7760a299092"
       abi: BufferRouter
       startBlock: 25576390
     mapping:

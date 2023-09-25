@@ -29,6 +29,7 @@ import {
   USDC_POOL_CONTRACT,
   V2_ARB_POOL_CONTRACT,
   V2_RouterAddress,
+  V2_RouterAddress_2,
   V2_USDC_POOL_CONTRACT,
 } from "./config";
 
@@ -47,14 +48,25 @@ export function findRouterContract(contractAddress: Address): string {
   const v2RouterContract = BufferRouter.bind(
     Address.fromString(V2_RouterAddress)
   );
+  const v2RouterContract_2 = BufferRouter.bind(
+    Address.fromString(V2_RouterAddress_2)
+  );
 
   if (routerContract.contractRegistry(contractAddress) == true) {
     return RouterAddress;
   } else if (
     v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterContract.try_contractRegistry(contractAddress).value == true
+    v2RouterContract.try_contractRegistry(contractAddress).value == true &&
+    v2RouterContract.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress;
+  } else if (
+    v2RouterContract_2.try_contractRegistry(contractAddress).reverted ==
+      false &&
+    v2RouterContract_2.try_contractRegistry(contractAddress).value == true &&
+    v2RouterContract_2.contractRegistry(contractAddress) == true
+  ) {
+    return V2_RouterAddress_2;
   } else {
     return ADDRESS_ZERO;
   }
@@ -77,7 +89,10 @@ export function _loadOrCreateOptionContractEntity(
     //    optionContract.payoutForUp = ZERO;
     optionContract.category = -1;
 
-    if (optionContract.routerContract == ADDRESS_ZERO)
+    if (
+      optionContract.routerContract == ADDRESS_ZERO ||
+      optionContract.routerContract == null
+    )
       optionContract.routerContract = findRouterContract(contractAddress);
 
     let optionContractPool = Address.fromString(ADDRESS_ZERO);

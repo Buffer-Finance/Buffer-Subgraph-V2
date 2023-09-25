@@ -21,7 +21,12 @@ import {
   updateLpProfitAndLoss,
   updateOpeningStats,
 } from "./aggregate";
-import { RouterAddress, State, V2_RouterAddress } from "./config";
+import {
+  RouterAddress,
+  State,
+  V2_RouterAddress,
+  V2_RouterAddress_2,
+} from "./config";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { logUser, updateOptionContractData } from "./core";
 import {
@@ -39,7 +44,10 @@ export function isContractRegisteredToRouter(
 export function isContractRegisteredToV2Router(
   optionContractInstance: OptionContract
 ): boolean {
-  return optionContractInstance.routerContract == V2_RouterAddress;
+  return (
+    optionContractInstance.routerContract == V2_RouterAddress ||
+    optionContractInstance.routerContract == V2_RouterAddress_2
+  );
 }
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;

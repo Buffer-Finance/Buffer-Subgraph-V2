@@ -10,6 +10,7 @@ export enum State {
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
 //V2 contracts
+export const V2_RouterAddress_2 = "0xB52b89281Bff5D1d79Bc4F4181d08A6989201531";
 export const V2_RouterAddress = "0xffA2ad9fDaCECC15BE8C41009f61F7760a299092";
 
 export const V2_USDC_ADDRESS = "0xda11D2c3b026561cCE889Ff5A020Eae21308058C";

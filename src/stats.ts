@@ -30,6 +30,17 @@ export function logVolume(
   dailyEntity.VolumeBFR = dailyEntity.VolumeBFR.plus(volumeBFR);
   dailyEntity.save();
 
+  let cumulativeDailyEntity = _loadOrCreateVolumeStat(
+    id,
+    "dailyCumulative",
+    timestamp
+  );
+  cumulativeDailyEntity.amount = totalEntity.amount;
+  cumulativeDailyEntity.VolumeARB = totalEntity.VolumeARB;
+  cumulativeDailyEntity.VolumeUSDC = totalEntity.VolumeUSDC;
+  cumulativeDailyEntity.VolumeBFR = totalEntity.VolumeBFR;
+  cumulativeDailyEntity.save();
+
   let hourID = _getHourId(timestamp);
   let hourlyEntity = _loadOrCreateVolumeStat(hourID, "hourly", timestamp);
   hourlyEntity.amount = hourlyEntity.amount.plus(amount);

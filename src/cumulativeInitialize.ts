@@ -7,10 +7,12 @@ export function _loadOrCreateCumulativeVolumeStat(
   period: string,
   timestamp: BigInt
 ): VolumeStat {
-  let entity = VolumeStat.load(id);
-  let lastDayEntity = VolumeStat.load((Number(id) - 1).toString());
+  const idSlug = period;
+  let entity = VolumeStat.load(id + idSlug);
+  const lastdayid = BigInt.fromString(id).minus(BigInt.fromI32(1));
+  let lastDayEntity = VolumeStat.load(lastdayid.toString() + idSlug);
   if (lastDayEntity === null) {
-    entity = new VolumeStat(id);
+    entity = new VolumeStat(id + idSlug);
     entity.period = period;
     entity.timestamp = timestamp;
     entity.amount = ZERO;
@@ -19,7 +21,7 @@ export function _loadOrCreateCumulativeVolumeStat(
     entity.VolumeBFR = ZERO;
     entity.save();
   } else if (entity === null && lastDayEntity !== null) {
-    entity = new VolumeStat(id);
+    entity = new VolumeStat(id + idSlug);
     entity.period = period;
     entity.timestamp = timestamp;
     entity.amount = lastDayEntity.amount;

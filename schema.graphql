@@ -3,6 +3,7 @@ enum Period {
   daily
   weekly
   total
+  dailyCumulative
 }
 
 type OptionContract @entity {

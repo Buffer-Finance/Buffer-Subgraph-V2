@@ -334,3 +334,11 @@ type DefillamaFeeStat @entity {
   period: Period!
   timestamp: BigInt!
 }
+
+type BurnedBFR @entity {
+  id: ID!
+  timestamp: BigInt!
+  period: Period!
+  amount: BigInt!
+  cumulativeAmount: BigInt!
+}

@@ -119,6 +119,7 @@ type UserStat @entity {
   period: Period!
   timestamp: BigInt
   existingCount: Int!
+  existingCountCumulative: Int!
   users: [User!]!
 }
 
@@ -212,6 +213,10 @@ type FeeStat @entity {
   feeARB: BigInt!
   feeUSDC: BigInt!
   feeBFR: BigInt!
+  CumulativeFee: BigInt!
+  CumulativeFeeARB: BigInt!
+  CumulativeFeeUSDC: BigInt!
+  CumulativeFeeBFR: BigInt!
 }
 
 type VolumeStat @entity {
@@ -222,6 +227,10 @@ type VolumeStat @entity {
   VolumeARB: BigInt!
   VolumeUSDC: BigInt!
   VolumeBFR: BigInt!
+  CumulativeAmount: BigInt!
+  CumulativeVolumeARB: BigInt!
+  CumulativeVolumeUSDC: BigInt!
+  CumulativeVolumeBFR: BigInt!
 }
 
 type ReferralData @entity {

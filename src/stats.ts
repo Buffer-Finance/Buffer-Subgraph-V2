@@ -1,5 +1,4 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _loadOrCreateCumulativeVolumeStat } from "./cumulativeInitialize";
 import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import {
   _loadOrCreateAssetTradingStatEntity,
@@ -21,6 +20,10 @@ export function logVolume(
   totalEntity.VolumeARB = totalEntity.VolumeARB.plus(volumeARB);
   totalEntity.VolumeUSDC = totalEntity.VolumeUSDC.plus(volumeUSDC);
   totalEntity.VolumeBFR = totalEntity.VolumeBFR.plus(volumeBFR);
+  totalEntity.CumulativeAmount = totalEntity.amount;
+  totalEntity.CumulativeVolumeARB = totalEntity.VolumeARB;
+  totalEntity.CumulativeVolumeUSDC = totalEntity.VolumeUSDC;
+  totalEntity.CumulativeVolumeBFR = totalEntity.VolumeBFR;
   totalEntity.save();
 
   let id = _getDayId(timestamp);
@@ -29,18 +32,11 @@ export function logVolume(
   dailyEntity.VolumeARB = dailyEntity.VolumeARB.plus(volumeARB);
   dailyEntity.VolumeUSDC = dailyEntity.VolumeUSDC.plus(volumeUSDC);
   dailyEntity.VolumeBFR = dailyEntity.VolumeBFR.plus(volumeBFR);
+  dailyEntity.CumulativeAmount = totalEntity.amount;
+  dailyEntity.CumulativeVolumeARB = totalEntity.VolumeARB;
+  dailyEntity.CumulativeVolumeUSDC = totalEntity.VolumeUSDC;
+  dailyEntity.CumulativeVolumeBFR = totalEntity.VolumeBFR;
   dailyEntity.save();
-
-  let cumulativeDailyEntity = _loadOrCreateCumulativeVolumeStat(
-    id,
-    "dailyCumulative",
-    timestamp
-  );
-  cumulativeDailyEntity.amount = totalEntity.amount;
-  cumulativeDailyEntity.VolumeARB = totalEntity.VolumeARB;
-  cumulativeDailyEntity.VolumeUSDC = totalEntity.VolumeUSDC;
-  cumulativeDailyEntity.VolumeBFR = totalEntity.VolumeBFR;
-  cumulativeDailyEntity.save();
 
   let hourID = _getHourId(timestamp);
   let hourlyEntity = _loadOrCreateVolumeStat(hourID, "hourly", timestamp);
@@ -48,6 +44,10 @@ export function logVolume(
   hourlyEntity.VolumeARB = hourlyEntity.VolumeARB.plus(volumeARB);
   hourlyEntity.VolumeUSDC = hourlyEntity.VolumeUSDC.plus(volumeUSDC);
   hourlyEntity.VolumeBFR = hourlyEntity.VolumeBFR.plus(volumeBFR);
+  hourlyEntity.CumulativeAmount = totalEntity.amount;
+  hourlyEntity.CumulativeVolumeARB = totalEntity.VolumeARB;
+  hourlyEntity.CumulativeVolumeUSDC = totalEntity.VolumeUSDC;
+  hourlyEntity.CumulativeVolumeBFR = totalEntity.VolumeBFR;
   hourlyEntity.save();
 
   let weekID = _getWeekId(timestamp);
@@ -56,6 +56,10 @@ export function logVolume(
   weekEntity.VolumeARB = weekEntity.VolumeARB.plus(volumeARB);
   weekEntity.VolumeUSDC = weekEntity.VolumeUSDC.plus(volumeUSDC);
   weekEntity.VolumeBFR = weekEntity.VolumeBFR.plus(volumeBFR);
+  weekEntity.CumulativeAmount = totalEntity.amount;
+  weekEntity.CumulativeVolumeARB = totalEntity.VolumeARB;
+  weekEntity.CumulativeVolumeUSDC = totalEntity.VolumeUSDC;
+  weekEntity.CumulativeVolumeBFR = totalEntity.VolumeBFR;
   weekEntity.save();
 }
 
@@ -66,12 +70,27 @@ export function storeFees(
   feesUSDC: BigInt,
   feesBFR: BigInt
 ): void {
+  let totalEntity = _loadOrCreateFeeStat("total", "total", timestamp);
+  totalEntity.fee = totalEntity.fee.plus(fees);
+  totalEntity.feeARB = totalEntity.feeARB.plus(feesARB);
+  totalEntity.feeUSDC = totalEntity.feeUSDC.plus(feesUSDC);
+  totalEntity.feeBFR = totalEntity.feeBFR.plus(feesBFR);
+  totalEntity.CumulativeFee = totalEntity.fee;
+  totalEntity.CumulativeFeeARB = totalEntity.feeARB;
+  totalEntity.CumulativeFeeUSDC = totalEntity.feeUSDC;
+  totalEntity.CumulativeFeeBFR = totalEntity.feeBFR;
+  totalEntity.save();
+
   let id = _getDayId(timestamp);
   let entity = _loadOrCreateFeeStat(id, "daily", timestamp);
   entity.fee = entity.fee.plus(fees);
   entity.feeARB = entity.feeARB.plus(feesARB);
   entity.feeUSDC = entity.feeUSDC.plus(feesUSDC);
   entity.feeBFR = entity.feeBFR.plus(feesBFR);
+  entity.CumulativeFee = totalEntity.fee;
+  entity.CumulativeFeeARB = totalEntity.feeARB;
+  entity.CumulativeFeeUSDC = totalEntity.feeUSDC;
+  entity.CumulativeFeeBFR = totalEntity.feeBFR;
   entity.save();
 
   let weekID = _getWeekId(timestamp);
@@ -80,14 +99,11 @@ export function storeFees(
   weekEntity.feeARB = weekEntity.feeARB.plus(feesARB);
   weekEntity.feeUSDC = weekEntity.feeUSDC.plus(feesUSDC);
   weekEntity.feeBFR = weekEntity.feeBFR.plus(feesBFR);
+  weekEntity.CumulativeFee = totalEntity.fee;
+  weekEntity.CumulativeFeeARB = totalEntity.feeARB;
+  weekEntity.CumulativeFeeUSDC = totalEntity.feeUSDC;
+  weekEntity.CumulativeFeeBFR = totalEntity.feeBFR;
   weekEntity.save();
-
-  let totalEntity = _loadOrCreateFeeStat("total", "total", timestamp);
-  totalEntity.fee = totalEntity.fee.plus(fees);
-  totalEntity.feeARB = totalEntity.feeARB.plus(feesARB);
-  totalEntity.feeUSDC = totalEntity.feeUSDC.plus(feesUSDC);
-  totalEntity.feeBFR = totalEntity.feeBFR.plus(feesBFR);
-  totalEntity.save();
 }
 
 export function updateOpenInterest(

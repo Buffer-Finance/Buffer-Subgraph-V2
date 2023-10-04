@@ -45,13 +45,14 @@ export function logUser(timestamp: BigInt, account: Address): void {
   let id = _getDayId(timestamp);
   let dailyUserStatid = `${id}-${account.toString()}`;
   let userStat = _loadOrCreateUserStat(id, "daily", timestamp);
+  let totalUserStat = _loadOrCreateUserStat("total", "total", timestamp);
   if (user == null) {
-    let totalUserStat = _loadOrCreateUserStat("total", "total", timestamp);
     totalUserStat.uniqueCountCumulative =
       totalUserStat.uniqueCountCumulative + 1;
     totalUserStat.save();
 
     userStat.uniqueCount = userStat.uniqueCount + 1;
+    userStat.uniqueCountCumulative = totalUserStat.uniqueCountCumulative;
     userStat.save();
 
     user = new User(account);
@@ -63,6 +64,9 @@ export function logUser(timestamp: BigInt, account: Address): void {
   } else {
     let entity = DailyUserStat.load(dailyUserStatid);
     if (entity == null) {
+      totalUserStat.existingCount += 1;
+      totalUserStat.save();
+      userStat.existingCountCumulative = totalUserStat.existingCountCumulative;
       userStat.existingCount += 1;
       userStat.save();
       entity = new DailyUserStat(dailyUserStatid);

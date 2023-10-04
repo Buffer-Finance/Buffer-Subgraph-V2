@@ -301,6 +301,7 @@ export function _loadOrCreateUserStat(
     userStat.uniqueCountCumulative = 0;
     userStat.users = [];
     userStat.existingCount = 0;
+    userStat.existingCountCumulative = 0;
   }
   return userStat as UserStat;
 }
@@ -319,8 +320,14 @@ export function _loadOrCreateVolumeStat(
     entity.VolumeUSDC = ZERO;
     entity.VolumeARB = ZERO;
     entity.VolumeBFR = ZERO;
-    entity.save();
+    entity.CumulativeAmount = ZERO;
+    entity.CumulativeVolumeUSDC = ZERO;
+    entity.CumulativeVolumeARB = ZERO;
+    entity.CumulativeVolumeBFR = ZERO;
+  } else {
+    entity.timestamp = timestamp;
   }
+  entity.save();
   return entity as VolumeStat;
 }
 
@@ -338,8 +345,14 @@ export function _loadOrCreateFeeStat(
     entity.feeARB = ZERO;
     entity.feeUSDC = ZERO;
     entity.feeBFR = ZERO;
-    entity.save();
+    entity.CumulativeFee = ZERO;
+    entity.CumulativeFeeARB = ZERO;
+    entity.CumulativeFeeUSDC = ZERO;
+    entity.CumulativeFeeBFR = ZERO;
+  } else {
+    entity.timestamp = timestamp;
   }
+  entity.save();
   return entity as FeeStat;
 }
 

@@ -49,6 +49,7 @@ export function logUser(timestamp: BigInt, account: Address): void {
   if (user == null) {
     totalUserStat.uniqueCountCumulative =
       totalUserStat.uniqueCountCumulative + 1;
+    totalUserStat.uniqueCount = totalUserStat.uniqueCount + 1;
     totalUserStat.save();
 
     userStat.uniqueCount = userStat.uniqueCount + 1;
@@ -65,6 +66,7 @@ export function logUser(timestamp: BigInt, account: Address): void {
     let entity = DailyUserStat.load(dailyUserStatid);
     if (entity == null) {
       totalUserStat.existingCount += 1;
+      totalUserStat.existingCountCumulative += 1;
       totalUserStat.save();
       userStat.existingCountCumulative = totalUserStat.existingCountCumulative;
       userStat.existingCount += 1;

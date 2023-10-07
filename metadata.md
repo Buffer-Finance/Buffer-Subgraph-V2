@@ -1,1 +1,1 @@
-base branch - arbitrum-sandbox-testnet
+base branch - v2.5-arbitrum-testnet

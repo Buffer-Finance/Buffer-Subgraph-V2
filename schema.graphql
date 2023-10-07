@@ -169,6 +169,7 @@ type Leaderboard @entity {
   bfrTotalTrades: Int!
   bfrTradesWon: Int!
   bfrWinRate: Int!
+  period: Period!
 }
 
 type WeeklyLeaderboard @entity {
@@ -195,6 +196,7 @@ type WeeklyLeaderboard @entity {
   bfrTotalTrades: Int!
   bfrTradesWon: Int!
   bfrWinRate: Int!
+  period: Period!
 }
 
 type DashboardStat @entity {

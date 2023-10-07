@@ -1,22 +1,22 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getHourId } from "./helpers";
-import { ZERO } from "./initialize";
-import {
-  updateOpenInterest,
-  storeFees,
-  logVolume,
-  storePnl,
-  storePnlPerContract,
-  saveSettlementFeeDiscount,
-} from "./stats";
-import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
-import {
-  logVolumeAndSettlementFeePerContract,
-  updateDashboardOverviewStats,
-  logOpenInterest,
-} from "./dashboard";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { updateOptionContractData } from "./core";
+import {
+  logOpenInterest,
+  logVolumeAndSettlementFeePerContract,
+  updateDashboardOverviewStats,
+} from "./dashboard";
+import { _getHourId } from "./helpers";
+import { ZERO } from "./initialize";
+import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
+import {
+  logVolume,
+  saveSettlementFeeDiscount,
+  storeFees,
+  storePnl,
+  storePnlPerContract,
+  updateOpenInterest,
+} from "./stats";
 
 export function updateOpeningStats(
   token: string,
@@ -185,6 +185,10 @@ export function updateClosingStatsV2(
   netPnL: BigInt,
   contractAddress: Bytes
 ): void {
+  let positiveNetPnl = netPnL;
+  if (netPnL.lt(ZERO)) {
+    positiveNetPnl = ZERO.minus(netPnL);
+  }
   if (token == "USDC") {
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFee);
@@ -194,14 +198,14 @@ export function updateClosingStatsV2(
       totalFee,
       timestamp,
       user,
-      isExercised,
+      isExercised && netPnL.gt(ZERO),
       ZERO,
       false,
       totalFee,
       true,
-      netPnL,
+      positiveNetPnl,
       ZERO,
-      netPnL,
+      positiveNetPnl,
       ZERO,
       false,
       ZERO
@@ -216,7 +220,7 @@ export function updateClosingStatsV2(
     logOpenInterest("total", totalFee, false);
   } else if (token == "ARB") {
     let totalFeeUSDC = convertARBToUSDC(totalFee);
-    let netPnLUSDC = convertARBToUSDC(netPnL);
+    let positiveNetPnlUSDC = convertARBToUSDC(positiveNetPnl);
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
@@ -226,13 +230,13 @@ export function updateClosingStatsV2(
       totalFeeUSDC,
       timestamp,
       user,
-      isExercised,
+      isExercised && netPnL.gt(ZERO),
       totalFee,
       true,
       ZERO,
       false,
-      netPnLUSDC,
-      netPnL,
+      positiveNetPnlUSDC,
+      positiveNetPnl,
       ZERO,
       ZERO,
       false,
@@ -248,7 +252,7 @@ export function updateClosingStatsV2(
     logOpenInterest("total", totalFeeUSDC, false);
   } else if (token == "BFR") {
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
-    let netPnLUSDC = convertBFRToUSDC(netPnL);
+    let positiveNetPnlUSDC = convertBFRToUSDC(positiveNetPnl);
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
@@ -258,15 +262,15 @@ export function updateClosingStatsV2(
       totalFeeUSDC,
       timestamp,
       user,
-      isExercised,
+      isExercised && netPnL.gt(ZERO),
       ZERO,
       false,
       ZERO,
       false,
-      netPnLUSDC,
+      positiveNetPnlUSDC,
       ZERO,
       ZERO,
-      netPnL,
+      positiveNetPnl,
       true,
       totalFee
     );

@@ -219,7 +219,8 @@ export function _loadOrCreateOptionDataEntity(
 
 export function _loadOrCreateLeaderboardEntity(
   dayId: string,
-  account: Bytes
+  account: Bytes,
+  period: string
 ): Leaderboard {
   let referenceID = `${dayId}${account}`;
   let entity = Leaderboard.load(referenceID);
@@ -247,6 +248,7 @@ export function _loadOrCreateLeaderboardEntity(
     entity.bfrTotalTrades = 0;
     entity.bfrTradesWon = 0;
     entity.bfrWinRate = 0;
+    entity.period = period;
     entity.save();
   }
   return entity as Leaderboard;
@@ -254,7 +256,8 @@ export function _loadOrCreateLeaderboardEntity(
 
 export function _loadOrCreateWeeklyLeaderboardEntity(
   weekId: string,
-  account: Bytes
+  account: Bytes,
+  period: string
 ): WeeklyLeaderboard {
   let referenceID = `${weekId}${account}`;
   let entity = WeeklyLeaderboard.load(referenceID);
@@ -282,6 +285,7 @@ export function _loadOrCreateWeeklyLeaderboardEntity(
     entity.bfrTotalTrades = 0;
     entity.bfrTradesWon = 0;
     entity.bfrWinRate = 0;
+    entity.period = period;
     entity.save();
   }
   return entity as WeeklyLeaderboard;

@@ -28,9 +28,10 @@ import {
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
-  let entity = ConfigContract.load(address);
+  const optionContract = Address.fromBytes(address);
+  let entity = ConfigContract.load(optionContract);
   if (entity == null) {
-    entity = new ConfigContract(address);
+    entity = new ConfigContract(optionContract);
     entity.address = address;
     entity.maxFee = ZERO;
     entity.minFee = ZERO;
@@ -57,10 +58,10 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
 export function _handleCreateOptionsContract(
   event: CreateOptionsContract
 ): void {
-  const routerContract = findRouterContract(event.address);
+  const routerContract = findRouterContract(Address.fromBytes(event.address));
   if (routerContract !== ADDRESS_ZERO) {
     const optionContractInstance = _loadOrCreateOptionContractEntity(
-      event.address
+      Address.fromBytes(event.address)
     );
     optionContractInstance.routerContract = routerContract;
     optionContractInstance.category = event.params.category;

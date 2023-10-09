@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -50,7 +50,7 @@ export function isContractRegisteredToV2Router(
   );
 }
 export function _handleCreate(event: Create): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
   if (isContractRegisteredToV2Router(optionContractInstance)) {
@@ -163,7 +163,7 @@ export function _handleCreate(event: Create): void {
 }
 
 export function _handleExpire(event: Expire): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -192,7 +192,7 @@ export function _handleExpire(event: Expire): void {
 }
 
 export function _handleExercise(event: Exercise): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -237,7 +237,7 @@ export function _handleExercise(event: Exercise): void {
 }
 
 export function _handleLpProfit(event: LpProfit): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -257,7 +257,7 @@ export function _handleLpProfit(event: LpProfit): void {
 }
 
 export function _handleLpLoss(event: LpLoss): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -277,15 +277,16 @@ export function _handleLpLoss(event: LpLoss): void {
 }
 
 export function _handleUpdateReferral(event: UpdateReferral): void {
-  const optionContractInstance = _loadOrCreateOptionContractEntity(
-    event.address
-  );
+  const optionContract = Address.fromBytes(event.address);
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(optionContract);
 
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
     isContractRegisteredToRouter(optionContractInstance)
   ) {
-    let optionContractEntity = _loadOrCreateOptionContractEntity(event.address);
+    let optionContractEntity =
+      _loadOrCreateOptionContractEntity(optionContract);
     let userReferralData = _loadOrCreateReferralData(event.params.user);
     if (optionContractEntity.token == "USDC") {
       userReferralData.totalDiscountAvailed =
@@ -417,9 +418,9 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
 }
 
 export function _handlePause(event: Pause): void {
-  const optionContractInstance = _loadOrCreateOptionContractEntity(
-    event.address
-  );
+  const optionContract = Address.fromBytes(event.address);
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(optionContract);
 
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
@@ -431,7 +432,7 @@ export function _handlePause(event: Pause): void {
 }
 
 export function _handleExpireV1(event: ExpireV1): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -459,7 +460,7 @@ export function _handleExpireV1(event: ExpireV1): void {
 }
 
 export function _handleExerciseV1(event: ExerciseV1): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 

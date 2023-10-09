@@ -15,7 +15,7 @@ import { isContractRegisteredToV2Router } from "./optionContractHandlers";
 
 export function _handleOpenTrade(event: OpenTrade): void {
   let queueID = event.params.queueId;
-  let contractAddress = event.params.targetContract;
+  let contractAddress = Address.fromBytes(event.params.targetContract);
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 

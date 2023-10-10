@@ -15,7 +15,9 @@ import { isContractRegisteredToV2Router } from "./optionContractHandlers";
 
 export function _handleOpenTrade(event: OpenTrade): void {
   let queueID = event.params.queueId;
-  let contractAddress = Address.fromBytes(event.params.targetContract);
+  let contractAddress = Address.fromBytes(
+    event.params.targetContract
+  ).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -36,8 +38,8 @@ export function _handleRegisterAccount(event: RegisterAccount): void {
   if (eoaToOneCT == null) {
     eoaToOneCT = new EOAtoOneCT(account.toString());
   }
-  eoaToOneCT.eoa = event.params.user;
-  eoaToOneCT.oneCT = event.params.oneCT;
+  eoaToOneCT.eoa = Address.fromBytes(event.params.user).toHexString();
+  eoaToOneCT.oneCT = Address.fromBytes(event.params.oneCT).toHexString();
   eoaToOneCT.updatedAt = event.block.timestamp;
   eoaToOneCT.nonce = event.params.nonce;
   eoaToOneCT.save();
@@ -49,8 +51,8 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   if (eoaToOneCT == null) {
     eoaToOneCT = new EOAtoOneCT(account.toString());
   }
-  eoaToOneCT.eoa = event.params.account;
-  eoaToOneCT.oneCT = Address.fromString(ADDRESS_ZERO);
+  eoaToOneCT.eoa = Address.fromBytes(event.params.account).toHexString();
+  eoaToOneCT.oneCT = ADDRESS_ZERO;
   eoaToOneCT.updatedAt = event.block.timestamp;
   eoaToOneCT.nonce = event.params.nonce;
   eoaToOneCT.save();
@@ -61,6 +63,8 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   }
   deRegisteredAccount.nonce = event.params.nonce;
   deRegisteredAccount.updatedAt = event.block.timestamp;
-  deRegisteredAccount.eoa = event.params.account;
+  deRegisteredAccount.eoa = Address.fromBytes(
+    event.params.account
+  ).toHexString();
   deRegisteredAccount.save();
 }

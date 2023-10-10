@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -51,13 +51,16 @@ export function isContractRegisteredToV2Router(
   );
 }
 export function _handleCreate(event: Create): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
   if (isContractRegisteredToV2Router(optionContractInstance)) {
-    logUser(event.block.timestamp, event.params.account);
+    logUser(
+      event.block.timestamp,
+      Address.fromBytes(event.params.account).toHexString()
+    );
     let optionID = event.params.id;
-    let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
+    let optionContractInstance = BufferBinaryOptions.bind(event.address);
     let optionData = optionContractInstance.options(optionID);
     let totalFee = event.params.totalFee;
     let poolToken = updateOptionContractData(true, totalFee, contractAddress);
@@ -86,7 +89,7 @@ export function _handleCreate(event: Create): void {
       optionID,
       contractAddress
     );
-    userOptionData.user = event.params.account;
+    userOptionData.user = Address.fromBytes(event.params.account).toHexString();
     userOptionData.totalFee = totalFee;
     userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
     userOptionData.state = optionData.value0;
@@ -115,9 +118,12 @@ export function _handleCreate(event: Create): void {
   }
 
   if (isContractRegisteredToRouter(optionContractInstance)) {
-    logUser(event.block.timestamp, event.params.account);
+    logUser(
+      event.block.timestamp,
+      Address.fromBytes(event.params.account).toHexString()
+    );
     let optionID = event.params.id;
-    let optionContractInstance = V1Options.bind(contractAddress);
+    let optionContractInstance = V1Options.bind(event.address);
     let optionData = optionContractInstance.options(optionID);
     let totalFee = event.params.totalFee;
     let poolToken = updateOptionContractData(true, totalFee, contractAddress);
@@ -135,7 +141,7 @@ export function _handleCreate(event: Create): void {
       optionID,
       contractAddress
     );
-    userOptionData.user = event.params.account;
+    userOptionData.user = Address.fromBytes(event.params.account).toHexString();
     userOptionData.totalFee = totalFee;
     userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
     userOptionData.state = optionData.value0;
@@ -166,7 +172,7 @@ export function _handleCreate(event: Create): void {
 }
 
 export function _handleExpire(event: Expire): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -196,7 +202,7 @@ export function _handleExpire(event: Expire): void {
 }
 
 export function _handleExercise(event: Exercise): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -242,7 +248,7 @@ export function _handleExercise(event: Exercise): void {
 }
 
 export function _handleLpProfit(event: LpProfit): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -262,7 +268,7 @@ export function _handleLpProfit(event: LpProfit): void {
 }
 
 export function _handleLpLoss(event: LpLoss): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -282,16 +288,20 @@ export function _handleLpLoss(event: LpLoss): void {
 }
 
 export function _handleUpdateReferral(event: UpdateReferral): void {
-  const optionContractInstance = _loadOrCreateOptionContractEntity(
-    event.address
-  );
+  const optionContract = Address.fromBytes(event.address).toHexString();
+  const referrer = Address.fromBytes(event.params.referrer).toHexString();
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(optionContract);
 
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
     isContractRegisteredToRouter(optionContractInstance)
   ) {
-    let optionContractEntity = _loadOrCreateOptionContractEntity(event.address);
-    let userReferralData = _loadOrCreateReferralData(event.params.user);
+    let optionContractEntity =
+      _loadOrCreateOptionContractEntity(optionContract);
+    let userReferralData = _loadOrCreateReferralData(
+      Address.fromBytes(event.params.user).toHexString()
+    );
     if (optionContractEntity.token == "USDC") {
       userReferralData.totalDiscountAvailed =
         userReferralData.totalDiscountAvailed.plus(event.params.rebate);
@@ -303,9 +313,7 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
         userReferralData.totalTradingVolumeUSDC.plus(event.params.totalFee);
       userReferralData.save();
 
-      let referrerReferralData = _loadOrCreateReferralData(
-        event.params.referrer
-      );
+      let referrerReferralData = _loadOrCreateReferralData(referrer);
       referrerReferralData.totalTradesReferred += 1;
       referrerReferralData.totalTradesReferredUSDC += 1;
       referrerReferralData.totalVolumeOfReferredTrades =
@@ -344,9 +352,7 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
         userReferralData.totalTradingVolumeARB.plus(event.params.totalFee);
       userReferralData.save();
 
-      let referrerReferralData = _loadOrCreateReferralData(
-        event.params.referrer
-      );
+      let referrerReferralData = _loadOrCreateReferralData(referrer);
       referrerReferralData.totalTradesReferred += 1;
       referrerReferralData.totalTradesReferredARB += 1;
 
@@ -388,9 +394,7 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
         userReferralData.totalTradingVolumeBFR.plus(event.params.totalFee);
       userReferralData.save();
 
-      let referrerReferralData = _loadOrCreateReferralData(
-        event.params.referrer
-      );
+      let referrerReferralData = _loadOrCreateReferralData(referrer);
       referrerReferralData.totalTradesReferred += 1;
       referrerReferralData.totalTradesReferredBFR += 1;
 
@@ -422,9 +426,9 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
 }
 
 export function _handlePause(event: Pause): void {
-  const optionContractInstance = _loadOrCreateOptionContractEntity(
-    event.address
-  );
+  const optionContract = Address.fromBytes(event.address).toHexString();
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(optionContract);
 
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
@@ -436,7 +440,7 @@ export function _handlePause(event: Pause): void {
 }
 
 export function _handleExpireV1(event: ExpireV1): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -465,7 +469,7 @@ export function _handleExpireV1(event: ExpireV1): void {
 }
 
 export function _handleExerciseV1(event: ExerciseV1): void {
-  let contractAddress = event.address;
+  let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 

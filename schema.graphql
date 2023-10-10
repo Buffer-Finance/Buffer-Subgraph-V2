@@ -24,8 +24,8 @@ type OptionStat @entity {
 
 type OptionContract @entity {
   category: Int!
-  id: Bytes!
-  address: Bytes
+  id: String!
+  address: String
   isPaused: Boolean!
   openUp: BigInt!
   openDown: BigInt!
@@ -39,13 +39,13 @@ type OptionContract @entity {
   asset: String
   pool: String!
   configContract: ConfigContract
-  poolContract: Bytes
+  poolContract: String
   routerContract: String
 }
 
 type ConfigContract @entity {
-  id: Bytes!
-  address: Bytes
+  id: String!
+  address: String
   minPeriod: BigInt!
   maxPeriod: BigInt!
   minFee: BigInt!
@@ -53,11 +53,11 @@ type ConfigContract @entity {
   platformFee: BigInt!
   earlyCloseThreshold: BigInt!
   isEarlyCloseEnabled: Boolean!
-  marketOIaddress: Bytes!
-  poolOIaddress: Bytes!
+  marketOIaddress: String!
+  poolOIaddress: String!
   IV: BigInt!
   IVchangeTimestamp: BigInt!
-  creationWindowAddress: Bytes!
+  creationWindowAddress: String!
   IVFactorOTM: BigInt!
   IVFactorITM: BigInt!
   SpreadConfig1: BigInt!
@@ -65,26 +65,18 @@ type ConfigContract @entity {
   SpreadFactor: BigInt!
 }
 
-# type PoolContract @entity{
-#   id: Bytes!
-#   address: Bytes!
-#   meta:Bytes
-#   token: Bytes
-#   decimals: Int!
-# }
-
 type EOAtoOneCT @entity {
   id: String!
   updatedAt: BigInt!
-  oneCT: Bytes!
-  eoa: Bytes!
+  oneCT: String!
+  eoa: String!
   nonce: BigInt!
 }
 
 type DeregisteredAccount @entity {
   id: String!
   updatedAt: BigInt!
-  eoa: Bytes!
+  eoa: String!
   nonce: BigInt!
 }
 
@@ -124,12 +116,12 @@ type UserOptionData @entity {
 }
 
 type User @entity {
-  id: Bytes!
-  address: Bytes!
+  id: String!
+  address: String!
 }
 
 type UserStat @entity {
-  id: ID!
+  id: String!
   uniqueCount: Int!
   uniqueCountCumulative: Int!
   period: Period!
@@ -162,7 +154,7 @@ type WeeklyRevenueAndFee @entity {
 
 type Leaderboard @entity {
   id: String!
-  user: Bytes!
+  user: String!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -188,7 +180,7 @@ type Leaderboard @entity {
 
 type WeeklyLeaderboard @entity {
   id: String!
-  user: Bytes!
+  user: String!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -241,7 +233,7 @@ type VolumeStat @entity {
 }
 
 type ReferralData @entity {
-  id: Bytes!
+  id: String!
   user: User!
   totalTradesReferred: Int!
   totalTradesReferredARB: Int!
@@ -305,8 +297,8 @@ type ARBPoolStat @entity {
 }
 
 type AssetTradingStat @entity {
-  id: ID!
-  contractAddress: Bytes!
+  id: String!
+  contractAddress: String!
   periodID: String!
   profit: BigInt!
   profitARB: BigInt!

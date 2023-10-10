@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { DailyUserStat, User } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import {
@@ -10,7 +10,7 @@ import {
 export function updateOptionContractData(
   increaseInOpenInterest: boolean,
   totalFee: BigInt,
-  contractAddress: Address
+  contractAddress: string
 ): string {
   let optionContractData = _loadOrCreateOptionContractEntity(contractAddress);
   let poolToken = optionContractData.pool;
@@ -40,7 +40,7 @@ export function updateOptionContractData(
   return poolToken;
 }
 
-export function logUser(timestamp: BigInt, account: Address): void {
+export function logUser(timestamp: BigInt, account: string): void {
   let user = User.load(account);
   let id = _getDayId(timestamp);
   let dailyUserStatid = `${id}-${account.toString()}`;

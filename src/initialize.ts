@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -45,7 +45,8 @@ export function calculatePayout(settlementFeePercent: BigInt): BigInt {
   return payout;
 }
 
-export function findRouterContract(contractAddress: Address): string {
+export function findRouterContract(address: string): string {
+  const contractAddress = Address.fromString(address);
   const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   const v2RouterContract = BufferRouter.bind(
     Address.fromString(V2_RouterAddress)
@@ -96,7 +97,7 @@ export function findRouterContract(contractAddress: Address): string {
 }
 
 export function _loadOrCreateOptionContractEntity(
-  contractAddress: Address
+  contractAddress: string
 ): OptionContract {
   let optionContract = OptionContract.load(contractAddress);
   if (optionContract == null) {
@@ -121,7 +122,7 @@ export function _loadOrCreateOptionContractEntity(
       optionContract.asset = "unknown";
     } else {
       let optionContractInstance = BufferBinaryOptions.bind(
-        Address.fromBytes(contractAddress)
+        Address.fromString(contractAddress)
       );
       optionContract.isPaused = optionContractInstance.isPaused();
       optionContract.asset = optionContractInstance.assetPair();
@@ -190,7 +191,7 @@ export function _loadOrCreateAssetTradingStatEntity(
   id: string,
   period: string,
   timestamp: BigInt,
-  contractAddress: Bytes,
+  contractAddress: string,
   periodID: string
 ): AssetTradingStat {
   let entity = AssetTradingStat.load(id);
@@ -222,7 +223,7 @@ export function _loadOrCreateAssetTradingStatEntity(
 
 export function _loadOrCreateOptionDataEntity(
   optionID: BigInt,
-  contractAddress: Bytes
+  contractAddress: string
 ): UserOptionData {
   let referrenceID = `${optionID}${contractAddress}`;
   let entity = UserOptionData.load(referrenceID);
@@ -239,7 +240,7 @@ export function _loadOrCreateOptionDataEntity(
 
 export function _loadOrCreateLeaderboardEntity(
   dayId: string,
-  account: Bytes
+  account: string
 ): Leaderboard {
   let referenceID = `${dayId}${account}`;
   let entity = Leaderboard.load(referenceID);
@@ -274,7 +275,7 @@ export function _loadOrCreateLeaderboardEntity(
 
 export function _loadOrCreateWeeklyLeaderboardEntity(
   weekId: string,
-  account: Bytes
+  account: string
 ): WeeklyLeaderboard {
   let referenceID = `${weekId}${account}`;
   let entity = WeeklyLeaderboard.load(referenceID);
@@ -363,7 +364,7 @@ export function _loadOrCreateFeeStat(
   return entity as FeeStat;
 }
 
-export function _loadOrCreateReferralData(user: Bytes): ReferralData {
+export function _loadOrCreateReferralData(user: string): ReferralData {
   let userReferralData = ReferralData.load(user);
   if (userReferralData == null) {
     userReferralData = new ReferralData(user);

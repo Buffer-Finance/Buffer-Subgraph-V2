@@ -1,11 +1,11 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import {
-  _loadOrCreateVolumeStat,
-  _loadOrCreateTradingStatEntity,
   _loadOrCreateAssetTradingStatEntity,
   _loadOrCreateFeeStat,
+  _loadOrCreateTradingStatEntity,
   _loadOrCreateUserRewards,
+  _loadOrCreateVolumeStat,
 } from "./initialize";
 
 export function logVolume(
@@ -175,7 +175,7 @@ export function storePnlPerContract(
   timestamp: BigInt,
   pnl: BigInt,
   isProfit: boolean,
-  contractAddress: Bytes
+  contractAddress: string
 ): void {
   let totalID = `total-${contractAddress}`;
   let totalEntity = _loadOrCreateAssetTradingStatEntity(

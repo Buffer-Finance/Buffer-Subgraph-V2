@@ -1,18 +1,17 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
+import { BigInt } from "@graphprotocol/graph-ts";
+import { _getDayId, _getWeekId } from "./helpers";
 import {
   _loadOrCreateDailyRevenueAndFee,
-  _loadOrCreateWeeklyRevenueAndFee,
   _loadOrCreateLeaderboardEntity,
   _loadOrCreateWeeklyLeaderboardEntity,
+  _loadOrCreateWeeklyRevenueAndFee,
 } from "./initialize";
-import { Leaderboard, WeeklyLeaderboard } from "../generated/schema";
 
 //To update the current leaderboard : Daily & Weekly
 export function updateLeaderboards(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isARB: boolean,
@@ -92,7 +91,7 @@ export function updateDailyAndWeeklyRevenue(
 function _updateDailyLeaderboard(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isUSDC: boolean,
@@ -162,7 +161,7 @@ function _updateDailyLeaderboard(
 function _updateWeeklyLeaderboard(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isUSDC: boolean,

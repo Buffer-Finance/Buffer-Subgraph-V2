@@ -1,29 +1,29 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getHourId } from "./helpers";
-import { ZERO } from "./initialize";
-import {
-  updateOpenInterest,
-  storeFees,
-  logVolume,
-  storePnl,
-  storePnlPerContract,
-  saveSettlementFeeDiscount,
-} from "./stats";
-import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
-import {
-  logVolumeAndSettlementFeePerContract,
-  updateDashboardOverviewStats,
-  logOpenInterest,
-} from "./dashboard";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { updateOptionContractData } from "./core";
+import {
+  logOpenInterest,
+  logVolumeAndSettlementFeePerContract,
+  updateDashboardOverviewStats,
+} from "./dashboard";
+import { _getHourId } from "./helpers";
+import { ZERO } from "./initialize";
+import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
+import {
+  logVolume,
+  saveSettlementFeeDiscount,
+  storeFees,
+  storePnl,
+  storePnlPerContract,
+  updateOpenInterest,
+} from "./stats";
 
 export function updateOpeningStats(
   token: string,
   timestamp: BigInt,
   totalFee: BigInt,
   settlementFee: BigInt,
-  contractAddress: Bytes,
+  contractAddress: string,
   poolToken: string
 ): void {
   if (token == "USDC") {
@@ -180,10 +180,10 @@ export function updateClosingStatsV2(
   token: string,
   timestamp: BigInt,
   totalFee: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   netPnL: BigInt,
-  contractAddress: Bytes
+  contractAddress: string
 ): void {
   if (token == "USDC") {
     // Update daily & total open interest
@@ -207,11 +207,7 @@ export function updateClosingStatsV2(
       ZERO
     );
 
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFee, false);
   } else if (token == "ARB") {
@@ -239,11 +235,7 @@ export function updateClosingStatsV2(
       ZERO
     );
 
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   } else if (token == "BFR") {
@@ -271,11 +263,7 @@ export function updateClosingStatsV2(
       totalFee
     );
 
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   }
@@ -284,7 +272,7 @@ export function updateClosingStatsV2(
 export function updateLpProfitAndLoss(
   token: string,
   timestamp: BigInt,
-  contractAddress: Bytes,
+  contractAddress: string,
   isExercised: boolean,
   netPnL: BigInt
 ): void {
@@ -315,8 +303,8 @@ export function updateClosingStats(
   timestamp: BigInt,
   totalFee: BigInt,
   settlementFee: BigInt,
-  user: Bytes,
-  contractAddress: Bytes,
+  user: string,
+  contractAddress: string,
   isExercised: boolean,
   netPnL: BigInt
 ): void {
@@ -356,11 +344,7 @@ export function updateClosingStats(
       false,
       ZERO
     );
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFee, false);
   } else if (token == "ARB") {
@@ -403,11 +387,7 @@ export function updateClosingStats(
       false,
       ZERO
     );
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   } else if (token == "BFR") {
@@ -450,11 +430,7 @@ export function updateClosingStats(
       true,
       totalFee
     );
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   }

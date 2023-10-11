@@ -1,4 +1,4 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { _getDayId, _getLeaderboardWeekId } from "./helpers";
 import {
   _loadOrCreateDailyRevenueAndFee,
@@ -11,7 +11,7 @@ import {
 export function updateLeaderboards(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isARB: boolean,
@@ -91,7 +91,7 @@ export function updateDailyAndWeeklyRevenue(
 function _updateDailyLeaderboard(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isUSDC: boolean,
@@ -161,7 +161,7 @@ function _updateDailyLeaderboard(
 function _updateWeeklyLeaderboard(
   totalFee: BigInt,
   timestamp: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   arbVolume: BigInt,
   isUSDC: boolean,

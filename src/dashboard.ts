@@ -1,6 +1,5 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { VolumePerContract } from "../generated/schema";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
 import { _loadOrCreateDashboardStat } from "./initialize";
 
 // For the overview section
@@ -11,9 +10,8 @@ export function updateDashboardOverviewStats(
 ): void {
   let dashboardStat = _loadOrCreateDashboardStat(token);
   dashboardStat.totalVolume = dashboardStat.totalVolume.plus(totalFee);
-  dashboardStat.totalSettlementFees = dashboardStat.totalSettlementFees.plus(
-    settlementFee
-  );
+  dashboardStat.totalSettlementFees =
+    dashboardStat.totalSettlementFees.plus(settlementFee);
   dashboardStat.totalTrades += 1;
   dashboardStat.save();
 }
@@ -23,7 +21,7 @@ export function logVolumeAndSettlementFeePerContract(
   id: string,
   period: string,
   timestamp: BigInt,
-  contractAddress: Bytes,
+  contractAddress: string,
   depositToken: string,
   totalFee: BigInt,
   settlementFee: BigInt

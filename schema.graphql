@@ -5,6 +5,23 @@ enum Period {
   total
 }
 
+type OptionStat @entity {
+  id: String! # optionContract+&+user
+  user: String!
+  optionContract: OptionContract!
+  token: String!
+  tradeCount: Int!
+  openInterest: BigInt!
+  volume: BigInt!
+  volume_usd: BigInt!
+  payout: BigInt!
+  payout_usd: BigInt!
+  netPnl: BigInt!
+  netPnl_usd: BigInt!
+  tradesWon: Int!
+  tradesOpen: Int!
+}
+
 type OptionContract @entity {
   category: Int!
   id: Bytes!

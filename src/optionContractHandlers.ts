@@ -30,6 +30,7 @@ import {
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { logUser, updateOptionContractData } from "./core";
 import {
+  ZERO,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
   _loadOrCreateReferralData,
@@ -108,7 +109,8 @@ export function _handleCreate(event: Create): void {
       totalFee,
       userOptionData.settlementFee,
       contractAddress,
-      userOptionData.poolToken
+      userOptionData.poolToken,
+      userOptionData.user
     );
   }
 
@@ -157,7 +159,8 @@ export function _handleCreate(event: Create): void {
       totalFee,
       userOptionData.settlementFee,
       contractAddress,
-      userOptionData.poolToken
+      userOptionData.poolToken,
+      userOptionData.user
     );
   }
 }
@@ -186,7 +189,8 @@ export function _handleExpire(event: Expire): void {
       userOptionData.user,
       contractAddress,
       false,
-      userOptionData.totalFee
+      userOptionData.totalFee,
+      ZERO
     );
   }
 }
@@ -231,7 +235,8 @@ export function _handleExercise(event: Exercise): void {
       userOptionData.user,
       true,
       event.params.profit.minus(userOptionData.totalFee),
-      contractAddress
+      contractAddress,
+      event.params.profit
     );
   }
 }
@@ -453,7 +458,8 @@ export function _handleExpireV1(event: ExpireV1): void {
       userOptionData.user,
       contractAddress,
       false,
-      userOptionData.totalFee
+      userOptionData.totalFee,
+      ZERO
     );
   }
 }
@@ -485,7 +491,8 @@ export function _handleExerciseV1(event: ExerciseV1): void {
       userOptionData.user,
       contractAddress,
       true,
-      event.params.profit.minus(userOptionData.totalFee)
+      event.params.profit.minus(userOptionData.totalFee),
+      event.params.profit
     );
   }
 }

@@ -10,6 +10,7 @@ import {
   FeeStat,
   Leaderboard,
   OptionContract,
+  OptionStat,
   PoolStat,
   ReferralData,
   TradingStat,
@@ -486,4 +487,32 @@ export function _loadOrCreateDefillamaFeeStat(
     entity.save();
   }
   return entity as DefillamaFeeStat;
+}
+export function _loadOrCreateOptionStats(
+  id: string,
+  optionContract: string,
+  token: string,
+  user: string
+): OptionStat {
+  let entity = OptionStat.load(id);
+
+  if (entity === null) {
+    entity = new OptionStat(id);
+    entity.optionContract = optionContract;
+    entity.token = token;
+    entity.tradeCount = 0;
+    entity.openInterest = ZERO;
+    entity.volume = ZERO;
+    entity.volume_usd = ZERO;
+    entity.payout = ZERO;
+    entity.payout_usd = ZERO;
+    entity.netPnl = ZERO;
+    entity.netPnl_usd = ZERO;
+    entity.tradesWon = 0;
+    entity.user = user;
+    entity.tradesOpen = 0;
+    entity.save();
+  }
+
+  return entity as OptionStat;
 }

@@ -97,7 +97,7 @@ type UserOptionData @entity {
   strike: BigInt
   totalFee: BigInt!
   totalFee_usd: BigInt!
-  user: User!
+  user: Bytes!
   creationTime: BigInt!
   expirationPrice: BigInt
   payout: BigInt
@@ -119,7 +119,6 @@ type User @entity {
   id: String!
   address: String!
 }
-
 type UserStat @entity {
   id: String!
   uniqueCount: Int!
@@ -234,7 +233,7 @@ type VolumeStat @entity {
 
 type ReferralData @entity {
   id: String!
-  user: User!
+  user: Bytes!
   totalTradesReferred: Int!
   totalTradesReferredARB: Int!
   totalTradesReferredUSDC: Int!

@@ -349,7 +349,7 @@ export function _loadOrCreateReferralData(user: string): ReferralData {
   let userReferralData = ReferralData.load(user);
   if (userReferralData == null) {
     userReferralData = new ReferralData(user);
-    userReferralData.user = user;
+    userReferralData.user = Address.fromString(user);
     userReferralData.totalDiscountAvailed = ZERO;
     userReferralData.totalDiscountAvailedARB = ZERO;
     userReferralData.totalDiscountAvailedUSDC = ZERO;

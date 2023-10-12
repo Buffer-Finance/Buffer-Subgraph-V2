@@ -509,7 +509,7 @@ export function _loadOrCreateOptionStats(
     entity.netPnl = ZERO;
     entity.netPnl_usd = ZERO;
     entity.tradesWon = 0;
-    entity.user = user;
+    entity.user = Address.fromString(user);
     entity.tradesOpen = 0;
     entity.save();
   }

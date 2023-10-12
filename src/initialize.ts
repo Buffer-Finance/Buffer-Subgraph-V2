@@ -16,7 +16,6 @@ import {
   UserOptionData,
   UserRewards,
   UserStat,
-  UserTotalStat,
   VolumeStat,
   WeeklyLeaderboard,
   WeeklyRevenueAndFee,
@@ -489,19 +488,6 @@ export function _loadOrCreateUserRewards(
     entity.save();
   }
   return entity as UserRewards;
-}
-
-export function _loadOrCreateUserTotalStats(
-  id: string,
-  userAddress: string
-): UserTotalStat {
-  let entity = UserTotalStat.load(id);
-  if (entity === null) {
-    entity = new UserTotalStat(id);
-    entity.address = userAddress;
-  }
-
-  return entity as UserTotalStat;
 }
 
 export function _loadOrCreateOptionStats(

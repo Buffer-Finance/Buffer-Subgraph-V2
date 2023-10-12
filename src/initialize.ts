@@ -526,6 +526,7 @@ export function _loadOrCreateOptionStats(
     entity.netPnl_usd = ZERO;
     entity.tradesWon = 0;
     entity.user = user;
+    entity.tradesOpen = 0;
     entity.save();
   }
 

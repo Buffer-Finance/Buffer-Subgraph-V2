@@ -14,7 +14,7 @@ type UserTotalStat @entity {
 type OptionStat @entity {
   id: String! # optionContract+&+user
   user: String!
-  optionContract: String!
+  optionContract: OptionContract!
   token: String!
   tradeCount: Int!
   openInterest: BigInt!
@@ -25,6 +25,7 @@ type OptionStat @entity {
   netPnl: BigInt!
   netPnl_usd: BigInt!
   tradesWon: Int!
+  tradesOpen: Int!
 }
 
 type OptionContract @entity {

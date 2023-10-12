@@ -39,6 +39,7 @@ export function updateTradeOpenStatsForUser(
   statsEntity.volume_usd = statsEntity.volume_usd.plus(volumeUSD);
   statsEntity.openInterest = statsEntity.openInterest.plus(volume);
   statsEntity.tradeCount += 1;
+  statsEntity.tradesOpen += 1;
   statsEntity.save();
 }
 
@@ -59,6 +60,7 @@ export function updateTradeClosingStatsForUser(
     token,
     userAddress
   );
+  statsEntity.tradesOpen -= 1;
   statsEntity.openInterest = statsEntity.openInterest.minus(volume);
   statsEntity.payout = statsEntity.payout.plus(payout);
   statsEntity.payout_usd = statsEntity.payout_usd.plus(payout_usd);

@@ -89,7 +89,7 @@ export function _handleCreate(event: Create): void {
       optionID,
       contractAddress
     );
-    userOptionData.user = Address.fromBytes(event.params.account).toHexString();
+    userOptionData.user = event.params.account;
     userOptionData.totalFee = totalFee;
     userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
     userOptionData.state = optionData.value0;
@@ -113,7 +113,7 @@ export function _handleCreate(event: Create): void {
       userOptionData.settlementFee,
       contractAddress,
       userOptionData.poolToken,
-      userOptionData.user
+      Address.fromBytes(userOptionData.user).toHexString()
     );
   }
 
@@ -141,7 +141,7 @@ export function _handleCreate(event: Create): void {
       optionID,
       contractAddress
     );
-    userOptionData.user = Address.fromBytes(event.params.account).toHexString();
+    userOptionData.user = event.params.account;
     userOptionData.totalFee = totalFee;
     userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
     userOptionData.state = optionData.value0;
@@ -166,7 +166,7 @@ export function _handleCreate(event: Create): void {
       userOptionData.settlementFee,
       contractAddress,
       userOptionData.poolToken,
-      userOptionData.user
+      Address.fromBytes(userOptionData.user).toHexString()
     );
   }
 }
@@ -192,7 +192,7 @@ export function _handleExpire(event: Expire): void {
       userOptionData.creationTime,
       userOptionData.totalFee,
       userOptionData.settlementFee,
-      userOptionData.user,
+      Address.fromBytes(userOptionData.user).toHexString(),
       contractAddress,
       false,
       userOptionData.totalFee,
@@ -238,7 +238,7 @@ export function _handleExercise(event: Exercise): void {
       userOptionData.depositToken,
       userOptionData.creationTime,
       userOptionData.totalFee,
-      userOptionData.user,
+      Address.fromBytes(userOptionData.user).toHexString(),
       true,
       event.params.profit.minus(userOptionData.totalFee),
       contractAddress,
@@ -459,7 +459,7 @@ export function _handleExpireV1(event: ExpireV1): void {
       userOptionData.creationTime,
       userOptionData.totalFee,
       userOptionData.settlementFee,
-      userOptionData.user,
+      Address.fromBytes(userOptionData.user).toHexString(),
       contractAddress,
       false,
       userOptionData.totalFee,
@@ -492,7 +492,7 @@ export function _handleExerciseV1(event: ExerciseV1): void {
       userOptionData.creationTime,
       userOptionData.totalFee,
       userOptionData.settlementFee,
-      userOptionData.user,
+      Address.fromBytes(userOptionData.user).toHexString(),
       contractAddress,
       true,
       event.params.profit.minus(userOptionData.totalFee),

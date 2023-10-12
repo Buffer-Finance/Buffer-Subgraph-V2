@@ -31,8 +31,6 @@ export function updateOpeningStats(
   poolToken: string,
   userAddress: string
 ): void {
-  // updateUserTotalStat(userAddress, userAddress, contractAddress, token);
-
   if (token == "USDC") {
     updateTradeOpenStatsForUser(
       totalFee,

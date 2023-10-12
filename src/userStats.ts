@@ -1,27 +1,6 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import { _loadOrCreateOptionStats } from "./initialize";
 
-// export function updateUserTotalStat(
-//   id: string,
-//   userAddress: string,
-//   optionContractAddress: string,
-//   token: string
-// ): void {
-//   const entity = _loadOrCreateUserTotalStats(id, userAddress);
-//   const statsEntity = _loadOrCreateOptionStats(
-//     optionContractAddress + "&" + userAddress,
-//     optionContractAddress,
-//     token
-//   );
-
-//   if (entity.statsByContract === null) {
-//     entity.statsByContract = [statsEntity.id];
-//   } else if (entity.statsByContract.indexOf(statsEntity.id) === -1) {
-//     entity.statsByContract.push(statsEntity.id);
-//   }
-//   entity.save();
-// }
-
 export function updateTradeOpenStatsForUser(
   volume: BigInt,
   volumeUSD: BigInt,

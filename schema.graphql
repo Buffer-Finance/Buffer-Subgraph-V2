@@ -5,12 +5,6 @@ enum Period {
   total
 }
 
-type UserTotalStat @entity {
-  id: String! # user
-  address: String!
-  statsByContract: [OptionStat!]
-}
-
 type OptionStat @entity {
   id: String! # optionContract+&+user
   user: String!

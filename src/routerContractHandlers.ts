@@ -38,8 +38,8 @@ export function _handleRegisterAccount(event: RegisterAccount): void {
   if (eoaToOneCT == null) {
     eoaToOneCT = new EOAtoOneCT(account.toString());
   }
-  eoaToOneCT.eoa = Address.fromBytes(event.params.user).toHexString();
-  eoaToOneCT.oneCT = Address.fromBytes(event.params.oneCT).toHexString();
+  eoaToOneCT.eoa = event.params.user;
+  eoaToOneCT.oneCT = event.params.oneCT;
   eoaToOneCT.updatedAt = event.block.timestamp;
   eoaToOneCT.nonce = event.params.nonce;
   eoaToOneCT.save();
@@ -51,8 +51,8 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   if (eoaToOneCT == null) {
     eoaToOneCT = new EOAtoOneCT(account.toString());
   }
-  eoaToOneCT.eoa = Address.fromBytes(event.params.account).toHexString();
-  eoaToOneCT.oneCT = ADDRESS_ZERO;
+  eoaToOneCT.eoa = event.params.account;
+  eoaToOneCT.oneCT = Address.fromString(ADDRESS_ZERO);
   eoaToOneCT.updatedAt = event.block.timestamp;
   eoaToOneCT.nonce = event.params.nonce;
   eoaToOneCT.save();
@@ -63,8 +63,7 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   }
   deRegisteredAccount.nonce = event.params.nonce;
   deRegisteredAccount.updatedAt = event.block.timestamp;
-  deRegisteredAccount.eoa = Address.fromBytes(
-    event.params.account
-  ).toHexString();
+  deRegisteredAccount.eoa = event.params.account;
+
   deRegisteredAccount.save();
 }

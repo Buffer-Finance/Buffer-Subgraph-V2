@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { DailyUserStat, User } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import {
@@ -57,7 +57,7 @@ export function logUser(timestamp: BigInt, account: string): void {
     userStat.save();
 
     user = new User(account);
-    user.address = account;
+    user.address = Address.fromString(account);
     user.save();
 
     let dailyUserStat = new DailyUserStat(dailyUserStatid);

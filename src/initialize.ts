@@ -9,12 +9,14 @@ import {
   FeeStat,
   Leaderboard,
   OptionContract,
+  OptionStat,
   PoolStat,
   ReferralData,
   TradingStat,
   UserOptionData,
   UserRewards,
   UserStat,
+  UserTotalStat,
   VolumeStat,
   WeeklyLeaderboard,
   WeeklyRevenueAndFee,
@@ -487,4 +489,45 @@ export function _loadOrCreateUserRewards(
     entity.save();
   }
   return entity as UserRewards;
+}
+
+export function _loadOrCreateUserTotalStats(
+  id: string,
+  userAddress: string
+): UserTotalStat {
+  let entity = UserTotalStat.load(id);
+  if (entity === null) {
+    entity = new UserTotalStat(id);
+    entity.address = userAddress;
+  }
+
+  return entity as UserTotalStat;
+}
+
+export function _loadOrCreateOptionStats(
+  id: string,
+  optionContract: string,
+  token: string,
+  user: string
+): OptionStat {
+  let entity = OptionStat.load(id);
+
+  if (entity === null) {
+    entity = new OptionStat(id);
+    entity.optionContract = optionContract;
+    entity.token = token;
+    entity.tradeCount = 0;
+    entity.openInterest = ZERO;
+    entity.volume = ZERO;
+    entity.volume_usd = ZERO;
+    entity.payout = ZERO;
+    entity.payout_usd = ZERO;
+    entity.netPnl = ZERO;
+    entity.netPnl_usd = ZERO;
+    entity.tradesWon = 0;
+    entity.user = user;
+    entity.save();
+  }
+
+  return entity as OptionStat;
 }

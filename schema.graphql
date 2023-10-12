@@ -25,7 +25,7 @@ type OptionStat @entity {
 type OptionContract @entity {
   category: Int!
   id: String!
-  address: String
+  address: Bytes
   isPaused: Boolean!
   openUp: BigInt!
   openDown: BigInt!
@@ -39,13 +39,13 @@ type OptionContract @entity {
   asset: String
   pool: String!
   configContract: ConfigContract
-  poolContract: String
+  poolContract: Bytes
   routerContract: String
 }
 
 type ConfigContract @entity {
   id: String!
-  address: String
+  address: Bytes
   minPeriod: BigInt!
   maxPeriod: BigInt!
   minFee: BigInt!
@@ -53,11 +53,11 @@ type ConfigContract @entity {
   platformFee: BigInt!
   earlyCloseThreshold: BigInt!
   isEarlyCloseEnabled: Boolean!
-  marketOIaddress: String!
-  poolOIaddress: String!
+  marketOIaddress: Bytes!
+  poolOIaddress: Bytes!
   IV: BigInt!
   IVchangeTimestamp: BigInt!
-  creationWindowAddress: String!
+  creationWindowAddress: Bytes!
   IVFactorOTM: BigInt!
   IVFactorITM: BigInt!
   SpreadConfig1: BigInt!
@@ -68,15 +68,15 @@ type ConfigContract @entity {
 type EOAtoOneCT @entity {
   id: String!
   updatedAt: BigInt!
-  oneCT: String!
-  eoa: String!
+  oneCT: Bytes!
+  eoa: Bytes!
   nonce: BigInt!
 }
 
 type DeregisteredAccount @entity {
   id: String!
   updatedAt: BigInt!
-  eoa: String!
+  eoa: Bytes!
   nonce: BigInt!
 }
 
@@ -117,7 +117,7 @@ type UserOptionData @entity {
 
 type User @entity {
   id: String!
-  address: String!
+  address: Bytes!
 }
 
 type UserStat @entity {
@@ -154,7 +154,7 @@ type WeeklyRevenueAndFee @entity {
 
 type Leaderboard @entity {
   id: String!
-  user: String!
+  user: Bytes!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -180,7 +180,7 @@ type Leaderboard @entity {
 
 type WeeklyLeaderboard @entity {
   id: String!
-  user: String!
+  user: Bytes!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -298,7 +298,7 @@ type ARBPoolStat @entity {
 
 type AssetTradingStat @entity {
   id: String!
-  contractAddress: String!
+  contractAddress: Bytes!
   periodID: String!
   profit: BigInt!
   profitARB: BigInt!

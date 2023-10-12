@@ -79,7 +79,7 @@ export function _loadOrCreateOptionContractEntity(
   let optionContract = OptionContract.load(contractAddress);
   if (optionContract == null) {
     optionContract = new OptionContract(contractAddress);
-    optionContract.address = contractAddress;
+    optionContract.address = Address.fromString(contractAddress);
     optionContract.volume = ZERO;
     optionContract.tradeCount = 0;
     optionContract.openDown = ZERO;
@@ -188,7 +188,7 @@ export function _loadOrCreateAssetTradingStatEntity(
     entity.lossUSDC = ZERO;
     entity.lossARB = ZERO;
     entity.lossBFR = ZERO;
-    entity.contractAddress = contractAddress;
+    entity.contractAddress = Address.fromString(contractAddress);
     entity.profitCumulative = ZERO;
     entity.profitCumulativeARB = ZERO;
     entity.profitCumulativeUSDC = ZERO;
@@ -229,7 +229,7 @@ export function _loadOrCreateLeaderboardEntity(
   let entity = Leaderboard.load(referenceID);
   if (entity == null) {
     entity = new Leaderboard(referenceID);
-    entity.user = account;
+    entity.user = Address.fromString(account);
     entity.timestamp = dayId;
     entity.totalTrades = 0;
     entity.volume = ZERO;
@@ -264,7 +264,7 @@ export function _loadOrCreateWeeklyLeaderboardEntity(
   let entity = WeeklyLeaderboard.load(referenceID);
   if (entity == null) {
     entity = new WeeklyLeaderboard(referenceID);
-    entity.user = account;
+    entity.user = Address.fromString(account);
     entity.timestamp = weekId;
     entity.totalTrades = 0;
     entity.volume = ZERO;

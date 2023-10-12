@@ -7,7 +7,7 @@ enum Period {
 
 type OptionStat @entity {
   id: String! # optionContract+&+user
-  user: String!
+  user: Bytes!
   optionContract: OptionContract!
   token: String!
   tradeCount: Int!

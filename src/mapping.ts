@@ -2,6 +2,7 @@ import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
+import { Transfer } from "../generated/BFR/BFR";
 import {
   Create,
   CreateOptionsContract,
@@ -34,6 +35,7 @@ import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
 } from "../generated/V1Options/V1Options";
+import { _handleTransfer } from "./BFRTracking";
 import {
   _handleCreateOptionsContract,
   _handleUpdateCreationWindowContract,
@@ -187,4 +189,7 @@ export function handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
 }
 export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
   _handleUpdateSpreadFactor(event);
+}
+export function handleTransfer(event: Transfer): void {
+  _handleTransfer(event);
 }

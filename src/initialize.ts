@@ -4,6 +4,7 @@ import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
   ARBPoolStat,
   AssetTradingStat,
+  BurnedBFR,
   DailyRevenueAndFee,
   DashboardStat,
   DefillamaFeeStat,
@@ -488,6 +489,20 @@ export function _loadOrCreateDefillamaFeeStat(
   }
   return entity as DefillamaFeeStat;
 }
+
+export function _loadOrCreateBurnedBFR(period: string, id: string): BurnedBFR {
+  let entity = BurnedBFR.load(id);
+  if (!entity) {
+    entity = new BurnedBFR(id);
+    entity.timestamp = ZERO;
+    entity.period = period;
+    entity.amount = ZERO;
+    entity.cumulativeAmount = ZERO;
+    entity.save();
+  }
+  return entity;
+}
+
 export function _loadOrCreateOptionStats(
   id: string,
   optionContract: string,

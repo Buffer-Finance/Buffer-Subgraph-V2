@@ -1,4 +1,4 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   _getDayId,
   _getDefillamaDayId,
@@ -181,7 +181,7 @@ export function storePnlPerContract(
   timestamp: BigInt,
   pnl: BigInt,
   isProfit: boolean,
-  contractAddress: Bytes
+  contractAddress: string
 ): void {
   let totalID = `total-${contractAddress}`;
   let totalEntity = _loadOrCreateAssetTradingStatEntity(

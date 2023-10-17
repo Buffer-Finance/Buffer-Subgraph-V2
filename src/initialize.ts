@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -11,6 +11,7 @@ import {
   FeeStat,
   Leaderboard,
   OptionContract,
+  OptionStat,
   PoolStat,
   ReferralData,
   TradingStat,
@@ -44,7 +45,8 @@ export function calculatePayout(settlementFeePercent: BigInt): BigInt {
   return payout;
 }
 
-export function findRouterContract(contractAddress: Address): string {
+export function findRouterContract(address: string): string {
+  const contractAddress = Address.fromString(address);
   const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   const v2RouterContract = BufferRouter.bind(
     Address.fromString(V2_RouterAddress)
@@ -74,12 +76,12 @@ export function findRouterContract(contractAddress: Address): string {
 }
 
 export function _loadOrCreateOptionContractEntity(
-  contractAddress: Address
+  contractAddress: string
 ): OptionContract {
   let optionContract = OptionContract.load(contractAddress);
   if (optionContract == null) {
     optionContract = new OptionContract(contractAddress);
-    optionContract.address = contractAddress;
+    optionContract.address = Address.fromString(contractAddress);
     optionContract.volume = ZERO;
     optionContract.tradeCount = 0;
     optionContract.openDown = ZERO;
@@ -102,7 +104,7 @@ export function _loadOrCreateOptionContractEntity(
       optionContract.asset = "unknown";
     } else {
       let optionContractInstance = BufferBinaryOptions.bind(
-        Address.fromBytes(contractAddress)
+        Address.fromString(contractAddress)
       );
       optionContract.isPaused = optionContractInstance.isPaused();
       optionContract.asset = optionContractInstance.assetPair();
@@ -173,7 +175,7 @@ export function _loadOrCreateAssetTradingStatEntity(
   id: string,
   period: string,
   timestamp: BigInt,
-  contractAddress: Bytes,
+  contractAddress: string,
   periodID: string
 ): AssetTradingStat {
   let entity = AssetTradingStat.load(id);
@@ -188,7 +190,7 @@ export function _loadOrCreateAssetTradingStatEntity(
     entity.lossUSDC = ZERO;
     entity.lossARB = ZERO;
     entity.lossBFR = ZERO;
-    entity.contractAddress = contractAddress;
+    entity.contractAddress = Address.fromString(contractAddress);
     entity.profitCumulative = ZERO;
     entity.profitCumulativeARB = ZERO;
     entity.profitCumulativeUSDC = ZERO;
@@ -205,7 +207,7 @@ export function _loadOrCreateAssetTradingStatEntity(
 
 export function _loadOrCreateOptionDataEntity(
   optionID: BigInt,
-  contractAddress: Bytes
+  contractAddress: string
 ): UserOptionData {
   let referrenceID = `${optionID}${contractAddress}`;
   let entity = UserOptionData.load(referrenceID);
@@ -223,13 +225,13 @@ export function _loadOrCreateOptionDataEntity(
 
 export function _loadOrCreateLeaderboardEntity(
   dayId: string,
-  account: Bytes
+  account: string
 ): Leaderboard {
   let referenceID = `${dayId}${account}`;
   let entity = Leaderboard.load(referenceID);
   if (entity == null) {
     entity = new Leaderboard(referenceID);
-    entity.user = account;
+    entity.user = Address.fromString(account);
     entity.timestamp = dayId;
     entity.totalTrades = 0;
     entity.volume = ZERO;
@@ -258,13 +260,13 @@ export function _loadOrCreateLeaderboardEntity(
 
 export function _loadOrCreateWeeklyLeaderboardEntity(
   weekId: string,
-  account: Bytes
+  account: string
 ): WeeklyLeaderboard {
   let referenceID = `${weekId}${account}`;
   let entity = WeeklyLeaderboard.load(referenceID);
   if (entity == null) {
     entity = new WeeklyLeaderboard(referenceID);
-    entity.user = account;
+    entity.user = Address.fromString(account);
     entity.timestamp = weekId;
     entity.totalTrades = 0;
     entity.volume = ZERO;
@@ -347,11 +349,11 @@ export function _loadOrCreateFeeStat(
   return entity as FeeStat;
 }
 
-export function _loadOrCreateReferralData(user: Bytes): ReferralData {
+export function _loadOrCreateReferralData(user: string): ReferralData {
   let userReferralData = ReferralData.load(user);
   if (userReferralData == null) {
     userReferralData = new ReferralData(user);
-    userReferralData.user = user;
+    userReferralData.user = Address.fromString(user);
     userReferralData.totalDiscountAvailed = ZERO;
     userReferralData.totalDiscountAvailedARB = ZERO;
     userReferralData.totalDiscountAvailedUSDC = ZERO;
@@ -499,4 +501,33 @@ export function _loadOrCreateBurnedBFR(period: string, id: string): BurnedBFR {
     entity.save();
   }
   return entity;
+}
+
+export function _loadOrCreateOptionStats(
+  id: string,
+  optionContract: string,
+  token: string,
+  user: string
+): OptionStat {
+  let entity = OptionStat.load(id);
+
+  if (entity === null) {
+    entity = new OptionStat(id);
+    entity.optionContract = optionContract;
+    entity.token = token;
+    entity.tradeCount = 0;
+    entity.openInterest = ZERO;
+    entity.volume = ZERO;
+    entity.volume_usd = ZERO;
+    entity.payout = ZERO;
+    entity.payout_usd = ZERO;
+    entity.netPnl = ZERO;
+    entity.netPnl_usd = ZERO;
+    entity.tradesWon = 0;
+    entity.user = Address.fromString(user);
+    entity.tradesOpen = 0;
+    entity.save();
+  }
+
+  return entity as OptionStat;
 }

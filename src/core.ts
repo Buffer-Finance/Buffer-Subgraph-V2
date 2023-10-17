@@ -7,10 +7,12 @@ import {
   _loadOrCreateUserStat,
 } from "./initialize";
 
+const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
+
 export function updateOptionContractData(
   increaseInOpenInterest: boolean,
   totalFee: BigInt,
-  contractAddress: Address
+  contractAddress: string
 ): string {
   let optionContractData = _loadOrCreateOptionContractEntity(contractAddress);
   let poolToken = optionContractData.pool;
@@ -40,7 +42,7 @@ export function updateOptionContractData(
   return poolToken;
 }
 
-export function logUser(timestamp: BigInt, account: Address): void {
+export function logUser(timestamp: BigInt, account: string): void {
   let user = User.load(account);
   let id = _getDayId(timestamp);
   let dailyUserStatid = `${id}-${account.toString()}`;
@@ -55,7 +57,7 @@ export function logUser(timestamp: BigInt, account: Address): void {
     userStat.save();
 
     user = new User(account);
-    user.address = account;
+    user.address = Address.fromString(account);
     user.save();
 
     let dailyUserStat = new DailyUserStat(dailyUserStatid);

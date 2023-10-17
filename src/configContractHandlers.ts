@@ -28,15 +28,16 @@ import {
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
-  let entity = ConfigContract.load(address);
+  const optionContract = Address.fromBytes(address).toHexString();
+  let entity = ConfigContract.load(optionContract);
   if (entity == null) {
-    entity = new ConfigContract(address);
+    entity = new ConfigContract(optionContract);
     entity.address = address;
     entity.maxFee = ZERO;
     entity.minFee = ZERO;
     entity.minPeriod = ZERO;
     entity.maxPeriod = ZERO;
-    entity.id = address;
+    entity.id = optionContract;
     entity.platformFee = ZERO;
     entity.isEarlyCloseEnabled = false;
     entity.marketOIaddress = Address.fromString(zeroAddress);
@@ -57,10 +58,12 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
 export function _handleCreateOptionsContract(
   event: CreateOptionsContract
 ): void {
-  const routerContract = findRouterContract(event.address);
+  const routerContract = findRouterContract(
+    Address.fromBytes(event.address).toHexString()
+  );
   if (routerContract !== ADDRESS_ZERO) {
     const optionContractInstance = _loadOrCreateOptionContractEntity(
-      event.address
+      Address.fromBytes(event.address).toHexString()
     );
     optionContractInstance.routerContract = routerContract;
     optionContractInstance.category = event.params.category;
@@ -68,6 +71,7 @@ export function _handleCreateOptionsContract(
       event.params.config
     ).id;
     optionContractInstance.poolContract = event.params.pool;
+
     optionContractInstance.asset = event.params.token0 + event.params.token1;
     optionContractInstance.save();
   }
@@ -130,6 +134,7 @@ export function _handleUpdateOiconfigContract(
   const entity = _loadorCreateConfigContractEntity(address);
 
   entity.marketOIaddress = event.params._marketOIConfigContract;
+
   entity.save();
 }
 
@@ -140,6 +145,7 @@ export function _handleUpdatePoolOIContract(
   const entity = _loadorCreateConfigContractEntity(address);
 
   entity.poolOIaddress = event.params._poolOIConfigContract;
+
   entity.save();
 }
 
@@ -159,6 +165,7 @@ export function _handleUpdateCreationWindowContract(
   const entity = _loadorCreateConfigContractEntity(address);
 
   entity.creationWindowAddress = event.params.value;
+
   entity.save();
 }
 

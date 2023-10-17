@@ -5,9 +5,26 @@ enum Period {
   total
 }
 
+type OptionStat @entity {
+  id: String! # optionContract+&+user
+  user: Bytes!
+  optionContract: OptionContract!
+  token: String!
+  tradeCount: Int!
+  openInterest: BigInt!
+  volume: BigInt!
+  volume_usd: BigInt!
+  payout: BigInt!
+  payout_usd: BigInt!
+  netPnl: BigInt!
+  netPnl_usd: BigInt!
+  tradesWon: Int!
+  tradesOpen: Int!
+}
+
 type OptionContract @entity {
   category: Int!
-  id: Bytes!
+  id: String!
   address: Bytes
   isPaused: Boolean!
   openUp: BigInt!
@@ -27,7 +44,7 @@ type OptionContract @entity {
 }
 
 type ConfigContract @entity {
-  id: Bytes!
+  id: String!
   address: Bytes
   minPeriod: BigInt!
   maxPeriod: BigInt!
@@ -47,14 +64,6 @@ type ConfigContract @entity {
   SpreadConfig2: BigInt!
   SpreadFactor: BigInt!
 }
-
-# type PoolContract @entity{
-#   id: Bytes!
-#   address: Bytes!
-#   meta:Bytes
-#   token: Bytes
-#   decimals: Int!
-# }
 
 type EOAtoOneCT @entity {
   id: String!
@@ -88,7 +97,7 @@ type UserOptionData @entity {
   strike: BigInt
   totalFee: BigInt!
   totalFee_usd: BigInt!
-  user: User!
+  user: Bytes!
   creationTime: BigInt!
   expirationPrice: BigInt
   payout: BigInt
@@ -107,12 +116,11 @@ type UserOptionData @entity {
 }
 
 type User @entity {
-  id: Bytes!
+  id: String!
   address: Bytes!
 }
-
 type UserStat @entity {
-  id: ID!
+  id: String!
   uniqueCount: Int!
   uniqueCountCumulative: Int!
   period: Period!
@@ -224,8 +232,8 @@ type VolumeStat @entity {
 }
 
 type ReferralData @entity {
-  id: Bytes!
-  user: User!
+  id: String!
+  user: Bytes!
   totalTradesReferred: Int!
   totalTradesReferredARB: Int!
   totalTradesReferredUSDC: Int!
@@ -288,7 +296,7 @@ type ARBPoolStat @entity {
 }
 
 type AssetTradingStat @entity {
-  id: ID!
+  id: String!
   contractAddress: Bytes!
   periodID: String!
   profit: BigInt!

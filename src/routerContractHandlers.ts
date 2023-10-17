@@ -15,7 +15,9 @@ import { isContractRegisteredToV2Router } from "./optionContractHandlers";
 
 export function _handleOpenTrade(event: OpenTrade): void {
   let queueID = event.params.queueId;
-  let contractAddress = event.params.targetContract;
+  let contractAddress = Address.fromBytes(
+    event.params.targetContract
+  ).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
@@ -62,5 +64,6 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   deRegisteredAccount.nonce = event.params.nonce;
   deRegisteredAccount.updatedAt = event.block.timestamp;
   deRegisteredAccount.eoa = event.params.account;
+
   deRegisteredAccount.save();
 }

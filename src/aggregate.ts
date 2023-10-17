@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { updateOptionContractData } from "./core";
 import {
@@ -18,16 +18,29 @@ import {
   storePnlPerContract,
   updateOpenInterest,
 } from "./stats";
+import {
+  updateTradeClosingStatsForUser,
+  updateTradeOpenStatsForUser,
+} from "./userStats";
 
 export function updateOpeningStats(
   token: string,
   timestamp: BigInt,
   totalFee: BigInt,
   settlementFee: BigInt,
-  contractAddress: Bytes,
-  poolToken: string
+  contractAddress: string,
+  poolToken: string,
+  userAddress: string
 ): void {
   if (token == "USDC") {
+    updateTradeOpenStatsForUser(
+      totalFee,
+      totalFee,
+      userAddress,
+      contractAddress,
+      token
+    );
+
     // Dashboard Page - overview
     updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
     updateDashboardOverviewStats(totalFee, settlementFee, "total");
@@ -74,6 +87,14 @@ export function updateOpeningStats(
   } else if (token == "ARB") {
     let totalFeeUSDC = convertARBToUSDC(totalFee);
     let settlementFeeUSDC = convertARBToUSDC(settlementFee);
+
+    updateTradeOpenStatsForUser(
+      totalFee,
+      totalFeeUSDC,
+      userAddress,
+      contractAddress,
+      token
+    );
 
     // Dashboard Page - overview
     updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
@@ -127,6 +148,14 @@ export function updateOpeningStats(
   } else if (token == "BFR") {
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
     let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+
+    updateTradeOpenStatsForUser(
+      totalFee,
+      totalFeeUSDC,
+      userAddress,
+      contractAddress,
+      token
+    );
 
     // Dashboard Page - overview
     updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
@@ -184,12 +213,29 @@ export function updateClosingStatsV2(
   token: string,
   timestamp: BigInt,
   totalFee: BigInt,
-  user: Bytes,
+  user: string,
   isExercised: boolean,
   netPnL: BigInt,
-  contractAddress: Bytes
+  contractAddress: string,
+  payout: BigInt
 ): void {
+  let positiveNetPnl = netPnL;
+  if (netPnL.lt(ZERO)) {
+    positiveNetPnl = ZERO.minus(netPnL);
+  }
   if (token == "USDC") {
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payout,
+      positiveNetPnl,
+      positiveNetPnl,
+      isExercised && netPnL.gt(ZERO),
+      contractAddress,
+      token
+    );
+
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFee);
 
@@ -198,30 +244,38 @@ export function updateClosingStatsV2(
       totalFee,
       timestamp,
       user,
-      isExercised,
+      isExercised && netPnL.gt(ZERO),
       ZERO,
       false,
       totalFee,
       true,
-      netPnL,
+      positiveNetPnl,
       ZERO,
-      netPnL,
+      positiveNetPnl,
       ZERO,
       false,
       ZERO
     );
 
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFee, false);
   } else if (token == "ARB") {
     let totalFeeUSDC = convertARBToUSDC(totalFee);
-    let netPnLUSDC = convertARBToUSDC(netPnL);
+    let positiveNetPnlUSDC = convertARBToUSDC(positiveNetPnl);
+    const payoutUSDC = convertARBToUSDC(payout);
 
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payoutUSDC,
+      positiveNetPnl,
+      positiveNetPnlUSDC,
+      isExercised && netPnL.gt(ZERO),
+      contractAddress,
+      token
+    );
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
 
@@ -230,30 +284,38 @@ export function updateClosingStatsV2(
       totalFeeUSDC,
       timestamp,
       user,
-      isExercised,
+      isExercised && netPnL.gt(ZERO),
       totalFee,
       true,
       ZERO,
       false,
-      netPnLUSDC,
-      netPnL,
+      positiveNetPnlUSDC,
+      positiveNetPnl,
       ZERO,
       ZERO,
       false,
       ZERO
     );
 
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   } else if (token == "BFR") {
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
-    let netPnLUSDC = convertBFRToUSDC(netPnL);
+    let positiveNetPnlUSDC = convertARBToUSDC(positiveNetPnl);
+    const payoutUSDC = convertARBToUSDC(payout);
 
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payoutUSDC,
+      positiveNetPnl,
+      positiveNetPnlUSDC,
+      isExercised && netPnL.gt(ZERO),
+      contractAddress,
+      token
+    );
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
 
@@ -262,24 +324,20 @@ export function updateClosingStatsV2(
       totalFeeUSDC,
       timestamp,
       user,
-      isExercised,
+      isExercised && netPnL.gt(ZERO),
       ZERO,
       false,
       ZERO,
       false,
-      netPnLUSDC,
+      positiveNetPnlUSDC,
       ZERO,
       ZERO,
-      netPnL,
+      positiveNetPnl,
       true,
       totalFee
     );
 
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   }
@@ -288,7 +346,7 @@ export function updateClosingStatsV2(
 export function updateLpProfitAndLoss(
   token: string,
   timestamp: BigInt,
-  contractAddress: Bytes,
+  contractAddress: string,
   isExercised: boolean,
   netPnL: BigInt
 ): void {
@@ -319,12 +377,24 @@ export function updateClosingStats(
   timestamp: BigInt,
   totalFee: BigInt,
   settlementFee: BigInt,
-  user: Bytes,
-  contractAddress: Bytes,
+  user: string,
+  contractAddress: string,
   isExercised: boolean,
-  netPnL: BigInt
+  netPnL: BigInt,
+  payout: BigInt
 ): void {
   if (token == "USDC") {
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payout,
+      netPnL,
+      netPnL,
+      isExercised,
+      contractAddress,
+      token
+    );
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFee);
     // Update daily & total PnL for stats page
@@ -360,18 +430,26 @@ export function updateClosingStats(
       false,
       ZERO
     );
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFee, false);
   } else if (token == "ARB") {
-    let totalFeeUSDC = convertARBToUSDC(totalFee);
-    let settlementFeeUSDC = convertARBToUSDC(settlementFee);
-    let netPnLUSDC = convertARBToUSDC(netPnL);
+    const totalFeeUSDC = convertARBToUSDC(totalFee);
+    const settlementFeeUSDC = convertARBToUSDC(settlementFee);
+    const netPnLUSDC = convertARBToUSDC(netPnL);
+    const payoutUSDC = convertARBToUSDC(payout);
 
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payoutUSDC,
+      netPnL,
+      netPnLUSDC,
+      isExercised,
+      contractAddress,
+      token
+    );
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
     // Update daily & total PnL for stats page
@@ -407,17 +485,26 @@ export function updateClosingStats(
       false,
       ZERO
     );
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   } else if (token == "BFR") {
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
     let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
     let netPnLUSDC = convertBFRToUSDC(netPnL);
+    const payoutUSDC = convertARBToUSDC(payout);
+
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payoutUSDC,
+      netPnL,
+      netPnLUSDC,
+      isExercised,
+      contractAddress,
+      token
+    );
 
     // Update daily & total open interest
     updateOpenInterest(timestamp, false, totalFeeUSDC);
@@ -454,11 +541,7 @@ export function updateClosingStats(
       true,
       totalFee
     );
-    updateOptionContractData(
-      false,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
+    updateOptionContractData(false, totalFee, contractAddress);
     logOpenInterest(token, totalFee, false);
     logOpenInterest("total", totalFeeUSDC, false);
   }

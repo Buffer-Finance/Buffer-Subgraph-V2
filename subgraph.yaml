@@ -196,3 +196,23 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: ERC20
+    network: arbitrum-one
+    source:
+      address: "0xBABF696008DDAde1e17D302b972376B8A7357698"
+      abi: ERC20
+      startBlock: 26783162
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Holder
+      abis:
+        - name: ERC20
+          file: ./abis/BFR.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleARBTransfer
+      file: ./src/mapping.ts

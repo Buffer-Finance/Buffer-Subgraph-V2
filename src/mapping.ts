@@ -35,6 +35,7 @@ import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
 } from "../generated/V1Options/V1Options";
+import { _handleARBTransfer } from "./ARBairdrop";
 import { _handleTransfer } from "./BFRTracking";
 import {
   _handleCreateOptionsContract,
@@ -192,4 +193,7 @@ export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
 }
 export function handleTransfer(event: Transfer): void {
   _handleTransfer(event);
+}
+export function handleARBTransfer(event: Transfer): void {
+  _handleARBTransfer(event);
 }

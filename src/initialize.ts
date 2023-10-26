@@ -42,12 +42,12 @@ export function calculatePayout(settlementFeePercent: BigInt): BigInt {
 export function _loadOrCreateOptionContractEntity(
   contractAddress: Address
 ): OptionContract {
-  let optionContract = OptionContract.load(contractAddress.toString());
+  let optionContract = OptionContract.load(contractAddress.toHexString());
   if (optionContract == null) {
     let optionContractInstance = BufferBinaryOptions.bind(
       Address.fromBytes(contractAddress)
     );
-    optionContract = new OptionContract(contractAddress.toString());
+    optionContract = new OptionContract(contractAddress.toHexString());
     optionContract.address = contractAddress;
     optionContract.isPaused = optionContractInstance.isPaused();
     optionContract.volume = ZERO;
@@ -161,12 +161,12 @@ export function _loadOrCreateQueuedOptionEntity(
   contractAddress: Bytes,
   tournamentId: BigInt
 ): QueuedOptionData {
-  let referenceID = `${queueID}${contractAddress.toString()}`;
+  let referenceID = `${queueID}${contractAddress.toHexString()}`;
   let entity = QueuedOptionData.load(referenceID);
   if (entity == null) {
     entity = new QueuedOptionData(referenceID);
     entity.queueID = queueID;
-    entity.optionContract = contractAddress.toString();
+    entity.optionContract = contractAddress.toHexString();
     entity.queueTimestamp = ZERO;
     entity.cancelTimestamp = ZERO;
     entity.lag = ZERO;
@@ -182,12 +182,12 @@ export function _loadOrCreateOptionDataEntity(
   contractAddress: Bytes,
   tournamentId: BigInt
 ): UserOptionData {
-  let referrenceID = `${optionID}${contractAddress.toString()}`;
+  let referrenceID = `${optionID}${contractAddress.toHexString()}`;
   let entity = UserOptionData.load(referrenceID);
   if (entity == null) {
     entity = new UserOptionData(referrenceID);
     entity.optionID = optionID;
-    entity.optionContract = contractAddress.toString();
+    entity.optionContract = contractAddress.toHexString();
     entity.amount = ZERO;
     entity.totalFee = ZERO;
     entity.queuedTimestamp = ZERO;

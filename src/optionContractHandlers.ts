@@ -66,7 +66,7 @@ export function _handleExpire(event: Expire): void {
     routerContract.contractRegistry(contractAddress) == true ||
     contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
   ) {
-    let referrenceID = `${event.params.id}${contractAddress}`;
+    let referrenceID = `${event.params.id}${contractAddress.toHexString()}`;
     let userOptionData = UserOptionData.load(referrenceID);
     if (userOptionData != null) {
       userOptionData.state = State.expired;
@@ -89,7 +89,7 @@ export function _handleExercise(event: Exercise): void {
     routerContract.contractRegistry(contractAddress) == true ||
     contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
   ) {
-    let referrenceID = `${event.params.id}${contractAddress}`;
+    let referrenceID = `${event.params.id}${contractAddress.toHexString()}`;
     let userOptionData = UserOptionData.load(referrenceID);
     if (userOptionData != null) {
       userOptionData.state = State.exercised;

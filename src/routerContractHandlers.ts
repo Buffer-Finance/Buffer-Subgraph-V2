@@ -41,7 +41,7 @@ export function _handleOpenTrade(event: OpenTrade): void {
   let contractAddress = routerContract.queuedTrades(queueID).value6;
   const tournamentId = event.params.tournamentId;
   let userQueuedData = QueuedOptionData.load(
-    `${queueID}${contractAddress.toString()}`
+    `${queueID}${contractAddress.toHexString()}`
   );
   if (userQueuedData != null) {
     userQueuedData.lag = event.block.timestamp.minus(
@@ -51,7 +51,9 @@ export function _handleOpenTrade(event: OpenTrade): void {
     userQueuedData.state = State.opened;
     userQueuedData.save();
 
-    let referrenceID = `${event.params.optionId}${contractAddress.toString()}`;
+    let referrenceID = `${
+      event.params.optionId
+    }${contractAddress.toHexString()}`;
     let userOptionData = UserOptionData.load(referrenceID);
     if (userOptionData != null) {
       let userOptionData = _loadOrCreateOptionDataEntity(
@@ -74,7 +76,7 @@ export function _handleCancelTrade(event: CancelTrade): void {
   let routerContract = BufferRouter.bind(event.address);
   let contractAddress = routerContract.queuedTrades(queueID).value6;
   let userQueuedData = QueuedOptionData.load(
-    `${queueID}${contractAddress.toString()}`
+    `${queueID}${contractAddress.toHexString()}`
   );
   if (userQueuedData != null) {
     userQueuedData.state = State.cancelled;

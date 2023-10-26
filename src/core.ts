@@ -36,9 +36,9 @@ export function updateOptionContractData(
 }
 
 export function logUser(timestamp: BigInt, account: Address): void {
-  let user = User.load(account.toString());
+  let user = User.load(account.toHexString());
   let id = _getDayId(timestamp);
-  let dailyUserStatid = `${id}-${account.toString()}`;
+  let dailyUserStatid = `${id}-${account.toHexString()}`;
   let userStat = _loadOrCreateUserStat(id, "daily", timestamp);
   if (user == null) {
     let totalUserStat = _loadOrCreateUserStat("total", "total", timestamp);
@@ -49,7 +49,7 @@ export function logUser(timestamp: BigInt, account: Address): void {
     userStat.uniqueCount = userStat.uniqueCount + 1;
     userStat.save();
 
-    user = new User(account.toString());
+    user = new User(account.toHexString());
     user.address = account;
     user.save();
 

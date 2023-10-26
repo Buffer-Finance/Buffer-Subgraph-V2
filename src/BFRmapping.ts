@@ -1,12 +1,9 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import {Transfer } from "../generated/ERC20/ERC20";
-import {
-  BFRHolder,
-  BFRHolderData
-} from "../generated/schema";
+import { Transfer } from "../generated/ERC20/ERC20";
+import { BFRHolder, BFRHolderData } from "../generated/schema";
+import { ADDRESS_ZERO } from "./config";
 import { _getDayId } from "./helpers";
 let ZERO = BigInt.fromI32(0);
-const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 function loadOrCreateBFRHolder(address: string, timestamp: BigInt): BFRHolder {
   let bfrHolderData = loadOrCreateBFRHolderData(timestamp, "total", "total");
@@ -16,17 +13,25 @@ function loadOrCreateBFRHolder(address: string, timestamp: BigInt): BFRHolder {
     bfrHolderData.holders += 1;
     account.balance = ZERO;
     account.save();
-    bfrHolderData.save()
+    bfrHolderData.save();
   }
   let dayID = _getDayId(timestamp);
   let referenceID = dayID;
-  let dailyBfrHolderData = loadOrCreateBFRHolderData(timestamp, "daily", referenceID);
+  let dailyBfrHolderData = loadOrCreateBFRHolderData(
+    timestamp,
+    "daily",
+    referenceID
+  );
   dailyBfrHolderData.holders = bfrHolderData.holders;
-  dailyBfrHolderData.save()
+  dailyBfrHolderData.save();
   return account;
 }
 
-function loadOrCreateBFRHolderData(timestamp: BigInt, period: string, id: string): BFRHolderData {
+function loadOrCreateBFRHolderData(
+  timestamp: BigInt,
+  period: string,
+  id: string
+): BFRHolderData {
   let entity = BFRHolderData.load(id);
   if (!entity) {
     entity = new BFRHolderData(id);
@@ -45,7 +50,7 @@ export function handleTransfer(event: Transfer): void {
   let timestamp = event.block.timestamp;
   let fromAccount = loadOrCreateBFRHolder(from, timestamp);
   let toAccount = loadOrCreateBFRHolder(to, timestamp);
-  if (fromAccount.id != zeroAddress) {
+  if (fromAccount.id != ADDRESS_ZERO) {
     fromAccount.balance = fromAccount.balance.minus(value);
     fromAccount.save();
   }

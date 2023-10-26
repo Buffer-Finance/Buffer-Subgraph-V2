@@ -1,3 +1,7 @@
+// export function handleInitiateTrade(event: InitiateTrade): void {
+//   _handleInitiateTrade(event);
+// }
+
 import {
   Create,
   Exercise,
@@ -5,33 +9,19 @@ import {
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
-  CancelTrade,
-  InitiateTrade,
-  OpenTrade,
-} from "../generated/BufferRouter/BufferRouter";
-import {
   _handleCreate,
   _handleExercise,
   _handleExpire,
   _handlePause,
 } from "./optionContractHandlers";
-import {
-  _handleCancelTrade,
-  _handleInitiateTrade,
-  _handleOpenTrade,
-} from "./routerContractHandlers";
 
-export function handleInitiateTrade(event: InitiateTrade): void {
-  _handleInitiateTrade(event);
-}
+// export function handleOpenTrade(event: OpenTrade): void {
+//   _handleOpenTrade(event);
+// }
 
-export function handleOpenTrade(event: OpenTrade): void {
-  _handleOpenTrade(event);
-}
-
-export function handleCancelTrade(event: CancelTrade): void {
-  _handleCancelTrade(event);
-}
+// export function handleCancelTrade(event: CancelTrade): void {
+//   _handleCancelTrade(event);
+// }
 
 export function handleCreate(event: Create): void {
   _handleCreate(event);

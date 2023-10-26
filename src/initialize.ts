@@ -17,8 +17,8 @@ import {
   WeeklyLeaderboard,
   WeeklyRevenueAndFee,
 } from "../generated/schema";
-
-export const ZERO = BigInt.fromI32(0);
+import { ADDRESS_ZERO_BYTES, ZERO } from "./config";
+import { findRouterContract } from "./helpers";
 
 export function _calculateCurrentUtilization(
   totalLockedAmount: BigInt,
@@ -44,12 +44,8 @@ export function _loadOrCreateOptionContractEntity(
 ): OptionContract {
   let optionContract = OptionContract.load(contractAddress.toString());
   if (optionContract == null) {
-    let optionContractInstance = BufferBinaryOptions.bind(
-      Address.fromBytes(contractAddress)
-    );
     optionContract = new OptionContract(contractAddress.toString());
     optionContract.address = contractAddress;
-    optionContract.isPaused = optionContractInstance.isPaused();
     optionContract.volume = ZERO;
     optionContract.tradeCount = 0;
     optionContract.openDown = ZERO;
@@ -58,31 +54,35 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.currentUtilization = ZERO;
     optionContract.payoutForDown = ZERO;
     optionContract.payoutForUp = ZERO;
-    optionContract.asset = optionContractInstance.assetPair();
-    // let optionContractPool = optionContractInstance.pool();
-    // if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
-    //   optionContract.token = "ARB";
-    //   optionContract.pool = "ARB";
-    // } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
-    //   optionContract.token = "USDC";
-    //   optionContract.pool = "USDC";
-    // } else if (optionContractPool == Address.fromString(BFR_POOL_CONTRACT)) {
-    //   optionContract.token = "BFR";
-    //   optionContract.pool = "BFR";
-    // } else {
-    //   optionContract.token = "USDC";
-    //   optionContract.pool = "USDC";
-    // }
-    optionContract.payoutForDown = calculatePayout(
-      BigInt.fromI32(
-        optionContractInstance.baseSettlementFeePercentageForBelow()
-      )
-    );
-    optionContract.payoutForUp = calculatePayout(
-      BigInt.fromI32(
-        optionContractInstance.baseSettlementFeePercentageForAbove()
-      )
-    );
+
+    if (
+      optionContract.routerContract == ADDRESS_ZERO_BYTES ||
+      optionContract.routerContract == null
+    )
+      optionContract.routerContract = findRouterContract(contractAddress);
+
+    if (optionContract.routerContract == ADDRESS_ZERO_BYTES) {
+      optionContract.isPaused = true;
+      optionContract.asset = "unknown";
+    } else {
+      let optionContractInstance = BufferBinaryOptions.bind(
+        Address.fromBytes(contractAddress)
+      );
+      optionContract.isPaused = optionContractInstance.isPaused();
+
+      optionContract.asset = optionContractInstance.assetPair();
+
+      optionContract.payoutForDown = calculatePayout(
+        BigInt.fromI32(
+          optionContractInstance.baseSettlementFeePercentageForBelow()
+        )
+      );
+      optionContract.payoutForUp = calculatePayout(
+        BigInt.fromI32(
+          optionContractInstance.baseSettlementFeePercentageForAbove()
+        )
+      );
+    }
     optionContract.save();
   }
   return optionContract as OptionContract;

@@ -1,8 +1,8 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { DailyUserStat, User } from "../generated/schema";
+import { ZERO } from "./config";
 import { _getDayId } from "./helpers";
 import {
-  ZERO,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateUserStat,
 } from "./initialize";

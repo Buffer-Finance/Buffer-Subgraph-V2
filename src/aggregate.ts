@@ -1,332 +1,315 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { _getHourId } from "./helpers";
-import { ZERO } from "./initialize";
-import {
-  updateOpenInterest,
-  storeFees,
-  logVolume,
-  storePnl,
-  storePnlPerContract,
-  saveSettlementFeeDiscount,
-} from "./stats";
-import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
-import {
-  logVolumeAndSettlementFeePerContract,
-  updateDashboardOverviewStats,
-  logOpenInterest,
-} from "./dashboard";
-import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { updateOptionContractData } from "./core";
 
-export function updateOpeningStats(
-  token: string,
-  timestamp: BigInt,
-  totalFee: BigInt,
-  settlementFee: BigInt,
-  isAbove: boolean,
-  contractAddress: Bytes,
-  poolToken: string
-): void {
-  if (token == "USDC") {
-    // Dashboard Page - overview
-    updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
-    updateDashboardOverviewStats(totalFee, settlementFee, "total");
+// export function updateOpeningStats(
+//   token: string,
+//   timestamp: BigInt,
+//   totalFee: BigInt,
+//   settlementFee: BigInt,
+//   isAbove: boolean,
+//   contractAddress: Bytes,
+//   poolToken: string
+// ): void {
+//   if (token == "USDC") {
+//     // Dashboard Page - overview
+//     updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
+//     updateDashboardOverviewStats(totalFee, settlementFee, "total");
 
-    // Update daily and weekly volume and fees
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, "total");
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
+//     // Update daily and weekly volume and fees
+//     updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, "total");
+//     updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
 
-    // Dashboard Page - markets table
-    logVolumeAndSettlementFeePerContract(
-      _getHourId(timestamp),
-      "hourly",
-      timestamp,
-      contractAddress,
-      token,
-      totalFee,
-      settlementFee
-    );
-    logVolumeAndSettlementFeePerContract(
-      _getHourId(timestamp),
-      "hourly",
-      timestamp,
-      contractAddress,
-      "total",
-      totalFee,
-      settlementFee
-    );
+//     // Dashboard Page - markets table
+//     logVolumeAndSettlementFeePerContract(
+//       _getHourId(timestamp),
+//       "hourly",
+//       timestamp,
+//       contractAddress,
+//       token,
+//       totalFee,
+//       settlementFee
+//     );
+//     logVolumeAndSettlementFeePerContract(
+//       _getHourId(timestamp),
+//       "hourly",
+//       timestamp,
+//       contractAddress,
+//       "total",
+//       totalFee,
+//       settlementFee
+//     );
 
-    // Update daily & total fees
-    storeFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
+//     // Update daily & total fees
+//     storeFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
 
-    // Update daily & total volume
-    logVolume(timestamp, totalFee, ZERO, totalFee, ZERO);
+//     // Update daily & total volume
+//     logVolume(timestamp, totalFee, ZERO, totalFee, ZERO);
 
-    // Update daily & total open interest
-    updateOpenInterest(timestamp, true, isAbove, totalFee);
+//     // Update daily & total open interest
+//     updateOpenInterest(timestamp, true, isAbove, totalFee);
 
-    // Updates referral & NFT discounts tracking
-    saveSettlementFeeDiscount(timestamp, totalFee, settlementFee);
+//     // Updates referral & NFT discounts tracking
+//     saveSettlementFeeDiscount(timestamp, totalFee, settlementFee);
 
-    logOpenInterest(token, totalFee, true);
-    logOpenInterest("total", totalFee, true);
-  } else if (token == "ARB") {
-    let totalFeeUSDC = convertARBToUSDC(totalFee);
-    let settlementFeeUSDC = convertARBToUSDC(settlementFee);
+//     logOpenInterest(token, totalFee, true);
+//     logOpenInterest("total", totalFee, true);
+//   } else if (token == "ARB") {
+//     let totalFeeUSDC = convertARBToUSDC(totalFee);
+//     let settlementFeeUSDC = convertARBToUSDC(settlementFee);
 
-    // Dashboard Page - overview
-    updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
-    updateDashboardOverviewStats(totalFeeUSDC, settlementFeeUSDC, "total");
+//     // Dashboard Page - overview
+//     updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
+//     updateDashboardOverviewStats(totalFeeUSDC, settlementFeeUSDC, "total");
 
-    // Update daily and weekly volume and fees
-    updateDailyAndWeeklyRevenue(
-      totalFeeUSDC,
-      timestamp,
-      settlementFeeUSDC,
-      "total"
-    );
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
+//     // Update daily and weekly volume and fees
+//     updateDailyAndWeeklyRevenue(
+//       totalFeeUSDC,
+//       timestamp,
+//       settlementFeeUSDC,
+//       "total"
+//     );
+//     updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
 
-    // Dashboard Page - markets table
-    logVolumeAndSettlementFeePerContract(
-      _getHourId(timestamp),
-      "hourly",
-      timestamp,
-      contractAddress,
-      token,
-      totalFee,
-      settlementFee
-    );
-    // Dashboard Page - markets table
-    logVolumeAndSettlementFeePerContract(
-      _getHourId(timestamp),
-      "hourly",
-      timestamp,
-      contractAddress,
-      "total",
-      totalFeeUSDC,
-      settlementFeeUSDC
-    );
+//     // Dashboard Page - markets table
+//     logVolumeAndSettlementFeePerContract(
+//       _getHourId(timestamp),
+//       "hourly",
+//       timestamp,
+//       contractAddress,
+//       token,
+//       totalFee,
+//       settlementFee
+//     );
+//     // Dashboard Page - markets table
+//     logVolumeAndSettlementFeePerContract(
+//       _getHourId(timestamp),
+//       "hourly",
+//       timestamp,
+//       contractAddress,
+//       "total",
+//       totalFeeUSDC,
+//       settlementFeeUSDC
+//     );
 
-    // Update daily & total fees
-    storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
+//     // Update daily & total fees
+//     storeFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
 
-    // Update daily & total volume
-    logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO, ZERO);
+//     // Update daily & total volume
+//     logVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO, ZERO);
 
-    // Update daily & total open interest
-    updateOpenInterest(timestamp, true, isAbove, totalFeeUSDC);
+//     // Update daily & total open interest
+//     updateOpenInterest(timestamp, true, isAbove, totalFeeUSDC);
 
-    // Updates referral & NFT discounts tracking
-    saveSettlementFeeDiscount(timestamp, totalFeeUSDC, settlementFeeUSDC);
+//     // Updates referral & NFT discounts tracking
+//     saveSettlementFeeDiscount(timestamp, totalFeeUSDC, settlementFeeUSDC);
 
-    logOpenInterest(token, totalFee, true);
-    logOpenInterest("total", totalFeeUSDC, true);
-  } else if (token == "BFR") {
-    let totalFeeUSDC = convertBFRToUSDC(totalFee);
-    let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+//     logOpenInterest(token, totalFee, true);
+//     logOpenInterest("total", totalFeeUSDC, true);
+//   } else if (token == "BFR") {
+//     let totalFeeUSDC = convertBFRToUSDC(totalFee);
+//     let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
 
-    // Dashboard Page - overview
-    updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
-    updateDashboardOverviewStats(totalFeeUSDC, settlementFeeUSDC, "total");
+//     // Dashboard Page - overview
+//     updateDashboardOverviewStats(totalFee, settlementFee, poolToken);
+//     updateDashboardOverviewStats(totalFeeUSDC, settlementFeeUSDC, "total");
 
-    // Update daily and weekly volume and fees
-    updateDailyAndWeeklyRevenue(
-      totalFeeUSDC,
-      timestamp,
-      settlementFeeUSDC,
-      "total"
-    );
-    updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
+//     // Update daily and weekly volume and fees
+//     updateDailyAndWeeklyRevenue(
+//       totalFeeUSDC,
+//       timestamp,
+//       settlementFeeUSDC,
+//       "total"
+//     );
+//     updateDailyAndWeeklyRevenue(totalFee, timestamp, settlementFee, token);
 
-    // Dashboard Page - markets table
-    logVolumeAndSettlementFeePerContract(
-      _getHourId(timestamp),
-      "hourly",
-      timestamp,
-      contractAddress,
-      token,
-      totalFee,
-      settlementFee
-    );
-    // Dashboard Page - markets table
-    logVolumeAndSettlementFeePerContract(
-      _getHourId(timestamp),
-      "hourly",
-      timestamp,
-      contractAddress,
-      "total",
-      totalFeeUSDC,
-      settlementFeeUSDC
-    );
+//     // Dashboard Page - markets table
+//     logVolumeAndSettlementFeePerContract(
+//       _getHourId(timestamp),
+//       "hourly",
+//       timestamp,
+//       contractAddress,
+//       token,
+//       totalFee,
+//       settlementFee
+//     );
+//     // Dashboard Page - markets table
+//     logVolumeAndSettlementFeePerContract(
+//       _getHourId(timestamp),
+//       "hourly",
+//       timestamp,
+//       contractAddress,
+//       "total",
+//       totalFeeUSDC,
+//       settlementFeeUSDC
+//     );
 
-    // Update daily & total fees
-    storeFees(timestamp, settlementFeeUSDC, ZERO, ZERO, settlementFeeUSDC);
+//     // Update daily & total fees
+//     storeFees(timestamp, settlementFeeUSDC, ZERO, ZERO, settlementFeeUSDC);
 
-    // Update daily & total volume
-    logVolume(timestamp, totalFeeUSDC, ZERO, ZERO, totalFeeUSDC);
+//     // Update daily & total volume
+//     logVolume(timestamp, totalFeeUSDC, ZERO, ZERO, totalFeeUSDC);
 
-    // Update daily & total open interest
-    updateOpenInterest(timestamp, true, isAbove, totalFeeUSDC);
+//     // Update daily & total open interest
+//     updateOpenInterest(timestamp, true, isAbove, totalFeeUSDC);
 
-    // Updates referral & NFT discounts tracking
-    saveSettlementFeeDiscount(timestamp, totalFeeUSDC, settlementFeeUSDC);
+//     // Updates referral & NFT discounts tracking
+//     saveSettlementFeeDiscount(timestamp, totalFeeUSDC, settlementFeeUSDC);
 
-    logOpenInterest(token, totalFee, true);
-    logOpenInterest("total", totalFeeUSDC, true);
-  }
-}
+//     logOpenInterest(token, totalFee, true);
+//     logOpenInterest("total", totalFeeUSDC, true);
+//   }
+// }
 
 export function updateClosingStats(
-  token: string,
-  timestamp: BigInt,
+  // token: string,
+  // timestamp: BigInt,
   totalFee: BigInt,
-  settlementFee: BigInt,
+  // settlementFee: BigInt,
   isAbove: boolean,
-  user: Bytes,
-  contractAddress: Bytes,
-  isExercised: boolean,
-  netPnL: BigInt
+  // user: Bytes,
+  contractAddress: Bytes
+  // isExercised: boolean,
+  // netPnL: BigInt
 ): void {
-  if (token == "USDC") {
-    // Update daily & total open interest
-    updateOpenInterest(timestamp, false, isAbove, totalFee);
-    // Update daily & total PnL for stats page
-    storePnl(
-      timestamp,
-      totalFee.minus(settlementFee),
-      isExercised,
-      totalFee.minus(settlementFee),
-      ZERO,
-      ZERO
-    );
-    // Update daily & total PnL per contracts for stats page
-    storePnlPerContract(
-      timestamp,
-      totalFee.minus(settlementFee),
-      isExercised,
-      contractAddress
-    );
-    // Update Leaderboards
-    updateLeaderboards(
-      totalFee,
-      timestamp,
-      user,
-      isExercised,
-      ZERO,
-      false,
-      totalFee,
-      true,
-      netPnL,
-      ZERO,
-      netPnL,
-      ZERO,
-      false,
-      ZERO
-    );
-    updateOptionContractData(
-      false,
-      isAbove,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
-    logOpenInterest(token, totalFee, false);
-    logOpenInterest("total", totalFee, false);
-  } else if (token == "ARB") {
-    let totalFeeUSDC = convertARBToUSDC(totalFee);
-    let settlementFeeUSDC = convertARBToUSDC(settlementFee);
-    let netPnLUSDC = convertARBToUSDC(netPnL);
+  // if (token == "USDC") {
+  // Update daily & total open interest
+  // updateOpenInterest(timestamp, false, isAbove, totalFee);
+  // Update daily & total PnL for stats page
+  // storePnl(
+  //   timestamp,
+  //   totalFee.minus(settlementFee),
+  //   isExercised,
+  //   totalFee.minus(settlementFee),
+  //   ZERO,
+  //   ZERO
+  // );
+  // Update daily & total PnL per contracts for stats page
+  // storePnlPerContract(
+  //   timestamp,
+  //   totalFee.minus(settlementFee),
+  //   isExercised,
+  //   contractAddress
+  // );
+  // Update Leaderboards
+  // updateLeaderboards(
+  //   totalFee,
+  //   timestamp,
+  //   user,
+  //   isExercised,
+  //   ZERO,
+  //   false,
+  //   totalFee,
+  //   true,
+  //   netPnL,
+  //   ZERO,
+  //   netPnL,
+  //   ZERO,
+  //   false,
+  //   ZERO
+  // );
+  updateOptionContractData(
+    false,
+    isAbove,
+    totalFee,
+    Address.fromBytes(contractAddress)
+  );
+  // logOpenInterest(token, totalFee, false);
+  // logOpenInterest("total", totalFee, false);
+  // } else if (token == "ARB") {
+  //   let totalFeeUSDC = convertARBToUSDC(totalFee);
+  //   let settlementFeeUSDC = convertARBToUSDC(settlementFee);
+  //   let netPnLUSDC = convertARBToUSDC(netPnL);
 
-    // Update daily & total open interest
-    updateOpenInterest(timestamp, false, isAbove, totalFeeUSDC);
-    // Update daily & total PnL for stats page
-    storePnl(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      ZERO,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      ZERO
-    );
-    // Update daily & total PnL per contracts for stats page
-    storePnlPerContract(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      contractAddress
-    );
-    // Update Leaderboards
-    updateLeaderboards(
-      totalFeeUSDC,
-      timestamp,
-      user,
-      isExercised,
-      totalFee,
-      true,
-      ZERO,
-      false,
-      netPnLUSDC,
-      netPnL,
-      ZERO,
-      ZERO,
-      false,
-      ZERO
-    );
-    updateOptionContractData(
-      false,
-      isAbove,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
-    logOpenInterest(token, totalFee, false);
-    logOpenInterest("total", totalFeeUSDC, false);
-  } else if (token == "BFR") {
-    let totalFeeUSDC = convertBFRToUSDC(totalFee);
-    let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
-    let netPnLUSDC = convertBFRToUSDC(netPnL);
+  //   // Update daily & total open interest
+  //   updateOpenInterest(timestamp, false, isAbove, totalFeeUSDC);
+  //   // Update daily & total PnL for stats page
+  //   storePnl(
+  //     timestamp,
+  //     totalFeeUSDC.minus(settlementFeeUSDC),
+  //     isExercised,
+  //     ZERO,
+  //     totalFeeUSDC.minus(settlementFeeUSDC),
+  //     ZERO
+  //   );
+  //   // Update daily & total PnL per contracts for stats page
+  //   storePnlPerContract(
+  //     timestamp,
+  //     totalFeeUSDC.minus(settlementFeeUSDC),
+  //     isExercised,
+  //     contractAddress
+  //   );
+  //   // Update Leaderboards
+  //   updateLeaderboards(
+  //     totalFeeUSDC,
+  //     timestamp,
+  //     user,
+  //     isExercised,
+  //     totalFee,
+  //     true,
+  //     ZERO,
+  //     false,
+  //     netPnLUSDC,
+  //     netPnL,
+  //     ZERO,
+  //     ZERO,
+  //     false,
+  //     ZERO
+  //   );
+  //   updateOptionContractData(
+  //     false,
+  //     isAbove,
+  //     totalFee,
+  //     Address.fromBytes(contractAddress)
+  //   );
+  //   logOpenInterest(token, totalFee, false);
+  //   logOpenInterest("total", totalFeeUSDC, false);
+  // } else if (token == "BFR") {
+  //   let totalFeeUSDC = convertBFRToUSDC(totalFee);
+  //   let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+  //   let netPnLUSDC = convertBFRToUSDC(netPnL);
 
-    // Update daily & total open interest
-    updateOpenInterest(timestamp, false, isAbove, totalFeeUSDC);
-    // Update daily & total PnL for stats page
-    storePnl(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      ZERO,
-      ZERO,
-      totalFeeUSDC.minus(settlementFeeUSDC)
-    );
-    // Update daily & total PnL per contracts for stats page
-    storePnlPerContract(
-      timestamp,
-      totalFeeUSDC.minus(settlementFeeUSDC),
-      isExercised,
-      contractAddress
-    );
-    // Update Leaderboards
-    updateLeaderboards(
-      totalFeeUSDC,
-      timestamp,
-      user,
-      isExercised,
-      ZERO,
-      false,
-      ZERO,
-      false,
-      netPnLUSDC,
-      ZERO,
-      ZERO,
-      netPnL,
-      true,
-      totalFee
-    );
-    updateOptionContractData(
-      false,
-      isAbove,
-      totalFee,
-      Address.fromBytes(contractAddress)
-    );
-    logOpenInterest(token, totalFee, false);
-    logOpenInterest("total", totalFeeUSDC, false);
-  }
+  //   // Update daily & total open interest
+  //   updateOpenInterest(timestamp, false, isAbove, totalFeeUSDC);
+  //   // Update daily & total PnL for stats page
+  //   storePnl(
+  //     timestamp,
+  //     totalFeeUSDC.minus(settlementFeeUSDC),
+  //     isExercised,
+  //     ZERO,
+  //     ZERO,
+  //     totalFeeUSDC.minus(settlementFeeUSDC)
+  //   );
+  //   // Update daily & total PnL per contracts for stats page
+  //   storePnlPerContract(
+  //     timestamp,
+  //     totalFeeUSDC.minus(settlementFeeUSDC),
+  //     isExercised,
+  //     contractAddress
+  //   );
+  //   // Update Leaderboards
+  //   updateLeaderboards(
+  //     totalFeeUSDC,
+  //     timestamp,
+  //     user,
+  //     isExercised,
+  //     ZERO,
+  //     false,
+  //     ZERO,
+  //     false,
+  //     netPnLUSDC,
+  //     ZERO,
+  //     ZERO,
+  //     netPnL,
+  //     true,
+  //     totalFee
+  //   );
+  //   updateOptionContractData(
+  //     false,
+  //     isAbove,
+  //     totalFee,
+  //     Address.fromBytes(contractAddress)
+  //   );
+  //   logOpenInterest(token, totalFee, false);
+  //   logOpenInterest("total", totalFeeUSDC, false);
+  // }
 }

@@ -1,17 +1,17 @@
 import {
-  _loadOrCreateOptionContractEntity,
-  _loadOrCreateQueuedOptionEntity,
-  _loadOrCreateOptionDataEntity,
-} from "./initialize";
-import { State } from "./config";
-import { logUser } from "./core";
-import { UserOptionData, QueuedOptionData } from "../generated/schema";
-import {
-  InitiateTrade,
-  CancelTrade,
   BufferRouter,
+  CancelTrade,
+  InitiateTrade,
   OpenTrade,
 } from "../generated/BufferRouter/BufferRouter";
+import { QueuedOptionData, UserOptionData } from "../generated/schema";
+import { State } from "./config";
+import { logUser } from "./core";
+import {
+  _loadOrCreateOptionContractEntity,
+  _loadOrCreateOptionDataEntity,
+  _loadOrCreateQueuedOptionEntity,
+} from "./initialize";
 
 export function _handleInitiateTrade(event: InitiateTrade): void {
   let routerContract = BufferRouter.bind(event.address);
@@ -22,7 +22,8 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
   logUser(event.block.timestamp, event.params.account);
   let queuedOptionData = _loadOrCreateQueuedOptionEntity(
     queueID,
-    contractAddress
+    contractAddress,
+    event.params.tournamentId
   );
   queuedOptionData.user = event.params.account;
   queuedOptionData.state = State.queued;
@@ -38,7 +39,10 @@ export function _handleOpenTrade(event: OpenTrade): void {
   let routerContract = BufferRouter.bind(event.address);
   let queueID = event.params.queueId;
   let contractAddress = routerContract.queuedTrades(queueID).value6;
-  let userQueuedData = QueuedOptionData.load(`${queueID}${contractAddress}`);
+  const tournamentId = event.params.tournamentId;
+  let userQueuedData = QueuedOptionData.load(
+    `${queueID}${contractAddress.toString()}`
+  );
   if (userQueuedData != null) {
     userQueuedData.lag = event.block.timestamp.minus(
       userQueuedData.queueTimestamp
@@ -47,12 +51,13 @@ export function _handleOpenTrade(event: OpenTrade): void {
     userQueuedData.state = State.opened;
     userQueuedData.save();
 
-    let referrenceID = `${event.params.optionId}${contractAddress}`;
+    let referrenceID = `${event.params.optionId}${contractAddress.toString()}`;
     let userOptionData = UserOptionData.load(referrenceID);
     if (userOptionData != null) {
       let userOptionData = _loadOrCreateOptionDataEntity(
         event.params.optionId,
-        contractAddress
+        contractAddress,
+        tournamentId
       );
       userOptionData.queueID = queueID;
       userOptionData.queuedTimestamp = userQueuedData.queueTimestamp;
@@ -68,7 +73,9 @@ export function _handleCancelTrade(event: CancelTrade): void {
   let queueID = event.params.queueId;
   let routerContract = BufferRouter.bind(event.address);
   let contractAddress = routerContract.queuedTrades(queueID).value6;
-  let userQueuedData = QueuedOptionData.load(`${queueID}${contractAddress}`);
+  let userQueuedData = QueuedOptionData.load(
+    `${queueID}${contractAddress.toString()}`
+  );
   if (userQueuedData != null) {
     userQueuedData.state = State.cancelled;
     userQueuedData.reason = event.params.reason;

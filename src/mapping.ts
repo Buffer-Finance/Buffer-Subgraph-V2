@@ -1,32 +1,24 @@
 import {
   Create,
-  Expire,
   Exercise,
-  UpdateReferral,
+  Expire,
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
-  Provide,
-  Withdraw,
-  Profit,
-  Loss,
-} from "../generated/BinaryPool/BinaryPool";
-import {
-  InitiateTrade,
   CancelTrade,
+  InitiateTrade,
   OpenTrade,
 } from "../generated/BufferRouter/BufferRouter";
 import {
   _handleCreate,
-  _handleExpire,
   _handleExercise,
-  _handleUpdateReferral,
+  _handleExpire,
   _handlePause,
 } from "./optionContractHandlers";
 import {
   _handleCancelTrade,
-  _handleOpenTrade,
   _handleInitiateTrade,
+  _handleOpenTrade,
 } from "./routerContractHandlers";
 
 export function handleInitiateTrade(event: InitiateTrade): void {
@@ -53,26 +45,6 @@ export function handleExpire(event: Expire): void {
   _handleExpire(event);
 }
 
-export function handleUpdateReferral(event: UpdateReferral): void {
-  _handleUpdateReferral(event);
-}
-
 export function handlePause(event: Pause): void {
   _handlePause(event);
-}
-
-export function handleProvide(event: Provide): void {
-  let a = "a";
-}
-
-export function handleWithdraw(event: Withdraw): void {
-  let a = "a";
-}
-
-export function handleProfit(event: Profit): void {
-  let a = "a";
-}
-
-export function handleLoss(event: Loss): void {
-  let a = "a";
 }

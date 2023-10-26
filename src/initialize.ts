@@ -1,31 +1,22 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import {
-  UserOptionData,
-  OptionContract,
-  ReferralData,
-  DashboardStat,
-  TradingStat,
-  AssetTradingStat,
-  UserStat,
-  FeeStat,
-  VolumeStat,
-  Leaderboard,
-  WeeklyLeaderboard,
-  QueuedOptionData,
-  DailyRevenueAndFee,
-  WeeklyRevenueAndFee,
-  PoolStat,
-  UserRewards,
-} from "../generated/schema";
-import { _getDayId } from "./helpers";
-import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BinaryPool } from "../generated/BinaryPool/BinaryPool";
+import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
-  ARB_POOL_CONTRACT,
-  USDC_POL_POOL_CONTRACT,
-  USDC_POOL_CONTRACT,
-  BFR_POOL_CONTRACT,
-} from "./config";
+  AssetTradingStat,
+  DailyRevenueAndFee,
+  FeeStat,
+  Leaderboard,
+  OptionContract,
+  PoolStat,
+  QueuedOptionData,
+  TradingStat,
+  UserOptionData,
+  UserRewards,
+  UserStat,
+  VolumeStat,
+  WeeklyLeaderboard,
+  WeeklyRevenueAndFee,
+} from "../generated/schema";
 
 export const ZERO = BigInt.fromI32(0);
 
@@ -51,12 +42,12 @@ export function calculatePayout(settlementFeePercent: BigInt): BigInt {
 export function _loadOrCreateOptionContractEntity(
   contractAddress: Address
 ): OptionContract {
-  let optionContract = OptionContract.load(contractAddress);
+  let optionContract = OptionContract.load(contractAddress.toString());
   if (optionContract == null) {
     let optionContractInstance = BufferBinaryOptions.bind(
       Address.fromBytes(contractAddress)
     );
-    optionContract = new OptionContract(contractAddress);
+    optionContract = new OptionContract(contractAddress.toString());
     optionContract.address = contractAddress;
     optionContract.isPaused = optionContractInstance.isPaused();
     optionContract.volume = ZERO;
@@ -68,20 +59,20 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.payoutForDown = ZERO;
     optionContract.payoutForUp = ZERO;
     optionContract.asset = optionContractInstance.assetPair();
-    let optionContractPool = optionContractInstance.pool();
-    if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
-      optionContract.token = "ARB";
-      optionContract.pool = "ARB";
-    } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
-      optionContract.token = "USDC";
-      optionContract.pool = "USDC";
-    } else if (optionContractPool == Address.fromString(BFR_POOL_CONTRACT)) {
-      optionContract.token = "BFR";
-      optionContract.pool = "BFR";
-    } else {
-      optionContract.token = "USDC";
-      optionContract.pool = "USDC";
-    }
+    // let optionContractPool = optionContractInstance.pool();
+    // if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
+    //   optionContract.token = "ARB";
+    //   optionContract.pool = "ARB";
+    // } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
+    //   optionContract.token = "USDC";
+    //   optionContract.pool = "USDC";
+    // } else if (optionContractPool == Address.fromString(BFR_POOL_CONTRACT)) {
+    //   optionContract.token = "BFR";
+    //   optionContract.pool = "BFR";
+    // } else {
+    //   optionContract.token = "USDC";
+    //   optionContract.pool = "USDC";
+    // }
     optionContract.payoutForDown = calculatePayout(
       BigInt.fromI32(
         optionContractInstance.baseSettlementFeePercentageForBelow()
@@ -167,18 +158,20 @@ export function _loadOrCreateAssetTradingStatEntity(
 
 export function _loadOrCreateQueuedOptionEntity(
   queueID: BigInt,
-  contractAddress: Bytes
+  contractAddress: Bytes,
+  tournamentId: BigInt
 ): QueuedOptionData {
-  let referenceID = `${queueID}${contractAddress}`;
+  let referenceID = `${queueID}${contractAddress.toString()}`;
   let entity = QueuedOptionData.load(referenceID);
   if (entity == null) {
     entity = new QueuedOptionData(referenceID);
     entity.queueID = queueID;
-    entity.optionContract = contractAddress;
+    entity.optionContract = contractAddress.toString();
     entity.queueTimestamp = ZERO;
     entity.cancelTimestamp = ZERO;
     entity.lag = ZERO;
     entity.processTime = ZERO;
+    entity.tournamentId = tournamentId;
     entity.save();
   }
   return entity as QueuedOptionData;
@@ -186,18 +179,20 @@ export function _loadOrCreateQueuedOptionEntity(
 
 export function _loadOrCreateOptionDataEntity(
   optionID: BigInt,
-  contractAddress: Bytes
+  contractAddress: Bytes,
+  tournamentId: BigInt
 ): UserOptionData {
-  let referrenceID = `${optionID}${contractAddress}`;
+  let referrenceID = `${optionID}${contractAddress.toString()}`;
   let entity = UserOptionData.load(referrenceID);
   if (entity == null) {
     entity = new UserOptionData(referrenceID);
     entity.optionID = optionID;
-    entity.optionContract = contractAddress;
+    entity.optionContract = contractAddress.toString();
     entity.amount = ZERO;
     entity.totalFee = ZERO;
     entity.queuedTimestamp = ZERO;
     entity.lag = ZERO;
+    entity.tournamentId = tournamentId;
   }
   return entity as UserOptionData;
 }
@@ -309,50 +304,6 @@ export function _loadOrCreateFeeStat(
     entity.save();
   }
   return entity as FeeStat;
-}
-
-export function _loadOrCreateReferralData(user: Bytes): ReferralData {
-  let userReferralData = ReferralData.load(user);
-  if (userReferralData == null) {
-    userReferralData = new ReferralData(user);
-    userReferralData.user = user;
-    userReferralData.totalDiscountAvailed = ZERO;
-    userReferralData.totalDiscountAvailedARB = ZERO;
-    userReferralData.totalDiscountAvailedUSDC = ZERO;
-    userReferralData.totalDiscountAvailedBFR = ZERO;
-    userReferralData.totalRebateEarned = ZERO;
-    userReferralData.totalRebateEarnedUSDC = ZERO;
-    userReferralData.totalRebateEarnedARB = ZERO;
-    userReferralData.totalRebateEarnedBFR = ZERO;
-    userReferralData.totalTradesReferred = 0;
-    userReferralData.totalTradesReferredUSDC = 0;
-    userReferralData.totalTradesReferredARB = 0;
-    userReferralData.totalTradesReferredBFR = 0;
-    userReferralData.totalTradingVolume = ZERO;
-    userReferralData.totalTradingVolumeARB = ZERO;
-    userReferralData.totalTradingVolumeUSDC = ZERO;
-    userReferralData.totalTradingVolumeBFR = ZERO;
-    userReferralData.totalVolumeOfReferredTrades = ZERO;
-    userReferralData.totalVolumeOfReferredTradesUSDC = ZERO;
-    userReferralData.totalVolumeOfReferredTradesARB = ZERO;
-    userReferralData.totalVolumeOfReferredTradesBFR = ZERO;
-
-    userReferralData.save();
-  }
-  return userReferralData as ReferralData;
-}
-
-export function _loadOrCreateDashboardStat(id: string): DashboardStat {
-  let dashboardStat = DashboardStat.load(id);
-  if (dashboardStat == null) {
-    dashboardStat = new DashboardStat(id);
-    dashboardStat.totalSettlementFees = ZERO;
-    dashboardStat.totalVolume = ZERO;
-    dashboardStat.totalTrades = 0;
-    dashboardStat.openInterest = ZERO;
-    dashboardStat.save();
-  }
-  return dashboardStat as DashboardStat;
 }
 
 export function _loadOrCreatePoolStat(id: string, period: string): PoolStat {

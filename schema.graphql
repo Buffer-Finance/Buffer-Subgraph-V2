@@ -6,7 +6,7 @@ enum Period {
 }
 
 type OptionContract @entity {
-  id: Bytes!
+  id: String!
   address: Bytes
   isPaused: Boolean!
   openUp: BigInt!
@@ -15,11 +15,12 @@ type OptionContract @entity {
   tradeCount: Int!
   volume: BigInt!
   currentUtilization: BigInt
-  token: String!
+  # token: String!
   payoutForUp: BigInt
   payoutForDown: BigInt
   asset: String
-  pool:String!
+  routerContract: Bytes
+  # pool: String!
 }
 
 type VolumePerContract @entity {
@@ -37,17 +38,18 @@ type QueuedOptionData @entity {
   optionContract: OptionContract!
   strike: BigInt
   totalFee: BigInt
-  user: User
+  user: Bytes
   state: Int
   isAbove: Boolean
   queueID: BigInt
   slippage: BigInt
-  depositToken: String
+  # depositToken: String
   reason: String
   queueTimestamp: BigInt!
   cancelTimestamp: BigInt!
   lag: BigInt!
   processTime: BigInt!
+  tournamentId: BigInt!
 }
 
 type UserOptionData @entity {
@@ -56,7 +58,7 @@ type UserOptionData @entity {
   optionID: BigInt
   strike: BigInt
   totalFee: BigInt!
-  user: User!
+  user: Bytes!
   creationTime: BigInt!
   queuedTimestamp: BigInt!
   expirationPrice: BigInt
@@ -65,15 +67,16 @@ type UserOptionData @entity {
   amount: BigInt!
   expirationTime: BigInt
   isAbove: Boolean
-  depositToken: String!
+  # depositToken: String!
   queueID: BigInt
   settlementFee: BigInt!
   lag: BigInt!
-  poolToken: String!
+  # poolToken: String!
+  tournamentId: BigInt!
 }
 
 type User @entity {
-  id: Bytes!
+  id: String!
   address: Bytes!
 }
 
@@ -171,8 +174,8 @@ type VolumeStat @entity {
 }
 
 type ReferralData @entity {
-  id: Bytes!
-  user: User!
+  id: String!
+  user: Bytes!
   totalTradesReferred: Int!
   totalTradesReferredARB: Int!
   totalTradesReferredUSDC: Int!

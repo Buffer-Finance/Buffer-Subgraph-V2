@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 25576390
+      startBlock: 50912771
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -24,14 +24,12 @@ dataSources:
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
-        - event: Create(indexed address,indexed uint256,uint256,uint256)
+        - event: Create(indexed address,indexed uint256,indexed uint256,uint256,uint256)
           handler: handleCreate
         - event: Expire(indexed uint256,uint256,uint256)
           handler: handleExpire
         - event: Exercise(indexed address,indexed uint256,uint256,uint256)
           handler: handleExercise
-        - event: UpdateReferral(address,address,bool,uint256,uint256,uint256,string)
-          handler: handleUpdateReferral
         - event: Pause(bool)
           handler: handlePause
       file: ./src/mapping.ts
@@ -39,9 +37,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0x76c52E83d7dcCc70107a66BAd44D042D22D06be7"
+      address: "0xEE4FfF95FcBc7e7DcfF5DE21b8a6AA4C13322e00"
       abi: BufferRouter
-      startBlock: 25576390
+      startBlock: 50912771
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -54,32 +52,10 @@ dataSources:
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
-        - event: InitiateTrade(indexed address,uint256,uint256)
+        - event: InitiateTrade(indexed address,uint256,uint256,uint256)
           handler: handleInitiateTrade
-        - event: CancelTrade(indexed address,uint256,string)
+        - event: CancelTrade(indexed address,uint256,uint256,string)
           handler: handleCancelTrade
-        - event: OpenTrade(indexed address,uint256,uint256)
+        - event: OpenTrade(indexed address,uint256,uint256,uint256)
           handler: handleOpenTrade
-      file: ./src/mapping.ts
-  - kind: ethereum/contract
-    name: BinaryPool
-    network: arbitrum-goerli
-    source:
-      address: "0x1CDA6A34D84F444183E89D2D41D920EeaE883439"
-      abi: BinaryPool
-      startBlock: 25576390
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - UserOptionData
-      abis:
-        - name: BinaryPool
-          file: ./abis/BinaryPool.json
-        - name: USDC
-          file: ./abis/USDC.json
-      eventHandlers:
-        - event: Provide(indexed address,uint256,uint256)
-          handler: handleProvide
       file: ./src/mapping.ts

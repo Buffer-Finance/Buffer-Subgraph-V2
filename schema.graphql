@@ -19,8 +19,13 @@ type OptionContract @entity {
   payoutForUp: BigInt
   payoutForDown: BigInt
   asset: String
-  routerContract: Bytes
+  routerContract: String
   # pool: String!
+}
+
+type BuggyOptionContract @entity {
+  id: String!
+  contract: OptionContract!
 }
 
 type VolumePerContract @entity {

@@ -1,4 +1,3 @@
-import { Address } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -6,11 +5,11 @@ import {
   Expire,
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { UserOptionData } from "../generated/schema";
 import { updateClosingStats } from "./aggregate";
-import { ARBITRUM_SOLANA_ADDRESS, RouterAddress, State } from "./config";
+import { State } from "./config";
 import { updateOptionContractData } from "./core";
+import { isContractRegisteredToRouter } from "./helpers";
 import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
@@ -18,10 +17,11 @@ import {
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
   const tournamentId = event.params.tournamentId;
 
-  if (routerContract.contractRegistry(contractAddress) == true) {
+  if (isContractRegisteredToRouter(optionContractInstance) === true) {
     let optionID = event.params.id;
     let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
     let optionData = optionContractInstance.options(optionID);
@@ -61,12 +61,12 @@ export function _handleCreate(event: Create): void {
 
 export function _handleExpire(event: Expire): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
-  ) {
-    let referrenceID = `${event.params.id}${contractAddress.toHexString()}`;
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+
+  // check if option contract is registered to our router
+  if (isContractRegisteredToRouter(optionContractInstance) === true) {
+    let referrenceID = `${event.params.id}${contractAddress}`;
     let userOptionData = UserOptionData.load(referrenceID);
     if (userOptionData != null) {
       userOptionData.state = State.expired;
@@ -84,12 +84,12 @@ export function _handleExpire(event: Expire): void {
 
 export function _handleExercise(event: Exercise): void {
   let contractAddress = event.address;
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (
-    routerContract.contractRegistry(contractAddress) == true ||
-    contractAddress == Address.fromString(ARBITRUM_SOLANA_ADDRESS)
-  ) {
-    let referrenceID = `${event.params.id}${contractAddress.toHexString()}`;
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+
+  // check if option contract is registered to our router
+  if (isContractRegisteredToRouter(optionContractInstance) === true) {
+    let referrenceID = `${event.params.id}${contractAddress}`;
     let userOptionData = UserOptionData.load(referrenceID);
     if (userOptionData != null) {
       userOptionData.state = State.exercised;
@@ -107,8 +107,12 @@ export function _handleExercise(event: Exercise): void {
 }
 
 export function _handlePause(event: Pause): void {
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (routerContract.contractRegistry(event.address) == true) {
+  const optionContractInstance = _loadOrCreateOptionContractEntity(
+    event.address
+  );
+
+  // check if option contract is registered to our router
+  if (isContractRegisteredToRouter(optionContractInstance) === true) {
     let isPaused = event.params.isPaused;
     let optionContract = _loadOrCreateOptionContractEntity(event.address);
     optionContract.isPaused = isPaused;

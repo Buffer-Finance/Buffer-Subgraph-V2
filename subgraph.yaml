@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 17937150 
+      startBlock: 50912771
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -37,9 +37,9 @@ dataSources:
     name: TournamentManager
     network: arbitrum-goerli
     source:
-      address: "0x177aDf06a2885Ac3606b583267EE8dc196B27C20"
+      address: "0xbe2781CcB9099E2D7797Da51c2F51B56436A7c07"
       abi: TournamentManager
-      startBlock: 18912124 
+      startBlock: 50912771
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -65,9 +65,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0x5f4290FaB47efC67882f62dFf6C6D46655F644Ac"
+      address: "0xEE4FfF95FcBc7e7DcfF5DE21b8a6AA4C13322e00"
       abi: BufferRouter
-      startBlock: 18912124 
+      startBlock: 50912771
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -87,4 +87,29 @@ dataSources:
           handler: handleCancelTrade
         - event: OpenTrade(indexed address,uint256,uint256,uint256)
           handler: handleOpenTrade
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: Config
+    network: arbitrum-goerli
+    source:
+      abi: Config
+      startBlock: 50912771
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ConfigContract
+      abis:
+        - name: Config
+          file: ./abis/Config.json
+      eventHandlers:
+        - event: UpdateMinPeriod(uint32)
+          handler: handleUpdateMinPeriod
+        - event: UpdateMaxPeriod(uint32)
+          handler: handleUpdateMaxPeriod
+        - event: UpdateMaxFee(uint256)
+          handler: handleUpdateMaxFee
+        - event: UpdateMinFee(uint256)
+          handler: handleUpdateMinFee
       file: ./src/mapping.ts

@@ -14,3 +14,10 @@ export function _getHourId(timestamp: BigInt): string {
   let hourTimestamp = (timestamp.toI32() - 16 * 3600) / 3600;
   return hourTimestamp.toString();
 }
+
+export function calculatePayout(settlementFeePercent: BigInt): BigInt {
+  let payout = BigInt.fromI64(1000000000000000000).minus(
+    settlementFeePercent.times(BigInt.fromI64(200000000000000))
+  );
+  return payout;
+}

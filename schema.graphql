@@ -6,11 +6,21 @@ enum Period {
 }
 
 type OptionContract @entity {
-  id: Bytes!
+  id: String!
   address: Bytes!
-  config: Bytes!
+  config: ConfigContract!
   asset: String!
   isPaused: Boolean!
+  payoutForUp: BigInt
+  payoutForDown: BigInt
+}
+type ConfigContract @entity {
+  id: String!
+  address: Bytes!
+  minFee: BigInt!
+  maxFee: BigInt!
+  minPeriod: BigInt!
+  maxPeriod: BigInt!
 }
 
 type QueuedOptionData @entity {
@@ -18,7 +28,7 @@ type QueuedOptionData @entity {
   optionContract: OptionContract!
   strike: BigInt
   totalFee: BigInt
-  user: User
+  user: Bytes
   state: Int
   isAbove: Boolean
   queueID: BigInt
@@ -37,7 +47,7 @@ type UserOptionData @entity {
   optionID: BigInt
   strike: BigInt
   totalFee: BigInt!
-  user: User!
+  user: Bytes!
   creationTime: BigInt!
   queuedTimestamp: BigInt!
   expirationPrice: BigInt

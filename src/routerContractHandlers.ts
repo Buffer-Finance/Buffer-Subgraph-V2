@@ -1,22 +1,22 @@
 import {
-  _loadOrCreateOptionContractEntity,
-  _loadOrCreateQueuedOptionEntity,
-  _loadOrCreateOptionDataEntity,
-} from "./initialize";
+  BufferRouter,
+  CancelTrade,
+  InitiateTrade,
+  OpenTrade,
+} from "../generated/BufferRouter/BufferRouter";
 import { State } from "./config";
 import { logUser } from "./core";
 import {
-  InitiateTrade,
-  CancelTrade,
-  BufferRouter,
-  OpenTrade,
-} from "../generated/BufferRouter/BufferRouter";
+  _loadOrCreateOptionContractEntity,
+  _loadOrCreateOptionDataEntity,
+  _loadOrCreateQueuedOptionEntity,
+} from "./initialize";
 
 export function _handleInitiateTrade(event: InitiateTrade): void {
   let routerContract = BufferRouter.bind(event.address);
   let queueID = event.params.queueId;
   let queuedTradeData = routerContract.queuedTrades(queueID);
-  let contractAddress = queuedTradeData.value6;
+  let contractAddress = queuedTradeData.value6.toHexString();
   _loadOrCreateOptionContractEntity(contractAddress);
   logUser(event.block.timestamp, event.params.account);
   let queuedOptionData = _loadOrCreateQueuedOptionEntity(
@@ -36,7 +36,9 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
 export function _handleOpenTrade(event: OpenTrade): void {
   let routerContract = BufferRouter.bind(event.address);
   let queueID = event.params.queueId;
-  let contractAddress = routerContract.queuedTrades(queueID).value6;
+  let contractAddress = routerContract
+    .queuedTrades(queueID)
+    .value6.toHexString();
   let userQueuedData = _loadOrCreateQueuedOptionEntity(
     queueID,
     contractAddress
@@ -62,7 +64,9 @@ export function _handleOpenTrade(event: OpenTrade): void {
 export function _handleCancelTrade(event: CancelTrade): void {
   let queueID = event.params.queueId;
   let routerContract = BufferRouter.bind(event.address);
-  let contractAddress = routerContract.queuedTrades(queueID).value6;
+  let contractAddress = routerContract
+    .queuedTrades(queueID)
+    .value6.toHexString();
   let userQueuedData = _loadOrCreateQueuedOptionEntity(
     queueID,
     contractAddress

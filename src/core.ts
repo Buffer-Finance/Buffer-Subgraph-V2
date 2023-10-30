@@ -1,12 +1,7 @@
-import { BigInt, Address } from "@graphprotocol/graph-ts";
-import { User } from "../generated/schema";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { DailyUserStat, User } from "../generated/schema";
 import { _getDayId } from "./helpers";
-import {
-  _loadOrCreateOptionContractEntity,
-  _loadOrCreateUserStat
-} from "./initialize";
-import { DailyUserStat } from "../generated/schema";
-
+import { _loadOrCreateUserStat } from "./initialize";
 
 export function logUser(timestamp: BigInt, account: Address): void {
   let user = User.load(account);
@@ -38,4 +33,3 @@ export function logUser(timestamp: BigInt, account: Address): void {
     }
   }
 }
-

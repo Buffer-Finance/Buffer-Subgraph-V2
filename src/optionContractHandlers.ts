@@ -1,33 +1,54 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
-  Create,
-  Expire,
-  Exercise,
   BufferBinaryOptions,
+  Create,
   CreateContract,
+  Exercise,
+  Expire,
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { _getDayId, _getHourId, _getWeekId } from "./helpers";
+import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import { RouterAddress, State } from "./config";
+import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
+import { calculatePayout } from "./helpers";
 import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
 } from "./initialize";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { State, RouterAddress } from "./config";
 
 export function _handleCreateContract(event: CreateContract): void {
   let contractAddress = event.address;
+  let contractAddressString = contractAddress.toHexString();
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (routerContract.contractRegistry(contractAddress) == true) {      
-    let optionContract = _loadOrCreateOptionContractEntity(contractAddress);
+  if (routerContract.contractRegistry(contractAddress) == true) {
+    let optionContract = _loadOrCreateOptionContractEntity(
+      contractAddressString
+    );
+    const configContractEntity = _loadOrCreateConfigContractEntity(
+      event.params.config.toHexString()
+    );
     optionContract.asset = event.params.assetPair;
-    optionContract.config = event.params.config;
+    optionContract.config = configContractEntity.id;
+    let optionContractInstance = BufferBinaryOptions.bind(
+      Address.fromBytes(contractAddress)
+    );
+    optionContract.payoutForDown = calculatePayout(
+      BigInt.fromI32(
+        optionContractInstance.baseSettlementFeePercentageForBelow()
+      )
+    );
+    optionContract.payoutForUp = calculatePayout(
+      BigInt.fromI32(
+        optionContractInstance.baseSettlementFeePercentageForAbove()
+      )
+    );
     optionContract.save();
   }
 }
 
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
+  let contractAddressString = contractAddress.toHexString();
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   if (routerContract.contractRegistry(contractAddress) == true) {
     let optionID = event.params.id;
@@ -37,7 +58,7 @@ export function _handleCreate(event: Create): void {
     let totalFee = event.params.totalFee;
     let userOptionData = _loadOrCreateOptionDataEntity(
       optionID,
-      contractAddress
+      contractAddressString
     );
     userOptionData.user = event.params.account;
     userOptionData.totalFee = totalFee;
@@ -55,11 +76,13 @@ export function _handleCreate(event: Create): void {
 
 export function _handleExpire(event: Expire): void {
   let contractAddress = event.address;
+  let contractAddressString = contractAddress.toHexString();
+
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   if (routerContract.contractRegistry(contractAddress) == true) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
-      contractAddress
+      contractAddressString
     );
     userOptionData.state = State.expired;
     userOptionData.expirationPrice = event.params.priceAtExpiration;
@@ -69,11 +92,13 @@ export function _handleExpire(event: Expire): void {
 
 export function _handleExercise(event: Exercise): void {
   let contractAddress = event.address;
+  let contractAddressString = contractAddress.toHexString();
+
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
   if (routerContract.contractRegistry(contractAddress) == true) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
-      contractAddress
+      contractAddressString
     );
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
@@ -83,7 +108,10 @@ export function _handleExercise(event: Exercise): void {
 }
 
 export function _handlePause(event: Pause): void {
-  let optionContract = _loadOrCreateOptionContractEntity(event.address);
+  let optionContract = _loadOrCreateOptionContractEntity(
+    event.address.toHexString()
+  );
+
   optionContract.isPaused = event.params.isPaused;
   optionContract.save();
 }

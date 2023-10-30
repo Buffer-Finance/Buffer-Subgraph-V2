@@ -1,20 +1,20 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
-  UserOptionData,
   OptionContract,
-  UserStat,
   QueuedOptionData,
   Tournament,
+  UserOptionData,
+  UserStat,
 } from "../generated/schema";
 export const ZERO = BigInt.fromI32(0);
 
 export function _loadOrCreateOptionContractEntity(
-  contractAddress: Address
+  contractAddress: string
 ): OptionContract {
   let optionContract = OptionContract.load(contractAddress);
   if (optionContract == null) {
     optionContract = new OptionContract(contractAddress);
-    optionContract.address = contractAddress;
+    optionContract.address = Address.fromHexString(contractAddress);
     optionContract.isPaused = false;
   }
   return optionContract as OptionContract;
@@ -22,7 +22,7 @@ export function _loadOrCreateOptionContractEntity(
 
 export function _loadOrCreateQueuedOptionEntity(
   queueID: BigInt,
-  contractAddress: Bytes
+  contractAddress: string
 ): QueuedOptionData {
   let referenceID = `${queueID}${contractAddress}`;
   let entity = QueuedOptionData.load(referenceID);
@@ -41,7 +41,7 @@ export function _loadOrCreateQueuedOptionEntity(
 
 export function _loadOrCreateOptionDataEntity(
   optionID: BigInt,
-  contractAddress: Bytes
+  contractAddress: string
 ): UserOptionData {
   let referrenceID = `${optionID}${contractAddress}`;
   let entity = UserOptionData.load(referrenceID);
@@ -75,9 +75,7 @@ export function _loadOrCreateUserStat(
   return userStat as UserStat;
 }
 
-export function _loadOrCreateTournamentEntity(
-  id: BigInt
-): Tournament {
+export function _loadOrCreateTournamentEntity(id: BigInt): Tournament {
   let tournamentID = id.toString();
   let entity = Tournament.load(tournamentID);
   if (entity == null) {

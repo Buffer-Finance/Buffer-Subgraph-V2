@@ -39,6 +39,7 @@ type QueuedOptionData @entity {
   cancelTimestamp: BigInt!
   lag: BigInt!
   processTime: BigInt!
+  tournament: Tournament
 }
 
 type UserOptionData @entity {

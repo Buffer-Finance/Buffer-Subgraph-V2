@@ -10,6 +10,7 @@ import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
   _loadOrCreateQueuedOptionEntity,
+  _loadOrCreateTournamentEntity,
 } from "./initialize";
 
 export function _handleInitiateTrade(event: InitiateTrade): void {
@@ -30,6 +31,9 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
   queuedOptionData.slippage = queuedTradeData.value8;
   queuedOptionData.isAbove = queuedTradeData.value5 ? true : false;
   queuedOptionData.queueTimestamp = event.block.timestamp;
+  const tournament = _loadOrCreateTournamentEntity(event.params.tournamentId);
+  tournament.save();
+  queuedOptionData.tournament = tournament.id;
   queuedOptionData.save();
 }
 

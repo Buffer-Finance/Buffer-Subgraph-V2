@@ -21,6 +21,7 @@ type ConfigContract @entity {
   maxFee: BigInt!
   minPeriod: BigInt!
   maxPeriod: BigInt!
+  creationWindowContract: Bytes
 }
 
 type QueuedOptionData @entity {

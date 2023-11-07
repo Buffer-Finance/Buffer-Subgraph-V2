@@ -11,6 +11,7 @@ import {
   OpenTrade,
 } from "../generated/BufferRouter/BufferRouter";
 import {
+  UpdateCreationWindowContract,
   UpdateMaxFee,
   UpdateMaxPeriod,
   UpdateMinFee,
@@ -24,6 +25,7 @@ import {
   VerifyTournament,
 } from "../generated/TournamentManager/TournamentManager";
 import {
+  _handleUpdateCreationWindowContract,
   _handleUpdateMaxFee,
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
@@ -129,4 +131,10 @@ export function handleUpdateMinFee(event: UpdateMinFee): void {
 
 export function handleUpdateMaxFee(event: UpdateMaxFee): void {
   _handleUpdateMaxFee(event);
+}
+
+export function handleUpdateCreationWindowContract(
+  event: UpdateCreationWindowContract
+): void {
+  _handleUpdateCreationWindowContract(event);
 }

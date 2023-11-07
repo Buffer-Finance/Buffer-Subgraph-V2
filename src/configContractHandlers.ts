@@ -1,5 +1,6 @@
 import { Address } from "@graphprotocol/graph-ts";
 import {
+  UpdateCreationWindowContract,
   UpdateMaxFee,
   UpdateMaxPeriod,
   UpdateMinFee,
@@ -45,5 +46,13 @@ export function _handleUpdateMinFee(event: UpdateMinFee): void {
 export function _handleUpdateMaxFee(event: UpdateMaxFee): void {
   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
   entity.maxFee = event.params.value;
+  entity.save();
+}
+
+export function _handleUpdateCreationWindowContract(
+  event: UpdateCreationWindowContract
+): void {
+  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+  entity.creationWindowContract = event.params.value;
   entity.save();
 }

@@ -112,4 +112,6 @@ dataSources:
           handler: handleUpdateMaxFee
         - event: UpdateMinFee(uint256)
           handler: handleUpdateMinFee
+        - event: UpdateCreationWindowContract(address)
+          handler: handleUpdateCreationWindowContract
       file: ./src/mapping.ts

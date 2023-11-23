@@ -77,38 +77,45 @@ export function findRouterContract(address: string): string {
     return RouterAddress;
   } else if (
     v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterContract.try_contractRegistry(contractAddress).value == true
+    v2RouterContract.try_contractRegistry(contractAddress).value == true &&
+    v2RouterContract.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress;
   } else if (
     v2RouterContract_2.try_contractRegistry(contractAddress).reverted ==
       false &&
-    v2RouterContract_2.try_contractRegistry(contractAddress).value == true
+    v2RouterContract_2.try_contractRegistry(contractAddress).value == true &&
+    v2RouterContract_2.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress_2;
   } else if (
     v2RouterAddress_3.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterAddress_3.try_contractRegistry(contractAddress).value == true
+    v2RouterAddress_3.try_contractRegistry(contractAddress).value == true &&
+    v2RouterAddress_3.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress_3;
   } else if (
     v2RouterAddress_4.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterAddress_4.try_contractRegistry(contractAddress).value == true
+    v2RouterAddress_4.try_contractRegistry(contractAddress).value == true &&
+    v2RouterAddress_4.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress_4;
   } else if (
     v2RouterAddress_5.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterAddress_5.try_contractRegistry(contractAddress).value == true
+    v2RouterAddress_5.try_contractRegistry(contractAddress).value == true &&
+    v2RouterAddress_5.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress_5;
   } else if (
     v2RouterAddress_6.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterAddress_6.try_contractRegistry(contractAddress).value == true
+    v2RouterAddress_6.try_contractRegistry(contractAddress).value == true &&
+    v2RouterAddress_6.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress_6;
   } else if (
     v2RouterAddress_7.try_contractRegistry(contractAddress).reverted == false &&
-    v2RouterAddress_7.try_contractRegistry(contractAddress).value == true
+    v2RouterAddress_7.try_contractRegistry(contractAddress).value == true &&
+    v2RouterAddress_7.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress_7;
   } else {

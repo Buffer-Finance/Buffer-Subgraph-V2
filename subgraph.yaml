@@ -114,6 +114,8 @@ dataSources:
           file: ./abis/BinaryPool.json
         - name: BufferRouter
           file: ./abis/BufferRouter.json
+        - name: BufferBinaryOptions
+          file: ./abis/BufferBinaryOptions.json
       eventHandlers:
         - event: Expire(indexed uint256,uint256,uint256)
           handler: handleExpireV1

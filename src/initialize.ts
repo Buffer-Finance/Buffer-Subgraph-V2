@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -13,6 +13,7 @@ import {
   PoolStat,
   ReferralData,
   TradingStat,
+  Transaction,
   UserOptionData,
   UserRewards,
   UserStat,
@@ -144,6 +145,7 @@ export function _loadOrCreateOptionContractEntity(
       optionContract.routerContract = findRouterContract(contractAddress);
 
     let optionContractPool = Address.fromString(ADDRESS_ZERO);
+
     if (optionContract.routerContract == ADDRESS_ZERO) {
       optionContract.isPaused = true;
       optionContract.asset = "unknown";
@@ -153,7 +155,11 @@ export function _loadOrCreateOptionContractEntity(
       );
       optionContract.isPaused = optionContractInstance.isPaused();
       optionContract.asset = optionContractInstance.assetPair();
-      optionContractPool = optionContractInstance.pool();
+      if (
+        optionContractInstance.try_pool().reverted == false &&
+        optionContractInstance.try_pool().value
+      )
+        optionContractPool = optionContractInstance.pool();
     }
 
     if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
@@ -543,4 +549,33 @@ export function _loadOrCreateOptionStats(
   }
 
   return entity as OptionStat;
+}
+
+export function _loadOrCreateTransaction(
+  id: string,
+  transactionHash: string,
+  // blockNumber: BigInt,
+  // cumulativeGasUsed: BigInt,
+  // gasUsed: BigInt,
+  // contractAddress: Bytes,
+  from: Bytes,
+  to: Bytes,
+  // input: string,
+  eventName: string
+): Transaction {
+  let entity = Transaction.load(id);
+  if (entity == null) {
+    entity = new Transaction(id);
+    entity.transactionHash = transactionHash;
+    // entity.blockNumber = blockNumber;
+    // entity.cumulativeGasUsed = cumulativeGasUsed;
+    // entity.gasUsed = gasUsed;
+    // entity.contractAddress = contractAddress;
+    entity.from = from;
+    entity.to = to;
+    // entity.input = input;
+    entity.eventName = eventName;
+    entity.save();
+  }
+  return entity as Transaction;
 }

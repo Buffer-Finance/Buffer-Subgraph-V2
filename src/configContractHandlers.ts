@@ -80,7 +80,7 @@ export function _handleCreateOptionsContract(
 export function _handleUpdateMinFee(event: UpdateMinFee): void {
   const address = event.address;
   const entity = _loadorCreateConfigContractEntity(address);
-
+  event.receipt;
   entity.minFee = event.params.value;
   entity.save();
 }

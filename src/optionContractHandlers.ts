@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -41,6 +41,7 @@ import {
   _loadOrCreateReferralData,
 } from "./initialize";
 import { referralAndNFTDiscountStats } from "./stats";
+import { createTxnData } from "./txnDataHandlers";
 
 export function isContractRegisteredToRouter(
   optionContractInstance: OptionContract
@@ -61,7 +62,27 @@ export function isContractRegisteredToV2Router(
   );
 }
 
+function mapDecodedData(decodedData: ethereum.Tuple | null): string {
+  if (decodedData !== null) {
+    const queueId = `queueId: ${decodedData[0].toBigInt()},`;
+    const timestamp = `timestamp: ${decodedData[1].toBigInt()},`;
+    const price = `price: ${decodedData[2].toBigInt()},`;
+    const signature = `signature: ${decodedData[3].toBytes().toString()},`;
+
+    const stringValue = "{" + queueId + timestamp + price + signature + "}";
+    return stringValue;
+  }
+  return "";
+}
+
 export function _handleCreate(event: Create): void {
+  createTxnData(
+    event.receipt,
+    event.transaction,
+    "Create",
+    "(uint256,uint256,uint256,bytes)",
+    mapDecodedData
+  );
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);

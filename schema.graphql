@@ -5,6 +5,19 @@ enum Period {
   total
 }
 
+type Transaction @entity {
+  id: String!
+  transactionHash: String!
+  blockNumber: BigInt
+  cumulativeGasUsed: BigInt
+  gasUsed: BigInt
+  contractAddress: Bytes
+  from: Bytes!
+  to: Bytes
+  input: String
+  eventName: String!
+}
+
 type OptionStat @entity {
   id: String! # optionContract+&+user
   user: Bytes!

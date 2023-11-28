@@ -1,21 +1,88 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "contract BufferBinaryPool",
+        "name": "_pool",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RoleAdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
         "internalType": "address",
-        "name": "previousOwner",
+        "name": "account",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "newOwner",
+        "name": "sender",
         "type": "address"
       }
     ],
-    "name": "OwnershipTransferred",
+    "name": "RoleGranted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleRevoked",
     "type": "event"
   },
   {
@@ -23,12 +90,12 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint16",
-        "name": "value",
-        "type": "uint16"
+        "internalType": "address",
+        "name": "_circuitBreakerContract",
+        "type": "address"
       }
     ],
-    "name": "UpdateAssetUtilizationLimit",
+    "name": "UpdateCircuitBreakerContract",
     "type": "event"
   },
   {
@@ -46,8 +113,15 @@
   },
   {
     "anonymous": false,
-    "inputs": [],
-    "name": "UpdateMarketTime",
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "_iv",
+        "type": "uint32"
+      }
+    ],
+    "name": "UpdateIV",
     "type": "event"
   },
   {
@@ -56,24 +130,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "value",
+        "name": "ivFactorITM",
         "type": "uint256"
       }
     ],
-    "name": "UpdateMaxFee",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "value",
-        "type": "uint32"
-      }
-    ],
-    "name": "UpdateMaxPeriod",
+    "name": "UpdateIVFactorITM",
     "type": "event"
   },
   {
@@ -82,11 +143,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "value",
+        "name": "ivFactorOTM",
         "type": "uint256"
       }
     ],
-    "name": "UpdateMinFee",
+    "name": "UpdateIVFactorOTM",
     "type": "event"
   },
   {
@@ -94,12 +155,51 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint32",
-        "name": "value",
-        "type": "uint32"
+        "internalType": "int256",
+        "name": "_maxSkew",
+        "type": "int256"
       }
     ],
-    "name": "UpdateMinPeriod",
+    "name": "UpdateMaxSkew",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "value",
+        "type": "address"
+      }
+    ],
+    "name": "UpdateOptionStorageContract",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "payout",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpdatePayout",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_platformFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpdatePlatformFee",
     "type": "event"
   },
   {
@@ -120,6 +220,19 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "sf",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpdateSf",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "value",
         "type": "address"
@@ -130,49 +243,180 @@
   },
   {
     "inputs": [],
+    "name": "CONTRACT_UPDATOR",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "FEE_UPDATOR",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "IV_UPDATOR",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PERIOD_UPDATOR",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "circuitBreakerContract",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "creationWindowContract",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "maxFee",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [{ "internalType": "bool", "name": "isITM", "type": "bool" }],
+    "name": "getFactoredIv",
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "role", "type": "bytes32" }
+    ],
+    "name": "getRoleAdmin",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+      { "internalType": "address", "name": "account", "type": "address" }
+    ],
+    "name": "grantRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+      { "internalType": "address", "name": "account", "type": "address" }
+    ],
+    "name": "hasRole",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "maxPeriod",
+    "name": "iv",
     "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "minFee",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "minPeriod",
+    "name": "ivFactorITM",
     "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "owner",
+    "name": "ivFactorOTM",
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxSkew",
+    "outputs": [{ "internalType": "int256", "name": "", "type": "int256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "optionStorageContract",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "renounceOwnership",
+    "name": "payout",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "platformFee",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool",
+    "outputs": [
+      {
+        "internalType": "contract BufferBinaryPool",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+      { "internalType": "address", "name": "account", "type": "address" }
+    ],
+    "name": "renounceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+      { "internalType": "address", "name": "account", "type": "address" }
+    ],
+    "name": "revokeRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_circuitBreakerContract",
+        "type": "address"
+      }
+    ],
+    "name": "setCircuitBreakerContract",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -191,37 +435,35 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "_maxFee", "type": "uint256" }
-    ],
-    "name": "setMaxFee",
+    "inputs": [{ "internalType": "uint32", "name": "_iv", "type": "uint32" }],
+    "name": "setIV",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "_maxPeriod", "type": "uint32" }
+      { "internalType": "uint32", "name": "_ivFactorITM", "type": "uint32" }
     ],
-    "name": "setMaxPeriod",
+    "name": "setIVFactorITM",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_minFee", "type": "uint256" }
+      { "internalType": "uint32", "name": "_ivFactorOTM", "type": "uint32" }
     ],
-    "name": "setMinFee",
+    "name": "setIVFactorOTM",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "_minPeriod", "type": "uint32" }
+      { "internalType": "int256", "name": "_maxSkew", "type": "int256" }
     ],
-    "name": "setMinPeriod",
+    "name": "setMaxSkew",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -230,11 +472,49 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_traderNFTContract",
+        "name": "_optionStorageContract",
         "type": "address"
       }
     ],
-    "name": "setTraderNFTContract",
+    "name": "setOptionStorageContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_payout", "type": "uint256" }
+    ],
+    "name": "setPayout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_platformFee", "type": "uint256" }
+    ],
+    "name": "setPlatformFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_settlementFeeDisbursalContract",
+        "type": "address"
+      }
+    ],
+    "name": "setSettlementFeeDisbursalContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "_sf", "type": "uint256" }],
+    "name": "setSf",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -248,18 +528,18 @@
   },
   {
     "inputs": [],
-    "name": "traderNFTContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "sf",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "newOwner", "type": "address" }
+      { "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }
     ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "supportsInterface",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

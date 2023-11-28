@@ -1,8 +1,8 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import {
+  Market,
   OptionContract,
   QueuedOptionData,
-  Tournament,
   UserOptionData,
   UserStat,
 } from "../generated/schema";
@@ -75,11 +75,10 @@ export function _loadOrCreateUserStat(
   return userStat as UserStat;
 }
 
-export function _loadOrCreateTournamentEntity(id: BigInt): Tournament {
-  let tournamentID = id.toString();
-  let entity = Tournament.load(tournamentID);
-  if (entity == null) {
-    entity = new Tournament(tournamentID);
+export function _loadOrCreateMarket(id: Bytes): Market {
+  let market = Market.load(id);
+  if (market == null) {
+    market = new Market(id);
   }
-  return entity as Tournament;
+  return market as Market;
 }

@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 50912771
+      startBlock: 57027217
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -17,57 +17,32 @@ dataSources:
         - OptionContract
         - User
         - QueuedOptionData
-        - Tournament
       abis:
         - name: BufferBinaryOptions
           file: ./abis/BufferBinaryOptions.json
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
-        - event: CreateContract(address,string)
+        - event: CreateOptionsContract(address,address,address,string,string,uint8)
           handler: handleCreateContract
-        - event: Create(indexed address,indexed uint256,indexed uint256,uint256,uint256)
+        - event: Create(indexed address,indexed uint256,uint256,uint256,int256,bytes32)
           handler: handleCreate
-        - event: Expire(indexed uint256,uint256,uint256)
+        - event: Expire(indexed uint256,uint256,uint256,bool)
           handler: handleExpire
-        - event: Exercise(indexed address,indexed uint256,uint256,uint256)
+        - event: Exercise(indexed address,indexed uint256,uint256,uint256,bool)
           handler: handleExercise
-      file: ./src/mapping.ts
-  - kind: ethereum/contract
-    name: TournamentManager
-    network: arbitrum-goerli
-    source:
-      address: "0xbe2781CcB9099E2D7797Da51c2F51B56436A7c07"
-      abi: TournamentManager
-      startBlock: 50912771
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Tournament
-      abis:
-        - name: TournamentManager
-          file: ./abis/TournamentManager.json
-      eventHandlers:
-        - event: CreateTournament(uint256,string)
-          handler: handleCreateTournament
-        - event: VerifyTournament(uint256)
-          handler: handleVerifyTournament
-        - event: StartTournament(uint256)
-          handler: handleStartTournament
-        - event: EndTournament(uint256)
-          handler: handleEndTournament
-        - event: CloseTournament(uint256,string)
-          handler: handleCloseTournament
+        - event: CreateMarket(uint256,uint256,bytes32,address)
+          handler: handleCreateMarket
+        - event: Pause(bool)
+          handler: handlePause
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0xEE4FfF95FcBc7e7DcfF5DE21b8a6AA4C13322e00"
+      address: "0xedd6CeeF72aDcC430a773e3D0e9874B65ACFE15D"
       abi: BufferRouter
-      startBlock: 50912771
+      startBlock: 57027217
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -81,11 +56,11 @@ dataSources:
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
-        - event: InitiateTrade(indexed address,uint256,uint256,uint256)
+        - event: InitiateTrade(indexed address,uint256,uint256)
           handler: handleInitiateTrade
-        - event: CancelTrade(indexed address,uint256,uint256,string)
+        - event: CancelTrade(indexed address,uint256,string)
           handler: handleCancelTrade
-        - event: OpenTrade(indexed address,uint256,uint256,uint256)
+        - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address,uint256)
           handler: handleOpenTrade
       file: ./src/mapping.ts
   - kind: ethereum/contract
@@ -93,7 +68,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: Config
-      startBlock: 50912771
+      startBlock: 57027217
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -104,14 +79,36 @@ dataSources:
         - name: Config
           file: ./abis/Config.json
       eventHandlers:
-        - event: UpdateMinPeriod(uint32)
-          handler: handleUpdateMinPeriod
-        - event: UpdateMaxPeriod(uint32)
-          handler: handleUpdateMaxPeriod
-        - event: UpdateMaxFee(uint256)
-          handler: handleUpdateMaxFee
-        - event: UpdateMinFee(uint256)
-          handler: handleUpdateMinFee
+        # - event: UpdateMinPeriod(uint32)
+        #   handler: handleUpdateMinPeriod
+        # - event: UpdateMaxPeriod(uint32)
+        #   handler: handleUpdateMaxPeriod
+        # - event: UpdateMaxFee(uint256)
+        #   handler: handleUpdateMaxFee
+        # - event: UpdateMinFee(uint256)
+        #   handler: handleUpdateMinFee
         - event: UpdateCreationWindowContract(address)
           handler: handleUpdateCreationWindowContract
+        - event: UpdateMaxSkew(int256)
+          handler: handleUpdateMaxSkew
+        - event: UpdateCircuitBreakerContract(address)
+          handler: handleUpdateCircuitBreakerContract
+        - event: UpdateIV(uint32)
+          handler: handleUpdateIV
+        - event: UpdateIVFactorITM(uint256)
+          handler: handleUpdateIVFactorITM
+        - event: UpdateIVFactorOTM(uint256)
+          handler: handleUpdateIVFactorOTM
+        - event: UpdateOptionStorageContract(address)
+          handler: handleUpdateOptionStorageContract
+        - event: UpdatePayout(uint256)
+          handler: handleUpdatePayout
+        - event: UpdatePlatformFee(uint256)
+          handler: handleUpdatePlatformFee
+        - event: UpdateSettlementFeeDisbursalContract(address)
+          handler: handleUpdateSettlementFeeDisbursalContract
+        - event: UpdateSf(uint256)
+          handler: handleUpdateSf
+        - event: UpdatetraderNFTContract(address)
+          handler: handleUpdatetraderNFTContract
       file: ./src/mapping.ts

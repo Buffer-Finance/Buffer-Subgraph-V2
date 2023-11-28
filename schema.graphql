@@ -9,19 +9,40 @@ type OptionContract @entity {
   id: String!
   address: Bytes!
   config: ConfigContract!
-  asset: String!
+  token0: String!
+  token1: String!
   isPaused: Boolean!
-  payoutForUp: BigInt
-  payoutForDown: BigInt
+  # payoutForUp: BigInt
+  # payoutForDown: BigInt
 }
+
+type Market @entity {
+  id: Bytes!
+  skew: BigInt!
+  strike: BigInt
+  expiration: BigInt
+  optionContract: OptionContract
+}
+
 type ConfigContract @entity {
   id: String!
   address: Bytes!
-  minFee: BigInt!
-  maxFee: BigInt!
-  minPeriod: BigInt!
-  maxPeriod: BigInt!
-  creationWindowContract: Bytes
+  # minFee: BigInt!
+  # maxFee: BigInt!
+  # minPeriod: BigInt!
+  # maxPeriod: BigInt!
+  maxSkew: BigInt!
+  creationWindowContract: Bytes!
+  circuitBreakerContract: Bytes!
+  iv: BigInt!
+  ivFactorITM: BigInt!
+  ivFactorOTM: BigInt!
+  optionStorageContract: Bytes!
+  platformFee: BigInt!
+  payout: BigInt!
+  sfdContract: Bytes!
+  sf: BigInt!
+  traderNFTContract: Bytes!
 }
 
 type QueuedOptionData @entity {
@@ -33,14 +54,14 @@ type QueuedOptionData @entity {
   state: Int
   isAbove: Boolean
   queueID: BigInt
-  slippage: BigInt
+  # slippage: BigInt
   depositToken: String
   reason: String
   queueTimestamp: BigInt!
   cancelTimestamp: BigInt!
   lag: BigInt!
+  maxFeePerContract: BigInt!
   processTime: BigInt!
-  tournament: Tournament
 }
 
 type UserOptionData @entity {
@@ -61,7 +82,6 @@ type UserOptionData @entity {
   queueID: BigInt
   settlementFee: BigInt!
   lag: BigInt!
-  tournament: Tournament
 }
 
 type User @entity {
@@ -81,10 +101,4 @@ type UserStat @entity {
 
 type DailyUserStat @entity {
   id: String!
-}
-
-type Tournament @entity {
-  id: String!
-  state: String!
-  lastUpdated: BigInt!
 }

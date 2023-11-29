@@ -62,14 +62,16 @@ export function isContractRegisteredToV2Router(
   );
 }
 
-function mapDecodedData(decodedData: ethereum.Tuple | null): string {
-  if (decodedData !== null) {
-    const queueId = `queueId: ${decodedData[0].toBigInt()},`;
-    const timestamp = `timestamp: ${decodedData[1].toBigInt()},`;
-    const price = `price: ${decodedData[2].toBigInt()},`;
-    const signature = `signature: ${decodedData[3].toBytes().toString()},`;
+function mapDecodedData(data: ethereum.Value | null): string {
+  if (data !== null) {
+    const decodedData = data.toTuple();
+    const firstArguemnt = decodedData[0].toTuple();
+    const queueId = `queueId: ${firstArguemnt[0].toBigInt()},`;
+    const timestamp = `totalFee: ${firstArguemnt[1].toBigInt()},`;
+    const price = `period: ${firstArguemnt[2].toBigInt()},`;
+    // const signature = `signature: ${decodedData[3].toBytes().toString()},`;
 
-    const stringValue = "{" + queueId + timestamp + price + signature + "}";
+    const stringValue = "{" + queueId + timestamp + price + "}";
     return stringValue;
   }
   return "";

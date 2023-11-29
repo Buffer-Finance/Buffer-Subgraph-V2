@@ -7,7 +7,7 @@ export function createTxnData(
   transaction: ethereum.Transaction,
   eventName: string,
   decodeTypes: string,
-  mapDecodedData: (decodedData: ethereum.Tuple | null) => string
+  mapDecodedData: (decodedData: ethereum.Value | null) => string
 ): void {
   let to = transaction.to;
   if (to === null) {
@@ -27,12 +27,9 @@ export function createTxnData(
     transactionEntity.cumulativeGasUsed = receipt.cumulativeGasUsed;
     transactionEntity.contractAddress = receipt.contractAddress;
   }
-  const input = ethereum.decode(
-    decodeTypes,
-    getTxnInputDataToDecode(transaction.input)
-  );
+  const input = ethereum.decode(decodeTypes, transaction.input);
   if (input !== null) {
-    transactionEntity.input = mapDecodedData(input.toTuple());
+    transactionEntity.input = mapDecodedData(input);
     // log.info("First field: {}", [input.toTuple()[0].toString()]);
   }
   transactionEntity.save();

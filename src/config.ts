@@ -7,4 +7,4 @@ export enum State {
   opened = 6,
 }
 
-export const RouterAddress = "0xEE4FfF95FcBc7e7DcfF5DE21b8a6AA4C13322e00";
+export const RouterAddress = "0x06eFE941603876Cc3Ff0fa980BACE6DdDE9700B6";

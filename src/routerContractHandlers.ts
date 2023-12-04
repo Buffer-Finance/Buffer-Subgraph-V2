@@ -26,7 +26,7 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
   queuedOptionData.user = event.params.user;
   queuedOptionData.state = State.queued;
   queuedOptionData.strike = queuedTradeData.value2;
-  queuedOptionData.totalFee = queuedTradeData.value3;
+  queuedOptionData.expirationTimestamp = queuedTradeData.value3;
   queuedOptionData.maxFeePerContract = queuedTradeData.value10;
   queuedOptionData.isAbove = queuedTradeData.value8 ? true : false;
   queuedOptionData.queueTimestamp = queuedTradeData.value9;

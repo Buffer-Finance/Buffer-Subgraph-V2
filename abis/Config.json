@@ -233,6 +233,19 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "strikeStepSize",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpdateStrikeStepSize",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "value",
         "type": "address"
@@ -520,6 +533,19 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_strikeStepSize",
+        "type": "uint256"
+      }
+    ],
+    "name": "setStrikeStepSize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "settlementFeeDisbursalContract",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
@@ -529,6 +555,13 @@
   {
     "inputs": [],
     "name": "sf",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "strikeStepSize",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"

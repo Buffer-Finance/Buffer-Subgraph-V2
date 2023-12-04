@@ -32,9 +32,13 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
     const configContractEntity = _loadOrCreateConfigContractEntity(
       event.params.config.toHexString()
     );
+    let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
+
     optionContract.token0 = event.params.token0;
     optionContract.token1 = event.params.token1;
     optionContract.config = configContractEntity.id;
+    optionContract.poolContract = optionContractInstance.pool();
+    optionContract.routerContract = Address.fromHexString(RouterAddress);
     optionContract.save();
   }
 }

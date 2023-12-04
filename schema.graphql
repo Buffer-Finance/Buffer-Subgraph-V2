@@ -12,13 +12,15 @@ type OptionContract @entity {
   token0: String!
   token1: String!
   isPaused: Boolean!
+  poolContract: Bytes!
+  routerContract: Bytes!
   # payoutForUp: BigInt
   # payoutForDown: BigInt
 }
 
 type Market @entity {
   id: Bytes!
-  skew: BigInt
+  skew: BigInt!
   strike: BigInt
   expiration: BigInt
   optionContract: OptionContract
@@ -43,13 +45,14 @@ type ConfigContract @entity {
   sfdContract: Bytes!
   sf: BigInt!
   traderNFTContract: Bytes!
+  stepSize: BigInt!
 }
 
 type QueuedOptionData @entity {
   id: String!
   optionContract: OptionContract!
   strike: BigInt
-  totalFee: BigInt
+  expirationTimestamp: BigInt
   user: Bytes
   state: Int
   isAbove: Boolean

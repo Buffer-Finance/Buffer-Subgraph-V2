@@ -6,6 +6,7 @@ import {
   UserOptionData,
   UserStat,
 } from "../generated/schema";
+import { ZeroAddress } from "./config";
 export const ZERO = BigInt.fromI32(0);
 
 export function _loadOrCreateOptionContractEntity(
@@ -16,6 +17,10 @@ export function _loadOrCreateOptionContractEntity(
     optionContract = new OptionContract(contractAddress);
     optionContract.address = Address.fromHexString(contractAddress);
     optionContract.isPaused = false;
+    optionContract.poolContract = Address.fromHexString(ZeroAddress);
+    optionContract.routerContract = Address.fromHexString(ZeroAddress);
+    optionContract.token0 = "UNKNOWN";
+    optionContract.token1 = "UNKNOWN";
   }
   return optionContract as OptionContract;
 }
@@ -80,6 +85,7 @@ export function _loadOrCreateMarket(id: Bytes): Market {
   let market = Market.load(id);
   if (market == null) {
     market = new Market(id);
+    market.skew = ZERO;
   }
   return market as Market;
 }

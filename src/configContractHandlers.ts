@@ -11,6 +11,7 @@ import {
   UpdatePlatformFee,
   UpdateSettlementFeeDisbursalContract,
   UpdateSf,
+  UpdateStrikeStepSize,
   UpdatetraderNFTContract,
 } from "../generated/Config/Config";
 import { ConfigContract } from "../generated/schema";
@@ -36,6 +37,7 @@ export function _loadOrCreateConfigContractEntity(
     entity.platformFee = ZERO;
     entity.sf = ZERO;
     entity.maxSkew = ZERO;
+    entity.stepSize = ZERO;
     // entity.minPeriod = ZERO;
     // entity.maxPeriod = ZERO;
     // entity.minFee = ZERO;
@@ -148,5 +150,11 @@ export function _handleUpdatetraderNFTContract(
 ): void {
   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
   entity.traderNFTContract = event.params.value;
+  entity.save();
+}
+
+export function _handleUpdateStepSize(event: UpdateStrikeStepSize): void {
+  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+  entity.stepSize = event.params.strikeStepSize;
   entity.save();
 }

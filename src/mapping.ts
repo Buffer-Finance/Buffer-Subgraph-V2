@@ -23,6 +23,7 @@ import {
   UpdatePlatformFee,
   UpdateSettlementFeeDisbursalContract,
   UpdateSf,
+  UpdateStrikeStepSize,
   UpdatetraderNFTContract,
 } from "../generated/Config/Config";
 import {
@@ -37,6 +38,7 @@ import {
   _handleUpdatePlatformFee,
   _handleUpdateSettlementFeeDisbursalContract,
   _handleUpdateSf,
+  _handleUpdateStepSize,
   _handleUpdatetraderNFTContract,
 } from "./configContractHandlers";
 import {
@@ -160,4 +162,8 @@ export function handleUpdatetraderNFTContract(
   event: UpdatetraderNFTContract
 ): void {
   _handleUpdatetraderNFTContract(event);
+}
+
+export function handleUpdateStrikeStepSize(event: UpdateStrikeStepSize): void {
+  _handleUpdateStepSize(event);
 }

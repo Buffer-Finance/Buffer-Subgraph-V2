@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 57027217
+      startBlock: 57396604
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -40,9 +40,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0xedd6CeeF72aDcC430a773e3D0e9874B65ACFE15D"
+      address: "0x124E07702afF155a52b60Ab29793Db5Aae84E43C"
       abi: BufferRouter
-      startBlock: 57027217
+      startBlock: 57396604
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -68,7 +68,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: Config
-      startBlock: 57027217
+      startBlock: 57396604
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -111,4 +111,6 @@ dataSources:
           handler: handleUpdateSf
         - event: UpdatetraderNFTContract(address)
           handler: handleUpdatetraderNFTContract
+        - event: UpdateStrikeStepSize(uint256)
+          handler: handleUpdateStrikeStepSize
       file: ./src/mapping.ts

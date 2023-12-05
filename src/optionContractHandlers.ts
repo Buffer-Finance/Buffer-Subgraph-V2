@@ -9,7 +9,7 @@ import {
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { updateOpeningStats } from "./aggregate";
+import { updateClosingStats, updateOpeningStats } from "./aggregate";
 import { RouterAddress, State } from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
 import {
@@ -81,7 +81,8 @@ export function _handleCreate(event: Create): void {
       event.block.timestamp,
       contractAddress.toHexString(),
       userOptionData.totalFee,
-      userOptionData.settlementFee
+      userOptionData.settlementFee,
+      userOptionData.isAbove
     );
   }
 }
@@ -102,6 +103,12 @@ export function _handleExpire(event: Expire): void {
     userOptionData.state = State.expired;
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
+
+    updateClosingStats(
+      contractAddressString,
+      userOptionData.totalFee,
+      userOptionData.isAbove
+    );
   }
 }
 
@@ -122,6 +129,12 @@ export function _handleExercise(event: Exercise): void {
     userOptionData.payout = event.params.profit;
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
+
+    updateClosingStats(
+      contractAddressString,
+      userOptionData.totalFee,
+      userOptionData.isAbove
+    );
   }
 }
 

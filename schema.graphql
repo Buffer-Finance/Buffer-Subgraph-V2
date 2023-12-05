@@ -14,6 +14,10 @@ type OptionContract @entity {
   isPaused: Boolean!
   poolContract: Bytes!
   routerContract: Bytes!
+  openUp: BigInt!
+  openDown: BigInt!
+  openInterestUp: BigInt!
+  openInterestDown: BigInt!
   # payoutForUp: BigInt
   # payoutForDown: BigInt
 }

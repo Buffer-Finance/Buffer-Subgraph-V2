@@ -9,6 +9,7 @@ import {
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import { updateOpeningStats } from "./aggregate";
 import { RouterAddress, State } from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
 import {
@@ -75,6 +76,13 @@ export function _handleCreate(event: Create): void {
       market.skew = event.params.skew;
       market.save();
     }
+
+    updateOpeningStats(
+      event.block.timestamp,
+      contractAddress.toHexString(),
+      userOptionData.totalFee,
+      userOptionData.settlementFee
+    );
   }
 }
 

@@ -48,6 +48,15 @@ type ConfigContract @entity {
   stepSize: BigInt!
 }
 
+type VolumePerContract @entity {
+  id: String!
+  amount: BigInt!
+  period: Period!
+  timestamp: BigInt!
+  optionContract: OptionContract!
+  settlementFee: BigInt!
+}
+
 type QueuedOptionData @entity {
   id: String!
   optionContract: OptionContract!

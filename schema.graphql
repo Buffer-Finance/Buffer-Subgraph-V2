@@ -52,7 +52,6 @@ type QueuedOptionData @entity {
   id: String!
   optionContract: OptionContract!
   strike: BigInt
-  expirationTimestamp: BigInt
   user: Bytes
   state: Int
   isAbove: Boolean
@@ -65,6 +64,8 @@ type QueuedOptionData @entity {
   lag: BigInt!
   maxFeePerContract: BigInt!
   processTime: BigInt!
+  expirationTime: BigInt
+  numberOfContracts: BigInt!
 }
 
 type UserOptionData @entity {

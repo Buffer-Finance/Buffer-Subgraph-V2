@@ -41,7 +41,6 @@ import {
   _loadOrCreateReferralData,
 } from "./initialize";
 import { referralAndNFTDiscountStats } from "./stats";
-import { createTxnData } from "./txnDataHandlers";
 
 export function isContractRegisteredToRouter(
   optionContractInstance: OptionContract
@@ -78,13 +77,13 @@ function mapDecodedData(data: ethereum.Value | null): string {
 }
 
 export function _handleCreate(event: Create): void {
-  createTxnData(
-    event.receipt,
-    event.transaction,
-    "Create",
-    "(uint256,uint256,uint256,bytes)",
-    mapDecodedData
-  );
+  // createTxnData(
+  //   event.receipt,
+  //   event.transaction,
+  //   "Create",
+  //   "(uint256,uint256,uint256,bytes)",
+  //   mapDecodedData
+  // );
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -228,6 +227,13 @@ export function _handleExpire(event: Expire): void {
 }
 
 export function _handleExercise(event: Exercise): void {
+  // createTxnData(
+  //   event.receipt,
+  //   event.transaction,
+  //   "Excercise"
+  //   // "(uint256,uint256,uint256,bytes)",
+  //   // mapDecodedData
+  // );
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);

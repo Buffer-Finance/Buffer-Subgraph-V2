@@ -1,4 +1,4 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, ethereum } from "@graphprotocol/graph-ts";
 import { CreateOptionsContract } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
   UpdateCreationWindowContract,
@@ -24,6 +24,7 @@ import {
   _loadOrCreateOptionContractEntity,
   findRouterContract,
 } from "./initialize";
+import { createTxnData } from "./txnDataHandlers";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -77,7 +78,21 @@ export function _handleCreateOptionsContract(
   }
 }
 
+function mapDecodedData(data: ethereum.Value | null): string {
+  if (data !== null) {
+    return data.toBigInt().toString();
+  }
+  return "";
+}
+
 export function _handleUpdateMinFee(event: UpdateMinFee): void {
+  createTxnData(
+    event.receipt,
+    event.transaction,
+    "UpdateMinFee",
+    "uint256",
+    mapDecodedData
+  );
   const address = event.address;
   const entity = _loadorCreateConfigContractEntity(address);
   event.receipt;

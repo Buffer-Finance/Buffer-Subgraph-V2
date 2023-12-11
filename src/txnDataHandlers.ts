@@ -27,10 +27,13 @@ export function createTxnData(
     transactionEntity.cumulativeGasUsed = receipt.cumulativeGasUsed;
     transactionEntity.contractAddress = receipt.contractAddress;
   }
-  const input = ethereum.decode(decodeTypes, transaction.input);
+  // transactionEntity.input = transaction.input;
+  const input = ethereum.decode(
+    decodeTypes,
+    getTxnInputDataToDecode(transaction.input)
+  );
   if (input !== null) {
     transactionEntity.input = mapDecodedData(input);
-    // log.info("First field: {}", [input.toTuple()[0].toString()]);
   }
   transactionEntity.save();
 }
@@ -38,7 +41,7 @@ export function createTxnData(
 function getTxnInputDataToDecode(inputValue: Bytes): Bytes {
   const inputDataHexString = inputValue.toHexString().slice(10); //take away function signature: '0x????????'
   const hexStringToDecode =
-    "0x0000000000000000000000000000000000000000000000000000000000000020" +
+    // "0x0000000000000000000000000000000000000000000000000000000000000020" +
     inputDataHexString; // prepend tuple offset
   return Bytes.fromByteArray(Bytes.fromHexString(hexStringToDecode));
 }

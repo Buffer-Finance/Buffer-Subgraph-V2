@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: BufferBinaryOptions
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
       abi: BufferBinaryOptions
-      startBlock: 58006600
+      startBlock: 2195994
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -38,11 +38,11 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferRouter
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
-      address: "0x6e57AAb1659f7f787F893adD176bA15F0e2Be067"
+      address: "0x9bE7abE78A8fc78eDc763fDB864B50c6e98ACB97"
       abi: BufferRouter
-      startBlock: 58006600
+      startBlock: 2195994
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -65,10 +65,10 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: Config
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
       abi: Config
-      startBlock: 58006600
+      startBlock: 2195994
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

@@ -37,6 +37,7 @@ import {
   _loadOrCreateReferralData,
 } from "./initialize";
 import { referralAndNFTDiscountStats } from "./stats";
+import { createTxnData } from "./txnDataHandlers";
 
 export function isContractRegisteredToRouter(
   optionContractInstance: OptionContract
@@ -53,6 +54,7 @@ export function isContractRegisteredToV2Router(
   );
 }
 export function _handleCreate(event: Create): void {
+  createTxnData(event.receipt, event.transaction, "Create");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -174,6 +176,7 @@ export function _handleCreate(event: Create): void {
 }
 
 export function _handleExpire(event: Expire): void {
+  createTxnData(event.receipt, event.transaction, "Expire");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -204,6 +207,7 @@ export function _handleExpire(event: Expire): void {
 }
 
 export function _handleExercise(event: Exercise): void {
+  createTxnData(event.receipt, event.transaction, "Exercise");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -250,6 +254,7 @@ export function _handleExercise(event: Exercise): void {
 }
 
 export function _handleLpProfit(event: LpProfit): void {
+  createTxnData(event.receipt, event.transaction, "LpProfit");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -270,6 +275,7 @@ export function _handleLpProfit(event: LpProfit): void {
 }
 
 export function _handleLpLoss(event: LpLoss): void {
+  createTxnData(event.receipt, event.transaction, "LpLoss");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -442,6 +448,7 @@ export function _handlePause(event: Pause): void {
 }
 
 export function _handleExpireV1(event: ExpireV1): void {
+  createTxnData(event.receipt, event.transaction, "ExpireV1");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -471,6 +478,7 @@ export function _handleExpireV1(event: ExpireV1): void {
 }
 
 export function _handleExerciseV1(event: ExerciseV1): void {
+  createTxnData(event.receipt, event.transaction, "ExerciseV1");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);

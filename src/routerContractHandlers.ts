@@ -12,8 +12,10 @@ import {
 import { ADDRESS_ZERO } from "./config";
 import { _loadOrCreateOptionContractEntity } from "./initialize";
 import { isContractRegisteredToV2Router } from "./optionContractHandlers";
+import { createTxnData } from "./txnDataHandlers";
 
 export function _handleOpenTrade(event: OpenTrade): void {
+  createTxnData(event.receipt, event.transaction, "OpenTrade");
   let queueID = event.params.queueId;
   let contractAddress = Address.fromBytes(
     event.params.targetContract

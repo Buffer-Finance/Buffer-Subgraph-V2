@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -15,6 +15,7 @@ import {
   PoolStat,
   ReferralData,
   TradingStat,
+  Transaction,
   UserOptionData,
   UserRewards,
   UserStat,
@@ -541,4 +542,33 @@ export function _loadOrCreateOptionStats(
   }
 
   return entity as OptionStat;
+}
+
+export function _loadOrCreateTransaction(
+  id: string,
+  transactionHash: string,
+  // blockNumber: BigInt,
+  // cumulativeGasUsed: BigInt,
+  // gasUsed: BigInt,
+  // contractAddress: Bytes,
+  from: Bytes,
+  to: Bytes,
+  // input: string,
+  eventName: string
+): Transaction {
+  let entity = Transaction.load(id);
+  if (entity == null) {
+    entity = new Transaction(id);
+    entity.transactionHash = transactionHash;
+    // entity.blockNumber = blockNumber;
+    // entity.cumulativeGasUsed = cumulativeGasUsed;
+    // entity.gasUsed = gasUsed;
+    // entity.contractAddress = contractAddress;
+    entity.from = from;
+    entity.to = to;
+    // entity.input = input;
+    entity.eventName = eventName;
+    entity.save();
+  }
+  return entity as Transaction;
 }

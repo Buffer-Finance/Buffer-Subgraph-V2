@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: BufferBinaryOptions
-      startBlock: 58718934
+      startBlock: 2722470
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -37,9 +37,9 @@ dataSources:
     name: TournamentManager
     network: arbitrum-goerli
     source:
-      address: "0x0D9206Cd4f7Cc70d424A661057fee2EF91E7003A"
+      address: "0xfe89eEE509bd01B433B2EC32e6985F1Eb7016Dec"
       abi: TournamentManager
-      startBlock: 58718934
+      startBlock: 2722470
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -65,9 +65,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-goerli
     source:
-      address: "0x0eD7264c2607535B9293d35cbfb17aaB7Db6E29a"
+      address: "0x06eFE941603876Cc3Ff0fa980BACE6DdDE9700B6"
       abi: BufferRouter
-      startBlock: 58718934
+      startBlock: 2722470
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -93,7 +93,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: Config
-      startBlock: 58718934
+      startBlock: 2722470
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

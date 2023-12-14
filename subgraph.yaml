@@ -10,7 +10,7 @@ dataSources:
       startBlock: 125803097
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - ConfigContract
@@ -58,7 +58,7 @@ dataSources:
       startBlock: 56585555
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - UserOptionData
@@ -79,10 +79,13 @@ dataSources:
       eventHandlers:
         - event: Create(indexed address,indexed uint256,uint256,uint256)
           handler: handleCreate
+          receipt: true
         - event: Expire(indexed uint256,uint256,uint256,bool)
           handler: handleExpire
+          receipt: true
         - event: Exercise(indexed address,indexed uint256,uint256,uint256,bool)
           handler: handleExercise
+          receipt: true
         - event: UpdateReferral(address,address,bool,uint256,uint256,uint256,string)
           handler: handleUpdateReferral
         - event: Pause(bool)
@@ -91,8 +94,10 @@ dataSources:
           handler: handleCreateOptionsContract
         - event: LpProfit(indexed uint256,uint256)
           handler: handleLpProfit
+          receipt: true
         - event: LpLoss(indexed uint256,uint256)
           handler: handleLpLoss
+          receipt: true
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: V1Options
@@ -102,7 +107,7 @@ dataSources:
       startBlock: 56585555
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - UserOptionData
@@ -123,8 +128,10 @@ dataSources:
       eventHandlers:
         - event: Expire(indexed uint256,uint256,uint256)
           handler: handleExpireV1
+          receipt: true
         - event: Exercise(indexed address,indexed uint256,uint256,uint256)
           handler: handleExerciseV1
+          receipt: true
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferRouter
@@ -134,7 +141,7 @@ dataSources:
       startBlock: 125803097
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - UserOptionData
@@ -146,6 +153,7 @@ dataSources:
       eventHandlers:
         - event: OpenTrade(indexed address,uint256,uint256,address)
           handler: handleOpenTrade
+          receipt: true
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: AccountRegistrar
@@ -156,7 +164,7 @@ dataSources:
       startBlock: 125802793
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - UserOptionData
@@ -185,7 +193,7 @@ dataSources:
       startBlock: 25921235
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - BurnedBFR

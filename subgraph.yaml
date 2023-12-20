@@ -37,6 +37,7 @@ dataSources:
           handler: handleUpdatePoolOIContract
         - event: UpdateIV(uint32)
           handler: handleUpdateIV
+          receipt: true
         - event: UpdateCreationWindowContract(address)
           handler: handleUpdateCreationWindowContract
         - event: UpdateIVFactorOTM(uint256)

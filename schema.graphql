@@ -5,6 +5,24 @@ enum Period {
   total
 }
 
+type NFT @entity {
+  id: String!
+  tokenId: BigInt!
+  owner: Bytes!
+  tier: String!
+  nftImage: String!
+  ipfs: String!
+  batchId: BigInt!
+  hasRevealed: Boolean!
+  claimTimestamp: BigInt
+  phaseId: BigInt
+}
+
+type NFTBatch @entity {
+  id: String!
+  tokenIds: [BigInt!]!
+}
+
 type Transaction @entity {
   id: String!
   transactionHash: String!
@@ -16,6 +34,8 @@ type Transaction @entity {
   to: Bytes
   input: Bytes
   eventName: String!
+  gasPrice: BigInt
+  timestamp: BigInt!
 }
 
 type OptionStat @entity {
@@ -192,7 +212,7 @@ type Leaderboard @entity {
 
 type WeeklyLeaderboard @entity {
   id: String!
-  user: Bytes!
+  user: leaderboardUser!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -216,6 +236,11 @@ type WeeklyLeaderboard @entity {
   bfrWinRate: Int!
 }
 
+type leaderboardUser @entity {
+  id: String!
+  address: Bytes!
+  nfts: [NFT!]!
+}
 type DashboardStat @entity {
   id: String!
   totalVolume: BigInt!

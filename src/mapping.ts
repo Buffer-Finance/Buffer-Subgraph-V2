@@ -30,7 +30,14 @@ import {
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
 } from "../generated/BufferConfigUpdates/BufferConfig";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import {
+  OpenTrade,
+  RevokeRouter,
+} from "../generated/BufferRouter/BufferRouter";
+import {
+  Transfer as NFTtransfer,
+  TokensClaimed,
+} from "../generated/DropERC721/DropERC721";
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
@@ -54,6 +61,7 @@ import {
   _handleUpdateSpreadConfig2,
   _handleUpdateSpreadFactor,
 } from "./configContractHandlers";
+import { _handleNftTransfer, _handleTokenClaim } from "./nftContractHandletrs";
 import {
   _handleCreate,
   _handleExercise,
@@ -69,6 +77,7 @@ import {
   _handleDeregisterAccount,
   _handleOpenTrade,
   _handleRegisterAccount,
+  _handleRevokeRouter,
 } from "./routerContractHandlers";
 
 export function handleOpenTrade(event: OpenTrade): void {
@@ -192,4 +201,16 @@ export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
 }
 export function handleTransfer(event: Transfer): void {
   _handleTransfer(event);
+}
+
+export function handleRevokeRouter(event: RevokeRouter): void {
+  _handleRevokeRouter(event);
+}
+
+export function handleNftTransfer(event: NFTtransfer): void {
+  _handleNftTransfer(event);
+}
+
+export function handleTokenClaim(event: TokensClaimed): void {
+  _handleTokenClaim(event);
 }

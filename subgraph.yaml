@@ -50,12 +50,13 @@ dataSources:
         - event: UpdateSpreadFactor(uint32)
           handler: handleUpdateSpreadFactor
       file: ./src/mapping.ts
+
   - kind: ethereum/contract
     name: BufferBinaryOptions
     network: arbitrum-one
     source:
       abi: BufferBinaryOptions
-      startBlock: 56585555
+      startBlock: 157026194
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -99,12 +100,13 @@ dataSources:
           handler: handleLpLoss
           receipt: true
       file: ./src/mapping.ts
+
   - kind: ethereum/contract
     name: V1Options
     network: arbitrum-one
     source:
       abi: V1Options
-      startBlock: 56585555
+      startBlock: 157026194
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -133,12 +135,13 @@ dataSources:
           handler: handleExerciseV1
           receipt: true
       file: ./src/mapping.ts
+
   - kind: ethereum/contract
     name: BufferRouter
     network: arbitrum-one
     source:
       abi: BufferRouter
-      startBlock: 125803097
+      startBlock: 157026194
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -154,14 +157,18 @@ dataSources:
         - event: OpenTrade(indexed address,uint256,uint256,address)
           handler: handleOpenTrade
           receipt: true
+        - event: RevokeRouter(address,uint256,uint256,uint256,address)
+          handler: handleRevokeRouter
+          receipt: true
       file: ./src/mapping.ts
+
   - kind: ethereum/contract
     name: AccountRegistrar
     network: arbitrum-one
     source:
       address: "0x983adc3d8853C4792Da5581C5e711d25BAC19042"
       abi: AccountRegistrar
-      startBlock: 125802793
+      startBlock: 157026194
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -182,6 +189,7 @@ dataSources:
           handler: handleRegisterAccount
         - event: DeregisterAccount(indexed address,uint256)
           handler: handleDeregisterAccount
+          receipt: true
       file: ./src/mapping.ts
 
   - kind: ethereum/contract
@@ -190,7 +198,7 @@ dataSources:
     source:
       address: "0x1A5B0aaF478bf1FDA7b934c76E7692D722982a6D"
       abi: BFR
-      startBlock: 25921235
+      startBlock: 157026194
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -203,4 +211,31 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+      file: ./src/mapping.ts
+
+  - kind: ethereum/contract
+    name: DropERC721
+    network: arbitrum-one
+    source:
+      address: "0x6Cb78AeC11Bc2BF273729a80936804588cA4c123"
+      abi: DropERC721
+      startBlock: 157026194
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - NFT
+      abis:
+        - name: DropERC721
+          file: ./abis/DropERC721.json
+        - name: UniswapPool
+          file: ./abis/UniswapPool.json
+      eventHandlers:
+        - event: TokensLazyMinted(indexed uint256,uint256,string,bytes)
+          handler: handleLazyMint
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleNftTransfer
+        - event: TokensClaimed(indexed uint256,indexed address,indexed address,uint256,uint256)
+          handler: handleTokenClaim
       file: ./src/mapping.ts

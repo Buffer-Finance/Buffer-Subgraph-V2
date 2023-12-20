@@ -24,6 +24,7 @@ import {
   _loadOrCreateOptionContractEntity,
   findRouterContract,
 } from "./initialize";
+import { createTxnData } from "./txnDataHandlers";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -150,6 +151,12 @@ export function _handleUpdatePoolOIContract(
 }
 
 export function _handleUpdateIV(event: UpdateIV): void {
+  createTxnData(
+    event.receipt,
+    event.transaction,
+    "UpdateIV",
+    event.block.timestamp
+  );
   const address = event.address;
   const entity = _loadorCreateConfigContractEntity(address);
 

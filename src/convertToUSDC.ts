@@ -1,6 +1,6 @@
+import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { UniswapPool } from "../generated/DropERC721/UniswapPool";
 import { ARB_UNISWAP_POOL_CONTRACT, BFR_UNISWAP_POOL_CONTRACT } from "./config";
-import { UniswapPool } from "../generated/BufferBinaryOptions/UniswapPool";
-import { BigInt, Address } from "@graphprotocol/graph-ts";
 
 export function convertARBToUSDC(amount: BigInt): BigInt {
   let uniswapPool = UniswapPool.bind(

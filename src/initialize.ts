@@ -10,6 +10,7 @@ import {
   DefillamaFeeStat,
   FeeStat,
   Leaderboard,
+  NFT,
   OptionContract,
   OptionStat,
   PoolStat,
@@ -22,6 +23,7 @@ import {
   VolumeStat,
   WeeklyLeaderboard,
   WeeklyRevenueAndFee,
+  leaderboardUser,
 } from "../generated/schema";
 import {
   ADDRESS_ZERO,
@@ -278,7 +280,7 @@ export function _loadOrCreateWeeklyLeaderboardEntity(
   let entity = WeeklyLeaderboard.load(referenceID);
   if (entity == null) {
     entity = new WeeklyLeaderboard(referenceID);
-    entity.user = Address.fromString(account);
+    entity.user = _loadOrCreateLeaderBoardUser(account).id;
     entity.timestamp = weekId;
     entity.totalTrades = 0;
     entity.volume = ZERO;
@@ -554,7 +556,8 @@ export function _loadOrCreateTransaction(
   from: Bytes,
   to: Bytes,
   // input: string,
-  eventName: string
+  eventName: string,
+  timestamp: BigInt
 ): Transaction {
   let entity = Transaction.load(id);
   if (entity == null) {
@@ -568,7 +571,36 @@ export function _loadOrCreateTransaction(
     entity.to = to;
     // entity.input = input;
     entity.eventName = eventName;
+    entity.timestamp = timestamp;
     entity.save();
   }
   return entity as Transaction;
+}
+
+export function _loadOrCreateNFT(tokenId: BigInt): NFT {
+  let referenceID = `${tokenId}`;
+  let entity = NFT.load(referenceID);
+  if (entity == null) {
+    entity = new NFT(referenceID);
+    entity.batchId = ZERO;
+    entity.tokenId = tokenId;
+    entity.tier = "";
+    entity.owner = Bytes.fromHexString(ADDRESS_ZERO);
+    entity.nftImage = "";
+    entity.ipfs = "";
+    entity.hasRevealed = false;
+    entity.save();
+  }
+  return entity as NFT;
+}
+
+export function _loadOrCreateLeaderBoardUser(address: string): leaderboardUser {
+  let user = leaderboardUser.load(address);
+  if (user == null) {
+    user = new leaderboardUser(address);
+    user.address = Address.fromString(address);
+    user.nfts = [];
+    user.save();
+  }
+  return user as leaderboardUser;
 }

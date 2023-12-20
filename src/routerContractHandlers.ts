@@ -3,7 +3,10 @@ import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import {
+  OpenTrade,
+  RevokeRouter,
+} from "../generated/BufferRouter/BufferRouter";
 import {
   DeregisteredAccount,
   EOAtoOneCT,
@@ -15,7 +18,12 @@ import { isContractRegisteredToV2Router } from "./optionContractHandlers";
 import { createTxnData } from "./txnDataHandlers";
 
 export function _handleOpenTrade(event: OpenTrade): void {
-  createTxnData(event.receipt, event.transaction, "OpenTrade");
+  createTxnData(
+    event.receipt,
+    event.transaction,
+    "OpenTrade",
+    event.block.timestamp
+  );
   let queueID = event.params.queueId;
   let contractAddress = Address.fromBytes(
     event.params.targetContract
@@ -48,6 +56,12 @@ export function _handleRegisterAccount(event: RegisterAccount): void {
 }
 
 export function _handleDeregisterAccount(event: DeregisterAccount): void {
+  createTxnData(
+    event.receipt,
+    event.transaction,
+    "DeregisterAccount",
+    event.block.timestamp
+  );
   let account = event.params.account;
   let eoaToOneCT = EOAtoOneCT.load(account.toString());
   if (eoaToOneCT == null) {
@@ -68,4 +82,13 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   deRegisteredAccount.eoa = event.params.account;
 
   deRegisteredAccount.save();
+}
+
+export function _handleRevokeRouter(event: RevokeRouter): void {
+  createTxnData(
+    event.receipt,
+    event.transaction,
+    "RevokeRouter",
+    event.block.timestamp
+  );
 }

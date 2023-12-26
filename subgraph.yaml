@@ -3,6 +3,40 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
+    name: AboveBelowConfigs
+    network: arbitrum-one
+    source:
+      abi: AboveBelowConfig
+      startBlock: 25921235
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ConfigContract
+      abis:
+        - name: AboveBelowConfig
+          file: ./abis/AboveBelowConfig.json
+      eventmHandlers:
+        - event: UpdateMaxSkew(int256)
+          handler: handleUpdateMaxSkew
+        - event: UpdateCircuitBreakerContract(address)
+          handler: handleUpdateCircuitBreakerContract
+        - event: UpdateOptionStorageContract(address)
+          handler: handleUpdateOptionStorageContract
+        - event: UpdatePayout(uint256)
+          handler: handleUpdatePayout
+        - event: UpdateSettlementFeeDisbursalContract(address)
+          handler: handleUpdateSettlementFeeDisbursalContract
+        - event: UpdateSf(uint256)
+          handler: handleUpdateSf
+        - event: UpdatetraderNFTContract(address)
+          handler: handleUpdatetraderNFTContract
+        - event: UpdateStrikeStepSize(uint256)
+          handler: handleUpdateStrikeStepSize
+      file: ./src/mapping.ts
+
+  - kind: ethereum/contract
     name: BufferConfigUpdates
     network: arbitrum-one
     source:

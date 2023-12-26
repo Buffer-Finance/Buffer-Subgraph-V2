@@ -1,4 +1,14 @@
 import {
+  UpdateCircuitBreakerContract,
+  UpdateMaxSkew,
+  UpdateOptionStorageContract,
+  UpdatePayout,
+  UpdateSettlementFeeDisbursalContract,
+  UpdateSf,
+  UpdateStrikeStepSize,
+  UpdatetraderNFTContract,
+} from "../generated/AboveBelowConfigs/AboveBelowConfig";
+import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
@@ -38,6 +48,7 @@ import {
 import { _handleTransfer } from "./BFRTracking";
 import {
   _handleCreateOptionsContract,
+  _handleUpdateCircuitBreakerContract,
   _handleUpdateCreationWindowContract,
   _handleUpdateEarlyClose,
   _handleUpdateEarlyCloseThreshold,
@@ -45,14 +56,21 @@ import {
   _handleUpdateIVFactorITM,
   _handleUpdateIVFactorOTM,
   _handleUpdateMaxPeriod,
+  _handleUpdateMaxSkew,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
   _handleUpdateOiconfigContract,
+  _handleUpdateOptionStorageContract,
+  _handleUpdatePayout,
   _handleUpdatePlatformFee,
   _handleUpdatePoolOIContract,
+  _handleUpdateSettlementFeeDisbursalContract,
+  _handleUpdateSf,
   _handleUpdateSpreadConfig1,
   _handleUpdateSpreadConfig2,
   _handleUpdateSpreadFactor,
+  _handleUpdateStepSize,
+  _handleUpdatetraderNFTContract,
 } from "./configContractHandlers";
 import {
   _handleCreate,
@@ -192,4 +210,44 @@ export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
 }
 export function handleTransfer(event: Transfer): void {
   _handleTransfer(event);
+}
+
+export function handleUpdateSettlementFeeDisbursalContract(
+  event: UpdateSettlementFeeDisbursalContract
+): void {
+  _handleUpdateSettlementFeeDisbursalContract(event);
+}
+
+export function handleUpdateSf(event: UpdateSf): void {
+  _handleUpdateSf(event);
+}
+
+export function handleUpdatetraderNFTContract(
+  event: UpdatetraderNFTContract
+): void {
+  _handleUpdatetraderNFTContract(event);
+}
+
+export function handleUpdateStrikeStepSize(event: UpdateStrikeStepSize): void {
+  _handleUpdateStepSize(event);
+}
+
+export function handleUpdateOptionStorageContract(
+  event: UpdateOptionStorageContract
+): void {
+  _handleUpdateOptionStorageContract(event);
+}
+
+export function handleUpdatePayout(event: UpdatePayout): void {
+  _handleUpdatePayout(event);
+}
+
+export function handleUpdateMaxSkew(event: UpdateMaxSkew): void {
+  _handleUpdateMaxSkew(event);
+}
+
+export function handleUpdateCircuitBreakerContract(
+  event: UpdateCircuitBreakerContract
+): void {
+  _handleUpdateCircuitBreakerContract(event);
 }

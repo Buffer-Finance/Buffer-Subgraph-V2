@@ -76,6 +76,15 @@ type ConfigContract @entity {
   SpreadConfig1: BigInt!
   SpreadConfig2: BigInt!
   SpreadFactor: BigInt!
+
+  maxSkew: BigInt!
+  circuitBreakerContract: Bytes!
+  optionStorageContract: Bytes!
+  payout: BigInt!
+  sfdContract: Bytes!
+  sf: BigInt!
+  traderNFTContract: Bytes!
+  stepSize: BigInt!
 }
 
 type EOAtoOneCT @entity {

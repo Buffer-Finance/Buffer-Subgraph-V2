@@ -1,4 +1,11 @@
 import { Address } from "@graphprotocol/graph-ts";
+import {
+  UpdateCircuitBreakerContract,
+  UpdateMaxSkew,
+  UpdatePayout,
+  UpdateSf,
+  UpdateStrikeStepSize,
+} from "../generated/AboveBelowConfigs/AboveBelowConfig";
 import { CreateOptionsContract } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
   UpdateCreationWindowContract,
@@ -11,11 +18,14 @@ import {
   UpdateMaxPeriod,
   UpdateMinFee,
   UpdateMinPeriod,
+  UpdateOptionStorageContract,
   UpdatePlatformFee,
   UpdatePoolOIConfigContract,
+  UpdateSettlementFeeDisbursalContract,
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
+  UpdatetraderNFTContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { ConfigContract } from "../generated/schema";
 import { ADDRESS_ZERO } from "./config";
@@ -51,6 +61,15 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
     entity.SpreadConfig1 = ZERO;
     entity.SpreadConfig2 = ZERO;
     entity.SpreadFactor = ZERO;
+
+    entity.maxSkew = ZERO;
+    entity.circuitBreakerContract = Address.fromString(zeroAddress)!;
+    entity.optionStorageContract = Address.fromString(zeroAddress)!;
+    entity.payout = ZERO;
+    entity.sfdContract = Address.fromString(zeroAddress)!;
+    entity.sf = ZERO;
+    entity.traderNFTContract = Address.fromString(zeroAddress)!;
+    entity.stepSize = ZERO;
   }
   return entity;
 }
@@ -206,5 +225,61 @@ export function _handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
   const entity = _loadorCreateConfigContractEntity(address);
 
   entity.SpreadFactor = event.params.ivFactorOTM;
+  entity.save();
+}
+
+export function _handleUpdateMaxSkew(event: UpdateMaxSkew): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.maxSkew = event.params._maxSkew;
+  entity.save();
+}
+
+export function _handleUpdateCircuitBreakerContract(
+  event: UpdateCircuitBreakerContract
+): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.circuitBreakerContract = event.params._circuitBreakerContract;
+  entity.save();
+}
+
+export function _handleUpdateOptionStorageContract(
+  event: UpdateOptionStorageContract
+): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.optionStorageContract = event.params.value;
+  entity.save();
+}
+
+export function _handleUpdatePayout(event: UpdatePayout): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.payout = event.params.payout;
+  entity.save();
+}
+
+export function _handleUpdateSettlementFeeDisbursalContract(
+  event: UpdateSettlementFeeDisbursalContract
+): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.sfdContract = event.params.value;
+  entity.save();
+}
+
+export function _handleUpdateSf(event: UpdateSf): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.sf = event.params.sf;
+  entity.save();
+}
+
+export function _handleUpdatetraderNFTContract(
+  event: UpdatetraderNFTContract
+): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.traderNFTContract = event.params.value;
+  entity.save();
+}
+
+export function _handleUpdateStepSize(event: UpdateStrikeStepSize): void {
+  const entity = _loadorCreateConfigContractEntity(event.address);
+  entity.stepSize = event.params.strikeStepSize;
   entity.save();
 }

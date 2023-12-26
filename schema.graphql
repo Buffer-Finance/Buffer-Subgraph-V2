@@ -212,7 +212,7 @@ type Leaderboard @entity {
 
 type WeeklyLeaderboard @entity {
   id: String!
-  user: leaderboardUser!
+  user: Bytes!
   netPnL: BigInt!
   totalTrades: Int!
   volume: BigInt!
@@ -236,11 +236,6 @@ type WeeklyLeaderboard @entity {
   bfrWinRate: Int!
 }
 
-type leaderboardUser @entity {
-  id: String!
-  address: Bytes!
-  nfts: [NFT!]!
-}
 type DashboardStat @entity {
   id: String!
   totalVolume: BigInt!

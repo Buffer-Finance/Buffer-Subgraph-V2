@@ -37,7 +37,9 @@ import {
 import {
   Transfer as NFTtransfer,
   TokensClaimed,
+  TokensLazyMinted,
 } from "../generated/DropERC721/DropERC721";
+import { TokenURIRevealed } from "../generated/OldDropERC721/DropERC721";
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
@@ -61,7 +63,12 @@ import {
   _handleUpdateSpreadConfig2,
   _handleUpdateSpreadFactor,
 } from "./configContractHandlers";
-import { _handleNftTransfer, _handleTokenClaim } from "./nftContractHandletrs";
+import {
+  _handleLazyMint,
+  _handleNftTransfer,
+  _handleReveal,
+  _handleTokenClaim,
+} from "./nftContractHandletrs";
 import {
   _handleCreate,
   _handleExercise,
@@ -213,4 +220,10 @@ export function handleNftTransfer(event: NFTtransfer): void {
 
 export function handleTokenClaim(event: TokensClaimed): void {
   _handleTokenClaim(event);
+}
+export const handleReveal = (event: TokenURIRevealed): void => {
+  _handleReveal(event);
+};
+export function handleLazyMint(event: TokensLazyMinted): void {
+  _handleLazyMint(event);
 }

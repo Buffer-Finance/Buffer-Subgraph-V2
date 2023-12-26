@@ -5,9 +5,10 @@ import {
   TokensLazyMinted,
   Transfer,
 } from "../generated/DropERC721/DropERC721";
+import { TokenURIRevealed } from "../generated/OldDropERC721/DropERC721";
 import { NFTBatch } from "../generated/schema";
 import { _updateNFTMetadata } from "./core";
-import { _loadOrCreateLeaderBoardUser, _loadOrCreateNFT } from "./initialize";
+import { _loadOrCreateNFT } from "./initialize";
 
 export function _handleLazyMint(event: TokensLazyMinted): void {
   let nftContract = DropERC721.bind(event.address);
@@ -33,44 +34,27 @@ export function _handleLazyMint(event: TokensLazyMinted): void {
   batch.save();
 }
 
-// export function _handleReveal(event: TokenURIRevealed): void {
-//   let nftContract = DropERC721.bind(event.address);
-//   let batchId = nftContract.getBatchIdAtIndex(event.params.index);
-//   let revealedURI = event.params.revealedURI;
+export function _handleReveal(event: TokenURIRevealed): void {
+  let nftContract = DropERC721.bind(event.address);
+  let batchId = nftContract.getBatchIdAtIndex(event.params.index);
+  let revealedURI = event.params.revealedURI;
 
-//   let batch = NFTBatch.load(batchId.toString());
-//   if (batch != null) {
-//     let allTokenIds = batch.tokenIds;
-//     for (let i = 0; i < allTokenIds.length; i++) {
-//       let nft = _loadOrCreateNFT(allTokenIds[i]);
-//       _updateNFTMetadata(nft, `${revealedURI}${allTokenIds[i]}`);
-//       nft.hasRevealed = true;
-//       nft.save();
-//     }
-//   }
-// }
+  let batch = NFTBatch.load(batchId.toString());
+  if (batch != null) {
+    let allTokenIds = batch.tokenIds;
+    for (let i = 0; i < allTokenIds.length; i++) {
+      let nft = _loadOrCreateNFT(allTokenIds[i]);
+      _updateNFTMetadata(nft, `${revealedURI}${allTokenIds[i]}`);
+      nft.hasRevealed = true;
+      nft.save();
+    }
+  }
+}
 
 export function _handleNftTransfer(event: Transfer): void {
   let nft = _loadOrCreateNFT(event.params.tokenId);
   nft.owner = event.params.to;
-  const transferFromUser = _loadOrCreateLeaderBoardUser(
-    event.params.from.toHexString()
-  );
-  const transferToUser = _loadOrCreateLeaderBoardUser(
-    event.params.to.toHexString()
-  );
-  let fromUserNFTs = transferFromUser.nfts;
-  // Use a regular for loop for filtering the array
-  for (let i = 0; i < fromUserNFTs.length; i++) {
-    if (fromUserNFTs[i] == event.params.tokenId.toString()) {
-      fromUserNFTs.splice(i, 1);
-      break; // exit loop once the item is removed
-    }
-  }
 
-  transferFromUser.nfts = fromUserNFTs;
-
-  transferToUser.nfts.push(event.params.tokenId.toString());
   nft.save();
 }
 

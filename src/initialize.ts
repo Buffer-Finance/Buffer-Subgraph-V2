@@ -23,7 +23,6 @@ import {
   VolumeStat,
   WeeklyLeaderboard,
   WeeklyRevenueAndFee,
-  leaderboardUser,
 } from "../generated/schema";
 import {
   ADDRESS_ZERO,
@@ -280,7 +279,7 @@ export function _loadOrCreateWeeklyLeaderboardEntity(
   let entity = WeeklyLeaderboard.load(referenceID);
   if (entity == null) {
     entity = new WeeklyLeaderboard(referenceID);
-    entity.user = _loadOrCreateLeaderBoardUser(account).id;
+    entity.user = Address.fromString(account);
     entity.timestamp = weekId;
     entity.totalTrades = 0;
     entity.volume = ZERO;
@@ -578,7 +577,7 @@ export function _loadOrCreateTransaction(
 }
 
 export function _loadOrCreateNFT(tokenId: BigInt): NFT {
-  let referenceID = `${tokenId}`;
+  let referenceID = tokenId.toString();
   let entity = NFT.load(referenceID);
   if (entity == null) {
     entity = new NFT(referenceID);
@@ -592,15 +591,4 @@ export function _loadOrCreateNFT(tokenId: BigInt): NFT {
     entity.save();
   }
   return entity as NFT;
-}
-
-export function _loadOrCreateLeaderBoardUser(address: string): leaderboardUser {
-  let user = leaderboardUser.load(address);
-  if (user == null) {
-    user = new leaderboardUser(address);
-    user.address = Address.fromString(address);
-    user.nfts = [];
-    user.save();
-  }
-  return user as leaderboardUser;
 }

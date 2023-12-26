@@ -1,4 +1,6 @@
 specVersion: 0.0.4
+features:
+  - ipfsOnEthereumContracts
 schema:
   file: ./schema.graphql
 dataSources:
@@ -56,7 +58,7 @@ dataSources:
     network: arbitrum-one
     source:
       abi: BufferBinaryOptions
-      startBlock: 157026194
+      startBlock: 56585555
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -106,7 +108,7 @@ dataSources:
     network: arbitrum-one
     source:
       abi: V1Options
-      startBlock: 157026194
+      startBlock: 56585555
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -141,7 +143,7 @@ dataSources:
     network: arbitrum-one
     source:
       abi: BufferRouter
-      startBlock: 157026194
+      startBlock: 125803097
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -168,7 +170,7 @@ dataSources:
     source:
       address: "0x983adc3d8853C4792Da5581C5e711d25BAC19042"
       abi: AccountRegistrar
-      startBlock: 157026194
+      startBlock: 125802793
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -198,7 +200,7 @@ dataSources:
     source:
       address: "0x1A5B0aaF478bf1FDA7b934c76E7692D722982a6D"
       abi: BFR
-      startBlock: 157026194
+      startBlock: 53878193
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -234,6 +236,33 @@ dataSources:
       eventHandlers:
         - event: TokensLazyMinted(indexed uint256,uint256,string,bytes)
           handler: handleLazyMint
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleNftTransfer
+        - event: TokensClaimed(indexed uint256,indexed address,indexed address,uint256,uint256)
+          handler: handleTokenClaim
+      file: ./src/mapping.ts
+
+  - kind: ethereum/contract
+    name: OldDropERC721
+    network: arbitrum-one
+    source:
+      address: "0x53bD6b734F50AC058091077249A40f5351629d05"
+      abi: DropERC721
+      startBlock: 53878193
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - NFT
+      abis:
+        - name: DropERC721
+          file: ./abis/OldDropERC721.json
+      eventHandlers:
+        - event: TokensLazyMinted(indexed uint256,uint256,string,bytes)
+          handler: handleLazyMint
+        - event: TokenURIRevealed(indexed uint256,string)
+          handler: handleReveal
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleNftTransfer
         - event: TokensClaimed(indexed uint256,indexed address,indexed address,uint256,uint256)

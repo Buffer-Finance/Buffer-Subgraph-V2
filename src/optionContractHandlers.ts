@@ -1,5 +1,10 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
+  AboveBelowBufferBinaryOptions,
+  Create as CreateAB,
+  CreateMarket,
+} from "../generated/AboveBelowBufferBinaryOptions/AboveBelowBufferBinaryOptions";
+import {
   BufferBinaryOptions,
   Create,
   Exercise,
@@ -16,12 +21,15 @@ import {
 } from "../generated/V1Options/V1Options";
 import { OptionContract } from "../generated/schema";
 import {
+  updateAboveBelowClosingStats,
+  updateAboveBelowOpeningStats,
   updateClosingStats,
   updateClosingStatsV2,
   updateLpProfitAndLoss,
   updateOpeningStats,
 } from "./aggregate";
 import {
+  AboveBelow_RouterAddress,
   RouterAddress,
   State,
   V2_RouterAddress,
@@ -32,6 +40,8 @@ import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { logUser, updateOptionContractData } from "./core";
 import {
   ZERO,
+  _loadOrCreateAboveBelowOptionDataEntity,
+  _loadOrCreateMarket,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
   _loadOrCreateReferralData,
@@ -53,6 +63,56 @@ export function isContractRegisteredToV2Router(
     optionContractInstance.routerContract == V2_RouterAddress_3
   );
 }
+export function isContractRegisteredToAboveBelowRouter(
+  optionContractInstance: OptionContract
+): boolean {
+  return optionContractInstance.routerContract == AboveBelow_RouterAddress;
+}
+
+// Create - Above-Below
+export function _handleCreateAB(event: CreateAB): void {
+  const contractAddress = Address.fromBytes(event.address).toHexString();
+  const optionContractInstance =
+    _loadOrCreateOptionContractEntity(contractAddress);
+
+  if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
+    let optionID = event.params.id;
+    let optionContractInstance = AboveBelowBufferBinaryOptions.bind(
+      event.address
+    );
+    let optionData = optionContractInstance.options(optionID);
+    let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
+      optionID,
+      contractAddress
+    );
+    userOptionData.user = event.params.account;
+    userOptionData.totalFee = event.params.totalFee;
+    userOptionData.state = optionData.value0;
+    userOptionData.strike = optionData.value1;
+    userOptionData.amount = optionData.value2;
+    userOptionData.expirationTime = optionData.value5;
+    userOptionData.isAbove = optionData.value8;
+    userOptionData.creationTime = optionData.value7;
+    userOptionData.settlementFee = event.params.settlementFee;
+    userOptionData.save();
+
+    const market = _loadOrCreateMarket(event.params.marketId);
+    if (market.skew !== event.params.skew) {
+      market.skew = event.params.skew;
+      market.save();
+    }
+
+    updateAboveBelowOpeningStats(
+      event.block.timestamp,
+      contractAddress,
+      userOptionData.totalFee,
+      userOptionData.settlementFee,
+      userOptionData.isAbove
+    );
+  }
+}
+
+// Create - V1, V2
 export function _handleCreate(event: Create): void {
   createTxnData(event.receipt, event.transaction, "Create");
   let contractAddress = Address.fromBytes(event.address).toHexString();
@@ -175,81 +235,126 @@ export function _handleCreate(event: Create): void {
   }
 }
 
+// Expire - Above-Below,V2
 export function _handleExpire(event: Expire): void {
-  createTxnData(event.receipt, event.transaction, "Expire");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
-
-  if (isContractRegisteredToV2Router(optionContractInstance)) {
+  if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress
     );
     userOptionData.state = State.expired;
     userOptionData.expirationPrice = event.params.priceAtExpiration;
-    userOptionData.closeTime = event.block.timestamp;
-    userOptionData.isAbove = event.params.isAbove;
     userOptionData.save();
 
-    updateClosingStats(
-      userOptionData.depositToken,
-      userOptionData.creationTime,
-      userOptionData.totalFee,
-      userOptionData.settlementFee,
-      Address.fromBytes(userOptionData.user).toHexString(),
+    updateAboveBelowClosingStats(
       contractAddress,
-      false,
       userOptionData.totalFee,
-      ZERO
+      userOptionData.isAbove,
+      userOptionData.depositToken,
+      userOptionData.totalFee,
+      userOptionData.creationTime,
+      Address.fromBytes(userOptionData.user).toHexString(),
+      false
     );
+  } else {
+    createTxnData(event.receipt, event.transaction, "Expire");
+
+    if (isContractRegisteredToV2Router(optionContractInstance)) {
+      let userOptionData = _loadOrCreateOptionDataEntity(
+        event.params.id,
+        contractAddress
+      );
+      userOptionData.state = State.expired;
+      userOptionData.expirationPrice = event.params.priceAtExpiration;
+      userOptionData.closeTime = event.block.timestamp;
+      userOptionData.isAbove = event.params.isAbove;
+      userOptionData.save();
+
+      updateClosingStats(
+        userOptionData.depositToken,
+        userOptionData.creationTime,
+        userOptionData.totalFee,
+        userOptionData.settlementFee,
+        Address.fromBytes(userOptionData.user).toHexString(),
+        contractAddress,
+        false,
+        userOptionData.totalFee,
+        ZERO
+      );
+    }
   }
 }
 
+// Excercise - Above-Below,V2
 export function _handleExercise(event: Exercise): void {
-  createTxnData(event.receipt, event.transaction, "Exercise");
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
-
-  if (isContractRegisteredToV2Router(optionContractInstance)) {
+  if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddress
     );
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
-
-    userOptionData.payout_usd = convertToUSD(
-      event.params.profit,
-      userOptionData.depositToken
-    );
     userOptionData.expirationPrice = event.params.priceAtExpiration;
-    userOptionData.closeTime = event.block.timestamp;
-    userOptionData.isAbove = event.params.isAbove;
     userOptionData.save();
 
-    // updateClosingStats(
-    //   userOptionData.depositToken,
-    //   userOptionData.creationTime,
-    //   userOptionData.totalFee,
-    //   userOptionData.settlementFee,
-    //   userOptionData.user,
-    //   contractAddress,
-    //   true,
-    //   event.params.profit.minus(userOptionData.totalFee)
-    // );
-
-    updateClosingStatsV2(
-      userOptionData.depositToken,
-      userOptionData.creationTime,
-      userOptionData.totalFee,
-      Address.fromBytes(userOptionData.user).toHexString(),
-      true,
-      event.params.profit.minus(userOptionData.totalFee),
+    updateAboveBelowClosingStats(
       contractAddress,
-      event.params.profit
+      userOptionData.totalFee,
+      userOptionData.isAbove,
+      userOptionData.depositToken,
+      event.params.profit.minus(userOptionData.totalFee),
+      userOptionData.creationTime,
+      Address.fromBytes(userOptionData.user).toHexString(),
+      true
     );
+  } else {
+    createTxnData(event.receipt, event.transaction, "Exercise");
+
+    if (isContractRegisteredToV2Router(optionContractInstance)) {
+      let userOptionData = _loadOrCreateOptionDataEntity(
+        event.params.id,
+        contractAddress
+      );
+      userOptionData.state = State.exercised;
+      userOptionData.payout = event.params.profit;
+
+      userOptionData.payout_usd = convertToUSD(
+        event.params.profit,
+        userOptionData.depositToken
+      );
+      userOptionData.expirationPrice = event.params.priceAtExpiration;
+      userOptionData.closeTime = event.block.timestamp;
+      userOptionData.isAbove = event.params.isAbove;
+      userOptionData.save();
+
+      // updateClosingStats(
+      //   userOptionData.depositToken,
+      //   userOptionData.creationTime,
+      //   userOptionData.totalFee,
+      //   userOptionData.settlementFee,
+      //   userOptionData.user,
+      //   contractAddress,
+      //   true,
+      //   event.params.profit.minus(userOptionData.totalFee)
+      // );
+
+      updateClosingStatsV2(
+        userOptionData.depositToken,
+        userOptionData.creationTime,
+        userOptionData.totalFee,
+        Address.fromBytes(userOptionData.user).toHexString(),
+        true,
+        event.params.profit.minus(userOptionData.totalFee),
+        contractAddress,
+        event.params.profit
+      );
+    }
   }
 }
 
@@ -520,4 +625,15 @@ function convertToUSD(payoutInToken: BigInt, depositToken: string): BigInt {
     return convertBFRToUSDC(payoutInToken);
   }
   return payoutInToken;
+}
+
+export function _handleCreateMarket(event: CreateMarket): void {
+  const optionContract = _loadOrCreateOptionContractEntity(
+    event.params.optionsContract.toHexString()
+  );
+  const market = _loadOrCreateMarket(event.params.marketId);
+  market.optionContract = optionContract.id;
+  market.strike = event.params.strike;
+  market.expiration = event.params.expiration;
+  market.save();
 }

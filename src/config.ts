@@ -1,3 +1,4 @@
+import { BigInt } from "@graphprotocol/graph-ts";
 export enum State {
   active = 1,
   exercised = 2,
@@ -6,6 +7,9 @@ export enum State {
   cancelled = 5,
   opened = 6,
 }
+
+export const AboveBelow_RouterAddress =
+  "0x9bE7abE78A8fc78eDc763fDB864B50c6e98ACB97";
 
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 export const BURN_ADDRESS = "0x000000000000000000000000000000000000dEaD";
@@ -45,3 +49,5 @@ export const ARB_UNISWAP_POOL_CONTRACT =
   "0x81c48D31365e6B526f6BBadC5c9aaFd822134863";
 export const BFR_UNISWAP_POOL_CONTRACT =
   "0xD6D04709695935aAf80B2bd0215911bc2D3Bc1Ac";
+
+export const ONE = BigInt.fromI32(1);

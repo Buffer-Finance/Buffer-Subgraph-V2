@@ -10,6 +10,10 @@ import { _getHourId } from "./helpers";
 import { ZERO } from "./initialize";
 import { updateDailyAndWeeklyRevenue, updateLeaderboards } from "./leaderboard";
 import {
+  logABOpenInterst,
+  logABVolumeAndSettlementFeePerContract,
+} from "./loggers";
+import {
   logVolume,
   saveSettlementFeeDiscount,
   storeDefillamaFees,
@@ -22,6 +26,99 @@ import {
   updateTradeClosingStatsForUser,
   updateTradeOpenStatsForUser,
 } from "./userStats";
+
+export function updateAboveBelowOpeningStats(
+  timestamp: BigInt,
+  contractAddress: string,
+  totalFee: BigInt,
+  settlementFee: BigInt,
+  isAbove: boolean
+): void {
+  logABVolumeAndSettlementFeePerContract(
+    _getHourId(timestamp),
+    "hourly",
+    timestamp,
+    contractAddress,
+    totalFee,
+    settlementFee
+  );
+
+  logABOpenInterst(contractAddress, isAbove, totalFee, true);
+}
+
+export function updateAboveBelowClosingStats(
+  contractAddress: string,
+  totalFee: BigInt,
+  isAbove: boolean,
+  token: string,
+  netPnL: BigInt,
+  timestamp: BigInt,
+  user: string,
+  isExercised: boolean
+): void {
+  logABOpenInterst(contractAddress, isAbove, totalFee, false);
+  let positiveNetPnl = netPnL;
+
+  if (netPnL.lt(ZERO)) {
+    positiveNetPnl = ZERO.minus(netPnL);
+  }
+  if (token == "USDC") {
+    updateLeaderboards(
+      totalFee,
+      timestamp,
+      user,
+      isExercised && netPnL.gt(ZERO),
+      ZERO,
+      false,
+      totalFee,
+      true,
+      positiveNetPnl,
+      ZERO,
+      positiveNetPnl,
+      ZERO,
+      false,
+      ZERO
+    );
+  } else if (token == "ARB") {
+    let totalFeeUSDC = convertARBToUSDC(totalFee);
+    let positiveNetPnlUSDC = convertARBToUSDC(positiveNetPnl);
+    updateLeaderboards(
+      totalFeeUSDC,
+      timestamp,
+      user,
+      isExercised && netPnL.gt(ZERO),
+      totalFee,
+      true,
+      ZERO,
+      false,
+      positiveNetPnlUSDC,
+      positiveNetPnl,
+      ZERO,
+      ZERO,
+      false,
+      ZERO
+    );
+  } else if (token == "BFR") {
+    let totalFeeUSDC = convertBFRToUSDC(totalFee);
+    let positiveNetPnlUSDC = convertBFRToUSDC(positiveNetPnl);
+    updateLeaderboards(
+      totalFeeUSDC,
+      timestamp,
+      user,
+      isExercised && netPnL.gt(ZERO),
+      ZERO,
+      false,
+      ZERO,
+      false,
+      positiveNetPnlUSDC,
+      ZERO,
+      ZERO,
+      positiveNetPnl,
+      true,
+      totalFee
+    );
+  }
+}
 
 export function updateOpeningStats(
   token: string,

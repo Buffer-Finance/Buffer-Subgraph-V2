@@ -2,6 +2,8 @@ import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
+  ABQueuedOptionData,
+  ABUserOptionData,
   ARBPoolStat,
   AssetTradingStat,
   BurnedBFR,
@@ -10,6 +12,7 @@ import {
   DefillamaFeeStat,
   FeeStat,
   Leaderboard,
+  Market,
   OptionContract,
   OptionStat,
   PoolStat,
@@ -26,6 +29,7 @@ import {
 import {
   ADDRESS_ZERO,
   ARB_POOL_CONTRACT,
+  AboveBelow_RouterAddress,
   BFR_POOL_CONTRACT,
   RouterAddress,
   USDC_POL_POOL_CONTRACT,
@@ -36,6 +40,7 @@ import {
   V2_RouterAddress_3,
   V2_USDC_POOL_CONTRACT,
 } from "./config";
+import { isContractRegisteredToRouter } from "./optionContractHandlers";
 
 export const ZERO = BigInt.fromI32(0);
 
@@ -59,9 +64,20 @@ export function findRouterContract(address: string): string {
   const v2RouterContract_3 = BufferRouter.bind(
     Address.fromString(V2_RouterAddress_3)
   );
+  const aboveBelowRouterContract = BufferRouter.bind(
+    Address.fromString(AboveBelow_RouterAddress)
+  );
 
   if (routerContract.contractRegistry(contractAddress) == true) {
     return RouterAddress;
+  } else if (
+    aboveBelowRouterContract.try_contractRegistry(contractAddress).reverted ==
+      false &&
+    aboveBelowRouterContract.try_contractRegistry(contractAddress).value ==
+      true &&
+    aboveBelowRouterContract.contractRegistry(contractAddress) == true
+  ) {
+    return AboveBelow_RouterAddress;
   } else if (
     v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
     v2RouterContract.try_contractRegistry(contractAddress).value == true &&
@@ -102,7 +118,10 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.currentUtilization = ZERO;
     //    optionContract.payoutForDown = ZERO;
     //    optionContract.payoutForUp = ZERO;
+    optionContract.isPaused = false;
     optionContract.category = -1;
+    optionContract.openInterestDown = ZERO;
+    optionContract.openInterestUp = ZERO;
 
     if (
       optionContract.routerContract == ADDRESS_ZERO ||
@@ -115,12 +134,13 @@ export function _loadOrCreateOptionContractEntity(
       optionContract.isPaused = true;
       optionContract.asset = "unknown";
     } else {
-      let optionContractInstance = BufferBinaryOptions.bind(
-        Address.fromString(contractAddress)
-      );
-      optionContract.isPaused = optionContractInstance.isPaused();
-      optionContract.asset = optionContractInstance.assetPair();
-      optionContractPool = optionContractInstance.pool();
+      if (isContractRegisteredToRouter(optionContract)) {
+        let optionContractInstance = BufferBinaryOptions.bind(
+          Address.fromString(contractAddress)
+        );
+        optionContract.asset = optionContractInstance.assetPair();
+        optionContractPool = optionContractInstance.pool();
+      }
     }
 
     if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
@@ -571,4 +591,52 @@ export function _loadOrCreateTransaction(
     entity.save();
   }
   return entity as Transaction;
+}
+
+export function _loadOrCreateMarket(id: Bytes): Market {
+  let market = Market.load(id);
+  if (market == null) {
+    market = new Market(id);
+    market.skew = ZERO;
+  }
+  return market as Market;
+}
+
+export function _loadOrCreateAboveBelowOptionDataEntity(
+  optionID: BigInt,
+  contractAddress: string
+): ABUserOptionData {
+  let referrenceID = `${optionID}${contractAddress}`;
+  let entity = ABUserOptionData.load(referrenceID);
+  if (entity == null) {
+    entity = new ABUserOptionData(referrenceID);
+    entity.optionID = optionID;
+    entity.optionContract = contractAddress;
+    entity.amount = ZERO;
+    entity.totalFee = ZERO;
+    entity.queuedTimestamp = ZERO;
+    entity.lag = ZERO;
+  }
+  return entity as ABUserOptionData;
+}
+
+export function _loadOrCreateAboveBelowQueuedOptionEntity(
+  queueID: BigInt,
+  contractAddress: string
+): ABQueuedOptionData {
+  let referenceID = `${queueID}${contractAddress}`;
+  let entity = ABQueuedOptionData.load(referenceID);
+  if (entity == null) {
+    entity = new ABQueuedOptionData(referenceID);
+    entity.queueID = queueID;
+    entity.optionContract = contractAddress;
+    entity.queueTimestamp = ZERO;
+    entity.cancelTimestamp = ZERO;
+    entity.lag = ZERO;
+    entity.processTime = ZERO;
+    entity.maxFeePerContract = ZERO;
+    entity.numberOfContracts = ZERO;
+    entity.save();
+  }
+  return entity as ABQueuedOptionData;
 }

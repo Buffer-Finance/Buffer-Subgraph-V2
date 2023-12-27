@@ -1,12 +1,18 @@
 import {
+  Create as CreateAB,
+  CreateMarket,
+} from "../generated/AboveBelowBufferBinaryOptions/AboveBelowBufferBinaryOptions";
+import {
+  OpenTrade as AboveBelowOpenTrade,
+  CancelTrade,
+  InitiateTrade,
+} from "../generated/AboveBelowBufferRouter/AboveBelowBufferRouter";
+import {
   UpdateCircuitBreakerContract,
   UpdateMaxSkew,
-  UpdateOptionStorageContract,
   UpdatePayout,
-  UpdateSettlementFeeDisbursalContract,
   UpdateSf,
   UpdateStrikeStepSize,
-  UpdatetraderNFTContract,
 } from "../generated/AboveBelowConfigs/AboveBelowConfig";
 import {
   DeregisterAccount,
@@ -34,11 +40,14 @@ import {
   UpdateMaxPeriod,
   UpdateMinFee,
   UpdateMinPeriod,
+  UpdateOptionStorageContract,
   UpdatePlatformFee,
   UpdatePoolOIConfigContract,
+  UpdateSettlementFeeDisbursalContract,
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
+  UpdatetraderNFTContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -74,6 +83,8 @@ import {
 } from "./configContractHandlers";
 import {
   _handleCreate,
+  _handleCreateAB,
+  _handleCreateMarket,
   _handleExercise,
   _handleExerciseV1,
   _handleExpire,
@@ -84,6 +95,9 @@ import {
   _handleUpdateReferral,
 } from "./optionContractHandlers";
 import {
+  _handleAboveBelowCancelTrade,
+  _handleAboveBelowInitiateTrade,
+  _handleAboveBelowOpenTrade,
   _handleDeregisterAccount,
   _handleOpenTrade,
   _handleRegisterAccount,
@@ -250,4 +264,24 @@ export function handleUpdateCircuitBreakerContract(
   event: UpdateCircuitBreakerContract
 ): void {
   _handleUpdateCircuitBreakerContract(event);
+}
+
+export function handleCreateAB(event: CreateAB): void {
+  _handleCreateAB(event);
+}
+
+export function handleCreateMarketAB(event: CreateMarket): void {
+  _handleCreateMarket(event);
+}
+
+export function handleAboveBelowInitiateTrade(event: InitiateTrade): void {
+  _handleAboveBelowInitiateTrade(event);
+}
+
+export function handleAboveBelowCancelTrade(event: CancelTrade): void {
+  _handleAboveBelowCancelTrade(event);
+}
+
+export function handleAboveBelowOpenTrade(event: AboveBelowOpenTrade): void {
+  _handleAboveBelowOpenTrade(event);
 }

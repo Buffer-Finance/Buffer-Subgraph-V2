@@ -1,5 +1,11 @@
 import { Address } from "@graphprotocol/graph-ts";
 import {
+  AboveBelowBufferRouter,
+  OpenTrade as AboveBelowOpenTrade,
+  CancelTrade,
+  InitiateTrade,
+} from "../generated/AboveBelowBufferRouter/AboveBelowBufferRouter";
+import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
@@ -9,8 +15,12 @@ import {
   EOAtoOneCT,
   UserOptionData,
 } from "../generated/schema";
-import { ADDRESS_ZERO } from "./config";
-import { _loadOrCreateOptionContractEntity } from "./initialize";
+import { ADDRESS_ZERO, State } from "./config";
+import {
+  _loadOrCreateAboveBelowOptionDataEntity,
+  _loadOrCreateAboveBelowQueuedOptionEntity,
+  _loadOrCreateOptionContractEntity,
+} from "./initialize";
 import { isContractRegisteredToV2Router } from "./optionContractHandlers";
 import { createTxnData } from "./txnDataHandlers";
 
@@ -68,4 +78,71 @@ export function _handleDeregisterAccount(event: DeregisterAccount): void {
   deRegisteredAccount.eoa = event.params.account;
 
   deRegisteredAccount.save();
+}
+
+export function _handleAboveBelowInitiateTrade(event: InitiateTrade): void {
+  let routerContract = AboveBelowBufferRouter.bind(event.address);
+  let queueID = event.params.queueId;
+  let queuedTradeData = routerContract.queuedTrades(queueID);
+  let contractAddress = queuedTradeData.value1.toHexString();
+  _loadOrCreateOptionContractEntity(contractAddress);
+  // logUser(event.block.timestamp, event.params.user);
+  let queuedOptionData = _loadOrCreateAboveBelowQueuedOptionEntity(
+    queueID,
+    contractAddress
+  );
+  queuedOptionData.user = event.params.user;
+  queuedOptionData.state = State.queued;
+  queuedOptionData.strike = queuedTradeData.value2;
+  queuedOptionData.expirationTime = queuedTradeData.value3;
+  queuedOptionData.numberOfContracts = queuedTradeData.value4;
+  queuedOptionData.maxFeePerContract = queuedTradeData.value10;
+  queuedOptionData.isAbove = queuedTradeData.value8 ? true : false;
+  queuedOptionData.queueTimestamp = queuedTradeData.value9;
+  queuedOptionData.maxFeePerContract = queuedTradeData.value10;
+  queuedOptionData.save();
+}
+
+export function _handleAboveBelowCancelTrade(event: CancelTrade): void {
+  let queueID = event.params.queueId;
+  let routerContract = AboveBelowBufferRouter.bind(event.address);
+  let contractAddress = routerContract
+    .queuedTrades(queueID)
+    .value1.toHexString();
+  let userQueuedData = _loadOrCreateAboveBelowQueuedOptionEntity(
+    queueID,
+    contractAddress
+  );
+  userQueuedData.state = State.cancelled;
+  userQueuedData.reason = event.params.reason;
+  userQueuedData.cancelTimestamp = event.block.timestamp;
+  userQueuedData.save();
+}
+
+export function _handleAboveBelowOpenTrade(event: AboveBelowOpenTrade): void {
+  let routerContract = AboveBelowBufferRouter.bind(event.address);
+  let queueID = event.params.queueId;
+  let contractAddress = routerContract
+    .queuedTrades(queueID)
+    .value1.toHexString();
+  let userQueuedData = _loadOrCreateAboveBelowQueuedOptionEntity(
+    queueID,
+    contractAddress
+  );
+  userQueuedData.lag = event.block.timestamp.minus(
+    userQueuedData.queueTimestamp
+  );
+  userQueuedData.processTime = event.block.timestamp;
+  userQueuedData.state = State.opened;
+  userQueuedData.save();
+  let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
+    event.params.optionId,
+    contractAddress
+  );
+  userOptionData.queueID = queueID;
+  userOptionData.queuedTimestamp = userQueuedData.queueTimestamp;
+  userOptionData.lag = event.block.timestamp.minus(
+    userQueuedData.queueTimestamp
+  );
+  userOptionData.save();
 }

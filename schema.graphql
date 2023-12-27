@@ -18,6 +18,14 @@ type Transaction @entity {
   eventName: String!
 }
 
+type Market @entity {
+  id: Bytes!
+  skew: BigInt!
+  strike: BigInt
+  expiration: BigInt
+  optionContract: OptionContract
+}
+
 type OptionStat @entity {
   id: String! # optionContract+&+user
   user: Bytes!
@@ -54,8 +62,51 @@ type OptionContract @entity {
   configContract: ConfigContract
   poolContract: Bytes
   routerContract: String
+
+  token0: String
+  token1: String
+  openInterestUp: BigInt!
+  openInterestDown: BigInt!
+}
+type ABQueuedOptionData @entity {
+  id: String!
+  optionContract: OptionContract!
+  strike: BigInt
+  user: Bytes
+  state: Int
+  isAbove: Boolean
+  queueID: BigInt
+  # slippage: BigInt
+  depositToken: String
+  reason: String
+  queueTimestamp: BigInt!
+  cancelTimestamp: BigInt!
+  lag: BigInt!
+  maxFeePerContract: BigInt!
+  processTime: BigInt!
+  expirationTime: BigInt
+  numberOfContracts: BigInt!
 }
 
+type ABUserOptionData @entity {
+  id: String!
+  optionContract: OptionContract!
+  optionID: BigInt
+  strike: BigInt
+  totalFee: BigInt!
+  user: Bytes!
+  creationTime: BigInt!
+  queuedTimestamp: BigInt!
+  expirationPrice: BigInt
+  payout: BigInt
+  state: Int
+  amount: BigInt!
+  expirationTime: BigInt
+  isAbove: Boolean
+  queueID: BigInt
+  settlementFee: BigInt!
+  lag: BigInt!
+}
 type ConfigContract @entity {
   id: String!
   address: Bytes
@@ -108,6 +159,15 @@ type VolumePerContract @entity {
   period: Period!
   timestamp: BigInt!
   depositToken: String!
+  optionContract: OptionContract!
+  settlementFee: BigInt!
+}
+
+type ABVolumePerContract @entity {
+  id: String!
+  amount: BigInt!
+  period: Period!
+  timestamp: BigInt!
   optionContract: OptionContract!
   settlementFee: BigInt!
 }

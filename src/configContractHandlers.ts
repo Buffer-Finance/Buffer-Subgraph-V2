@@ -28,12 +28,7 @@ import {
   UpdatetraderNFTContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { ConfigContract } from "../generated/schema";
-import { ADDRESS_ZERO } from "./config";
-import {
-  ZERO,
-  _loadOrCreateOptionContractEntity,
-  findRouterContract,
-} from "./initialize";
+import { ZERO, _loadOrCreateOptionContractEntity } from "./initialize";
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -63,12 +58,12 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
     entity.SpreadFactor = ZERO;
 
     entity.maxSkew = ZERO;
-    entity.circuitBreakerContract = Address.fromString(zeroAddress)!;
-    entity.optionStorageContract = Address.fromString(zeroAddress)!;
+    entity.circuitBreakerContract = Address.fromString(zeroAddress);
+    entity.optionStorageContract = Address.fromString(zeroAddress);
     entity.payout = ZERO;
-    entity.sfdContract = Address.fromString(zeroAddress)!;
+    entity.sfdContract = Address.fromString(zeroAddress);
     entity.sf = ZERO;
-    entity.traderNFTContract = Address.fromString(zeroAddress)!;
+    entity.traderNFTContract = Address.fromString(zeroAddress);
     entity.stepSize = ZERO;
   }
   return entity;
@@ -77,23 +72,19 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
 export function _handleCreateOptionsContract(
   event: CreateOptionsContract
 ): void {
-  const routerContract = findRouterContract(
+  const optionContractInstance = _loadOrCreateOptionContractEntity(
     Address.fromBytes(event.address).toHexString()
   );
-  if (routerContract !== ADDRESS_ZERO) {
-    const optionContractInstance = _loadOrCreateOptionContractEntity(
-      Address.fromBytes(event.address).toHexString()
-    );
-    optionContractInstance.routerContract = routerContract;
-    optionContractInstance.category = event.params.category;
-    optionContractInstance.configContract = _loadorCreateConfigContractEntity(
-      event.params.config
-    ).id;
-    optionContractInstance.poolContract = event.params.pool;
+  optionContractInstance.category = event.params.category;
+  optionContractInstance.configContract = _loadorCreateConfigContractEntity(
+    event.params.config
+  ).id;
+  optionContractInstance.poolContract = event.params.pool;
 
-    optionContractInstance.asset = event.params.token0 + event.params.token1;
-    optionContractInstance.save();
-  }
+  optionContractInstance.asset = event.params.token0 + event.params.token1;
+  optionContractInstance.token0 = event.params.token0;
+  optionContractInstance.token1 = event.params.token1;
+  optionContractInstance.save();
 }
 
 export function _handleUpdateMinFee(event: UpdateMinFee): void {

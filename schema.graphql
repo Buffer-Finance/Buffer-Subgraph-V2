@@ -41,8 +41,8 @@ type ConfigContract @entity {
   creationWindowContract: Bytes!
   circuitBreakerContract: Bytes!
   iv: BigInt!
-  ivFactorITM: BigInt!
-  ivFactorOTM: BigInt!
+  # ivFactorITM: BigInt!
+  # ivFactorOTM: BigInt!
   optionStorageContract: Bytes!
   platformFee: BigInt!
   payout: BigInt!

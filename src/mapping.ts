@@ -15,8 +15,8 @@ import {
   UpdateCircuitBreakerContract,
   UpdateCreationWindowContract,
   UpdateIV,
-  UpdateIVFactorITM,
-  UpdateIVFactorOTM,
+  // UpdateIVFactorITM,
+  // UpdateIVFactorOTM,
   UpdateMaxSkew,
   UpdateOptionStorageContract,
   UpdatePayout,
@@ -30,8 +30,8 @@ import {
   _handleUpdateCircuitBreakerContract,
   _handleUpdateCreationWindowContract,
   _handleUpdateIV,
-  _handleUpdateIVFactorITM,
-  _handleUpdateIVFactorOTM,
+  // _handleUpdateIVFactorITM,
+  // _handleUpdateIVFactorOTM,
   _handleUpdateMaxSkew,
   _handleUpdateOptionStorageContract,
   _handleUpdatePayout,
@@ -126,13 +126,13 @@ export function handleUpdateIV(event: UpdateIV): void {
   _handleUpdateIV(event);
 }
 
-export function handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
-  _handleUpdateIVFactorITM(event);
-}
+// export function handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
+//   _handleUpdateIVFactorITM(event);
+// }
 
-export function handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
-  _handleUpdateIVFactorOTM(event);
-}
+// export function handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
+//   _handleUpdateIVFactorOTM(event);
+// }
 
 export function handleUpdateOptionStorageContract(
   event: UpdateOptionStorageContract

@@ -139,21 +139,37 @@ export function _handleExercise(event: Exercise): void {
 }
 
 export function _handlePause(event: Pause): void {
-  let optionContract = _loadOrCreateOptionContractEntity(
-    event.address.toHexString()
-  );
+  let contractAddress = event.address;
+  let contractAddressString = contractAddress.toHexString();
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  if (
+    routerContract.try_contractRegistry(contractAddress).reverted === false &&
+    routerContract.try_contractRegistry(contractAddress).value === true
+  ) {
+    let optionContract = _loadOrCreateOptionContractEntity(
+      contractAddressString
+    );
 
-  optionContract.isPaused = event.params.isPaused;
-  optionContract.save();
+    optionContract.isPaused = event.params.isPaused;
+    optionContract.save();
+  }
 }
 
 export function _handleCreateMarket(event: CreateMarket): void {
-  const optionContract = _loadOrCreateOptionContractEntity(
-    event.params.optionsContract.toHexString()
-  );
-  const market = _loadOrCreateMarket(event.params.marketId);
-  market.optionContract = optionContract.id;
-  market.strike = event.params.strike;
-  market.expiration = event.params.expiration;
-  market.save();
+  let contractAddress = event.address;
+  let contractAddressString = contractAddress.toHexString();
+  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  if (
+    routerContract.try_contractRegistry(contractAddress).reverted === false &&
+    routerContract.try_contractRegistry(contractAddress).value === true
+  ) {
+    const optionContract = _loadOrCreateOptionContractEntity(
+      event.params.optionsContract.toHexString()
+    );
+    const market = _loadOrCreateMarket(event.params.marketId);
+    market.optionContract = optionContract.id;
+    market.strike = event.params.strike;
+    market.expiration = event.params.expiration;
+    market.save();
+  }
 }

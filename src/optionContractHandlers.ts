@@ -10,7 +10,7 @@ import {
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { updateClosingStats, updateOpeningStats } from "./aggregate";
-import { RouterAddress, State } from "./config";
+import { RouterAddress, RouterAddress_2, State } from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
 import {
   _loadOrCreateMarket,
@@ -48,10 +48,13 @@ export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
   let contractAddressString = contractAddress.toHexString();
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let routerContract2 = BufferRouter.bind(Address.fromString(RouterAddress_2));
 
   if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
+    (routerContract.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract.try_contractRegistry(contractAddress).value === true) ||
+    (routerContract2.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract2.try_contractRegistry(contractAddress).value === true)
   ) {
     let optionID = event.params.id;
     let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
@@ -92,9 +95,13 @@ export function _handleExpire(event: Expire): void {
   let contractAddressString = contractAddress.toHexString();
 
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let routerContract2 = BufferRouter.bind(Address.fromString(RouterAddress_2));
+
   if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
+    (routerContract.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract.try_contractRegistry(contractAddress).value === true) ||
+    (routerContract2.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract2.try_contractRegistry(contractAddress).value === true)
   ) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
@@ -117,9 +124,13 @@ export function _handleExercise(event: Exercise): void {
   let contractAddressString = contractAddress.toHexString();
 
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let routerContract2 = BufferRouter.bind(Address.fromString(RouterAddress_2));
+
   if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
+    (routerContract.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract.try_contractRegistry(contractAddress).value === true) ||
+    (routerContract2.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract2.try_contractRegistry(contractAddress).value === true)
   ) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
@@ -142,9 +153,13 @@ export function _handlePause(event: Pause): void {
   let contractAddress = event.address;
   let contractAddressString = contractAddress.toHexString();
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let routerContract2 = BufferRouter.bind(Address.fromString(RouterAddress_2));
+
   if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
+    (routerContract.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract.try_contractRegistry(contractAddress).value === true) ||
+    (routerContract2.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract2.try_contractRegistry(contractAddress).value === true)
   ) {
     let optionContract = _loadOrCreateOptionContractEntity(
       contractAddressString
@@ -159,9 +174,13 @@ export function _handleCreateMarket(event: CreateMarket): void {
   let contractAddress = event.address;
   let contractAddressString = contractAddress.toHexString();
   let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  let routerContract2 = BufferRouter.bind(Address.fromString(RouterAddress_2));
+
   if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
+    (routerContract.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract.try_contractRegistry(contractAddress).value === true) ||
+    (routerContract2.try_contractRegistry(contractAddress).reverted === false &&
+      routerContract2.try_contractRegistry(contractAddress).value === true)
   ) {
     const optionContract = _loadOrCreateOptionContractEntity(
       event.params.optionsContract.toHexString()

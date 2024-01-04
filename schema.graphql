@@ -79,6 +79,7 @@ type QueuedOptionData @entity {
   processTime: BigInt!
   expirationTime: BigInt
   numberOfContracts: BigInt!
+  totalFee: BigInt!
 }
 
 type UserOptionData @entity {

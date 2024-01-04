@@ -106,6 +106,9 @@ type ABUserOptionData @entity {
   queueID: BigInt
   settlementFee: BigInt!
   lag: BigInt!
+  totalFee_usd: BigInt!
+  depositToken: String!
+  poolToken: String!
 }
 type ConfigContract @entity {
   id: String!

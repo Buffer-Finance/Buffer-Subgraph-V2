@@ -28,7 +28,45 @@ import {
   UpdatetraderNFTContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { ConfigContract } from "../generated/schema";
+import {
+  ARB_POOL_CONTRACT,
+  BFR_POOL_CONTRACT,
+  USDC_POL_POOL_CONTRACT,
+  USDC_POOL_CONTRACT,
+  V2_ARB_POOL_CONTRACT,
+  V2_USDC_POOL_CONTRACT,
+} from "./config";
 import { ZERO, _loadOrCreateOptionContractEntity } from "./initialize";
+
+export function findPoolAndTokenFromPoolAddress(
+  poolAddress: Address
+): string[] {
+  let token: string;
+  let pool: string;
+  if (poolAddress == Address.fromString(USDC_POL_POOL_CONTRACT)) {
+    token = "USDC";
+    pool = "USDC_POL";
+  } else if (poolAddress == Address.fromString(ARB_POOL_CONTRACT)) {
+    token = "ARB";
+    pool = "ARB";
+  } else if (poolAddress == Address.fromString(USDC_POOL_CONTRACT)) {
+    token = "USDC";
+    pool = "USDC";
+  } else if (poolAddress == Address.fromString(BFR_POOL_CONTRACT)) {
+    token = "BFR";
+    pool = "BFR";
+  } else if (poolAddress == Address.fromString(V2_ARB_POOL_CONTRACT)) {
+    token = "ARB";
+    pool = "V2_ARB";
+  } else if (poolAddress == Address.fromString(V2_USDC_POOL_CONTRACT)) {
+    token = "USDC";
+    pool = "V2_USDC";
+  } else {
+    token = "";
+    pool = "";
+  }
+  return [token, pool];
+}
 
 const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -84,6 +122,9 @@ export function _handleCreateOptionsContract(
   optionContractInstance.asset = event.params.token0 + event.params.token1;
   optionContractInstance.token0 = event.params.token0;
   optionContractInstance.token1 = event.params.token1;
+  const tokenPool = findPoolAndTokenFromPoolAddress(event.params.pool);
+  optionContractInstance.token = tokenPool[0];
+  optionContractInstance.pool = tokenPool[1];
   optionContractInstance.save();
 }
 

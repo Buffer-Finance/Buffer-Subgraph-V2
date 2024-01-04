@@ -28,18 +28,13 @@ import {
 } from "../generated/schema";
 import {
   ADDRESS_ZERO,
-  ARB_POOL_CONTRACT,
   AboveBelow_RouterAddress,
-  BFR_POOL_CONTRACT,
   RouterAddress,
-  USDC_POL_POOL_CONTRACT,
-  USDC_POOL_CONTRACT,
-  V2_ARB_POOL_CONTRACT,
   V2_RouterAddress,
   V2_RouterAddress_2,
   V2_RouterAddress_3,
-  V2_USDC_POOL_CONTRACT,
 } from "./config";
+import { findPoolAndTokenFromPoolAddress } from "./configContractHandlers";
 import { isContractRegisteredToRouter } from "./optionContractHandlers";
 
 export const ZERO = BigInt.fromI32(0);
@@ -140,34 +135,14 @@ export function _loadOrCreateOptionContractEntity(
         );
         optionContract.asset = optionContractInstance.assetPair();
         optionContractPool = optionContractInstance.pool();
+      } else {
       }
-    }
 
-    if (optionContractPool == Address.fromString(USDC_POL_POOL_CONTRACT)) {
-      optionContract.token = "USDC";
-      optionContract.pool = "USDC_POL";
-    } else if (optionContractPool == Address.fromString(ARB_POOL_CONTRACT)) {
-      optionContract.token = "ARB";
-      optionContract.pool = "ARB";
-    } else if (optionContractPool == Address.fromString(USDC_POOL_CONTRACT)) {
-      optionContract.token = "USDC";
-      optionContract.pool = "USDC";
-    } else if (optionContractPool == Address.fromString(BFR_POOL_CONTRACT)) {
-      optionContract.token = "BFR";
-      optionContract.pool = "BFR";
-    } else if (optionContractPool == Address.fromString(V2_ARB_POOL_CONTRACT)) {
-      optionContract.token = "ARB";
-      optionContract.pool = "V2_ARB";
-    } else if (
-      optionContractPool == Address.fromString(V2_USDC_POOL_CONTRACT)
-    ) {
-      optionContract.token = "USDC";
-      optionContract.pool = "V2_USDC";
-    } else {
-      optionContract.token = "";
-      optionContract.pool = "";
+      const tokenPool = findPoolAndTokenFromPoolAddress(optionContractPool);
+      optionContract.token = tokenPool[0];
+      optionContract.pool = tokenPool[1];
+      optionContract.save();
     }
-    optionContract.save();
   }
   return optionContract as OptionContract;
 }

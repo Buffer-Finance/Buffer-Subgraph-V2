@@ -69,6 +69,36 @@ export function isContractRegisteredToAboveBelowRouter(
   return optionContractInstance.routerContract == AboveBelow_RouterAddress;
 }
 
+function findPoolAndTokenReferranceID(poolToken: string): string[] {
+  let poolReferrenceID: string;
+  let tokenReferrenceID: string;
+
+  if (poolToken == "USDC_POL") {
+    tokenReferrenceID = "USDC";
+    poolReferrenceID = "USDC_POL";
+  } else if (poolToken == "ARB") {
+    tokenReferrenceID = "ARB";
+    poolReferrenceID = "ARB";
+  } else if (poolToken == "USDC") {
+    tokenReferrenceID = "USDC";
+    poolReferrenceID = "USDC";
+  } else if (poolToken == "BFR") {
+    tokenReferrenceID = "BFR";
+    poolReferrenceID = "BFR";
+  } else if (poolToken == "V2_USDC") {
+    tokenReferrenceID = "USDC";
+    poolReferrenceID = "USDC";
+  } else if (poolToken == "V2_ARB") {
+    tokenReferrenceID = "ARB";
+    poolReferrenceID = "ARB";
+  } else {
+    tokenReferrenceID = "";
+    poolReferrenceID = "";
+  }
+
+  return [poolReferrenceID, tokenReferrenceID];
+}
+
 // Create - Above-Below
 export function _handleCreateAB(event: CreateAB): void {
   const contractAddress = Address.fromBytes(event.address).toHexString();
@@ -85,8 +115,16 @@ export function _handleCreateAB(event: CreateAB): void {
       optionID,
       contractAddress
     );
+    const totalFee = event.params.totalFee;
+    let poolToken = updateOptionContractData(true, totalFee, contractAddress);
+    const poolTokenReferranceID = findPoolAndTokenReferranceID(poolToken);
+    const poolReferrenceID = poolTokenReferranceID[0];
+    const tokenReferrenceID = poolTokenReferranceID[1];
+
     userOptionData.user = event.params.account;
-    userOptionData.totalFee = event.params.totalFee;
+    userOptionData.totalFee = totalFee;
+    userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
+
     userOptionData.state = optionData.value0;
     userOptionData.strike = optionData.value1;
     userOptionData.amount = optionData.value2;
@@ -94,6 +132,8 @@ export function _handleCreateAB(event: CreateAB): void {
     userOptionData.isAbove = optionData.value8;
     userOptionData.creationTime = optionData.value7;
     userOptionData.settlementFee = event.params.settlementFee;
+    userOptionData.depositToken = tokenReferrenceID;
+    userOptionData.poolToken = poolReferrenceID;
     userOptionData.save();
 
     const market = _loadOrCreateMarket(event.params.marketId);
@@ -118,6 +158,8 @@ export function _handleCreate(event: Create): void {
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
+
+  //v2
   if (isContractRegisteredToV2Router(optionContractInstance)) {
     logUser(
       event.block.timestamp,
@@ -181,6 +223,7 @@ export function _handleCreate(event: Create): void {
     );
   }
 
+  //v1
   if (isContractRegisteredToRouter(optionContractInstance)) {
     logUser(
       event.block.timestamp,
@@ -240,8 +283,10 @@ export function _handleExpire(event: Expire): void {
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
+
+  //above-below
   if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
-    let userOptionData = _loadOrCreateOptionDataEntity(
+    let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
       event.params.id,
       contractAddress
     );
@@ -259,7 +304,9 @@ export function _handleExpire(event: Expire): void {
       Address.fromBytes(userOptionData.user).toHexString(),
       false
     );
-  } else {
+  }
+  // v2
+  else {
     createTxnData(event.receipt, event.transaction, "Expire");
 
     if (isContractRegisteredToV2Router(optionContractInstance)) {
@@ -293,8 +340,10 @@ export function _handleExercise(event: Exercise): void {
   let contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
+
+  //above-below
   if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
-    let userOptionData = _loadOrCreateOptionDataEntity(
+    let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
       event.params.id,
       contractAddress
     );
@@ -313,7 +362,9 @@ export function _handleExercise(event: Exercise): void {
       Address.fromBytes(userOptionData.user).toHexString(),
       true
     );
-  } else {
+  }
+  //v2
+  else {
     createTxnData(event.receipt, event.transaction, "Exercise");
 
     if (isContractRegisteredToV2Router(optionContractInstance)) {
@@ -358,6 +409,7 @@ export function _handleExercise(event: Exercise): void {
   }
 }
 
+//v2
 export function _handleLpProfit(event: LpProfit): void {
   createTxnData(event.receipt, event.transaction, "LpProfit");
   let contractAddress = Address.fromBytes(event.address).toHexString();
@@ -379,6 +431,7 @@ export function _handleLpProfit(event: LpProfit): void {
   }
 }
 
+//v2
 export function _handleLpLoss(event: LpLoss): void {
   createTxnData(event.receipt, event.transaction, "LpLoss");
   let contractAddress = Address.fromBytes(event.address).toHexString();
@@ -408,7 +461,8 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
 
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
-    isContractRegisteredToRouter(optionContractInstance)
+    isContractRegisteredToRouter(optionContractInstance) ||
+    isContractRegisteredToAboveBelowRouter(optionContractInstance)
   ) {
     let optionContractEntity =
       _loadOrCreateOptionContractEntity(optionContract);
@@ -545,7 +599,8 @@ export function _handlePause(event: Pause): void {
 
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
-    isContractRegisteredToRouter(optionContractInstance)
+    isContractRegisteredToRouter(optionContractInstance) ||
+    isContractRegisteredToAboveBelowRouter(optionContractInstance)
   ) {
     optionContractInstance.isPaused = event.params.isPaused;
     optionContractInstance.save();

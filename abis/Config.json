@@ -129,32 +129,6 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "ivFactorITM",
-        "type": "uint256"
-      }
-    ],
-    "name": "UpdateIVFactorITM",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "ivFactorOTM",
-        "type": "uint256"
-      }
-    ],
-    "name": "UpdateIVFactorOTM",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
         "internalType": "int256",
         "name": "_maxSkew",
         "type": "int256"
@@ -233,9 +207,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "strikeStepSize",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "name": "UpdateStrikeStepSize",
@@ -277,14 +251,7 @@
   },
   {
     "inputs": [],
-    "name": "IV_UPDATOR",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "PERIOD_UPDATOR",
+    "name": "UPDATOR",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "view",
     "type": "function"
@@ -300,13 +267,6 @@
     "inputs": [],
     "name": "creationWindowContract",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "bool", "name": "isITM", "type": "bool" }],
-    "name": "getFactoredIv",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -336,27 +296,6 @@
     ],
     "name": "hasRole",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "iv",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ivFactorITM",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ivFactorOTM",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -448,31 +387,6 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint32", "name": "_iv", "type": "uint32" }],
-    "name": "setIV",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint32", "name": "_ivFactorITM", "type": "uint32" }
-    ],
-    "name": "setIVFactorITM",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint32", "name": "_ivFactorOTM", "type": "uint32" }
-    ],
-    "name": "setIVFactorOTM",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       { "internalType": "int256", "name": "_maxSkew", "type": "int256" }
     ],
@@ -526,18 +440,11 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "_sf", "type": "uint256" }],
-    "name": "setSf",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint128",
         "name": "_strikeStepSize",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "name": "setStrikeStepSize",
@@ -554,15 +461,8 @@
   },
   {
     "inputs": [],
-    "name": "sf",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "strikeStepSize",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint128", "name": "", "type": "uint128" }],
     "stateMutability": "view",
     "type": "function"
   },

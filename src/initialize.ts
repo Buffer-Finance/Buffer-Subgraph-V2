@@ -45,6 +45,7 @@ export function _loadOrCreateQueuedOptionEntity(
     entity.processTime = ZERO;
     entity.maxFeePerContract = ZERO;
     entity.numberOfContracts = ZERO;
+    entity.totalFee = ZERO;
     entity.save();
   }
   return entity as QueuedOptionData;

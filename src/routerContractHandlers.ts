@@ -31,7 +31,7 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
   queuedOptionData.maxFeePerContract = queuedTradeData.value10;
   queuedOptionData.isAbove = queuedTradeData.value8 ? true : false;
   queuedOptionData.queueTimestamp = queuedTradeData.value9;
-  queuedOptionData.maxFeePerContract = queuedTradeData.value10;
+  queuedOptionData.totalFee = queuedTradeData.value12;
   queuedOptionData.save();
 }
 

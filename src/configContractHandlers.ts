@@ -3,8 +3,6 @@ import {
   UpdateCircuitBreakerContract,
   UpdateCreationWindowContract,
   UpdateIV,
-  UpdateIVFactorITM,
-  UpdateIVFactorOTM,
   UpdateMaxSkew,
   UpdateOptionStorageContract,
   UpdatePayout,
@@ -31,8 +29,8 @@ export function _loadOrCreateConfigContractEntity(
     entity.sfdContract = Address.fromHexString(ZeroAddress);
     entity.traderNFTContract = Address.fromHexString(ZeroAddress);
     entity.iv = ZERO;
-    entity.ivFactorITM = ZERO;
-    entity.ivFactorOTM = ZERO;
+    // entity.ivFactorITM = ZERO;
+    // entity.ivFactorOTM = ZERO;
     entity.payout = ZERO;
     entity.platformFee = ZERO;
     entity.sf = ZERO;
@@ -99,17 +97,17 @@ export function _handleUpdateIV(event: UpdateIV): void {
   entity.save();
 }
 
-export function _handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
-  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
-  entity.ivFactorITM = event.params.ivFactorITM;
-  entity.save();
-}
+// export function _handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
+//   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+//   entity.ivFactorITM = event.params.ivFactorITM;
+//   entity.save();
+// }
 
-export function _handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
-  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
-  entity.ivFactorOTM = event.params.ivFactorOTM;
-  entity.save();
-}
+// export function _handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
+//   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+//   entity.ivFactorOTM = event.params.ivFactorOTM;
+//   entity.save();
+// }
 
 export function _handleUpdateOptionStorageContract(
   event: UpdateOptionStorageContract

@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: BufferBinaryOptions
-      startBlock: 4872440
+      startBlock: 4916369
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -40,9 +40,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-sepolia
     source:
-      address: "0x636D2D526073bF03024D716DbE781a37C840Bce0"
+      address: "0x912B29A5efeA11d7994970799E82C3A7FB54a434"
       abi: BufferRouter
-      startBlock: 4872440
+      startBlock: 4916369
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -68,7 +68,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: Config
-      startBlock: 4872440
+      startBlock: 4916369
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

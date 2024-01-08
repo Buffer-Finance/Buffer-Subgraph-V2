@@ -42,6 +42,28 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
     optionContract.routerContract = Address.fromHexString(RouterAddress);
     optionContract.save();
   }
+  const routerContract2 = BufferRouter.bind(
+    Address.fromString(RouterAddress_2)
+  );
+  if (
+    routerContract2.try_contractRegistry(contractAddress).reverted === false &&
+    routerContract2.try_contractRegistry(contractAddress).value === true
+  ) {
+    const optionContract = _loadOrCreateOptionContractEntity(
+      contractAddressString
+    );
+    const configContractEntity = _loadOrCreateConfigContractEntity(
+      event.params.config.toHexString()
+    );
+    let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
+
+    optionContract.token0 = event.params.token0;
+    optionContract.token1 = event.params.token1;
+    optionContract.config = configContractEntity.id;
+    optionContract.poolContract = optionContractInstance.pool();
+    optionContract.routerContract = Address.fromHexString(RouterAddress_2);
+    optionContract.save();
+  }
 }
 
 export function _handleCreate(event: Create): void {

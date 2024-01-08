@@ -40,7 +40,6 @@ dataSources:
     name: BufferRouter
     network: arbitrum-one
     source:
-      address: "0xE450A00351A59AFc3cde65bA846AE561C584eDaC"
       abi: BufferRouter
       startBlock: 164890633
     mapping:

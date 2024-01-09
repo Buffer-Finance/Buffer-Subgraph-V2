@@ -51,6 +51,12 @@ import {
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
+  Transfer as NFTtransfer,
+  TokensClaimed,
+  TokensLazyMinted,
+} from "../generated/DropERC721/DropERC721";
+import { TokenURIRevealed } from "../generated/OldDropERC721/DropERC721";
+import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
 } from "../generated/V1Options/V1Options";
@@ -81,6 +87,12 @@ import {
   _handleUpdateStepSize,
   _handleUpdatetraderNFTContract,
 } from "./configContractHandlers";
+import {
+  _handleLazyMint,
+  _handleNftTransfer,
+  _handleReveal,
+  _handleTokenClaim,
+} from "./nftContractHandlers";
 import {
   _handleCreate,
   _handleCreateAB,
@@ -284,4 +296,18 @@ export function handleAboveBelowCancelTrade(event: CancelTrade): void {
 
 export function handleAboveBelowOpenTrade(event: AboveBelowOpenTrade): void {
   _handleAboveBelowOpenTrade(event);
+}
+
+export function handleNftTransfer(event: NFTtransfer): void {
+  _handleNftTransfer(event);
+}
+
+export function handleTokenClaim(event: TokensClaimed): void {
+  _handleTokenClaim(event);
+}
+export const handleReveal = (event: TokenURIRevealed): void => {
+  _handleReveal(event);
+};
+export function handleLazyMint(event: TokensLazyMinted): void {
+  _handleLazyMint(event);
 }

@@ -10,6 +10,8 @@ export enum State {
 
 export const AboveBelow_RouterAddress =
   "0xE450A00351A59AFc3cde65bA846AE561C584eDaC";
+export const AboveBelow_RouterAddress_2 =
+  "0x256b403E6973737DfdafbFAcEB2A2f4065265981";
 
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 export const BURN_ADDRESS = "0x000000000000000000000000000000000000dEaD";

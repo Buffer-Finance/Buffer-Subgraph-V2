@@ -13,6 +13,7 @@ import {
   FeeStat,
   Leaderboard,
   Market,
+  NFT,
   OptionContract,
   OptionStat,
   PoolStat,
@@ -29,6 +30,7 @@ import {
 import {
   ADDRESS_ZERO,
   AboveBelow_RouterAddress,
+  AboveBelow_RouterAddress_2,
   RouterAddress,
   V2_RouterAddress,
   V2_RouterAddress_2,
@@ -62,6 +64,9 @@ export function findRouterContract(address: string): string {
   const aboveBelowRouterContract = BufferRouter.bind(
     Address.fromString(AboveBelow_RouterAddress)
   );
+  const aboveBelowRouterContract_2 = BufferRouter.bind(
+    Address.fromString(AboveBelow_RouterAddress_2)
+  );
 
   if (routerContract.contractRegistry(contractAddress) == true) {
     return RouterAddress;
@@ -73,6 +78,14 @@ export function findRouterContract(address: string): string {
     aboveBelowRouterContract.contractRegistry(contractAddress) == true
   ) {
     return AboveBelow_RouterAddress;
+  } else if (
+    aboveBelowRouterContract_2.try_contractRegistry(contractAddress).reverted ==
+      false &&
+    aboveBelowRouterContract_2.try_contractRegistry(contractAddress).value ==
+      true &&
+    aboveBelowRouterContract_2.contractRegistry(contractAddress) == true
+  ) {
+    return AboveBelow_RouterAddress_2;
   } else if (
     v2RouterContract.try_contractRegistry(contractAddress).reverted == false &&
     v2RouterContract.try_contractRegistry(contractAddress).value == true &&
@@ -611,7 +624,25 @@ export function _loadOrCreateAboveBelowQueuedOptionEntity(
     entity.processTime = ZERO;
     entity.maxFeePerContract = ZERO;
     entity.numberOfContracts = ZERO;
+    entity.totalFee = ZERO;
     entity.save();
   }
   return entity as ABQueuedOptionData;
+}
+
+export function _loadOrCreateNFT(tokenId: BigInt): NFT {
+  let referenceID = tokenId.toString();
+  let entity = NFT.load(referenceID);
+  if (entity == null) {
+    entity = new NFT(referenceID);
+    entity.batchId = ZERO;
+    entity.tokenId = tokenId;
+    entity.tier = "";
+    entity.owner = Bytes.fromHexString(ADDRESS_ZERO);
+    entity.nftImage = "";
+    entity.ipfs = "";
+    entity.hasRevealed = false;
+    entity.save();
+  }
+  return entity as NFT;
 }

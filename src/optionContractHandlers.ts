@@ -30,6 +30,7 @@ import {
 } from "./aggregate";
 import {
   AboveBelow_RouterAddress,
+  AboveBelow_RouterAddress_2,
   RouterAddress,
   State,
   V2_RouterAddress,
@@ -68,6 +69,11 @@ export function isContractRegisteredToAboveBelowRouter(
 ): boolean {
   return optionContractInstance.routerContract == AboveBelow_RouterAddress;
 }
+export function isContractRegisteredToAboveBelowV2Router(
+  optionContractInstance: OptionContract
+): boolean {
+  return optionContractInstance.routerContract == AboveBelow_RouterAddress_2;
+}
 
 function findPoolAndTokenReferranceID(poolToken: string): string[] {
   let poolReferrenceID: string;
@@ -105,7 +111,10 @@ export function _handleCreateAB(event: CreateAB): void {
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
-  if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
+  if (
+    isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
+    isContractRegisteredToAboveBelowV2Router(optionContractInstance)
+  ) {
     let optionID = event.params.id;
     let optionContractInstance = AboveBelowBufferBinaryOptions.bind(
       event.address
@@ -285,7 +294,10 @@ export function _handleExpire(event: Expire): void {
     _loadOrCreateOptionContractEntity(contractAddress);
 
   //above-below
-  if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
+  if (
+    isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
+    isContractRegisteredToAboveBelowV2Router(optionContractInstance)
+  ) {
     let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
       event.params.id,
       contractAddress
@@ -342,7 +354,10 @@ export function _handleExercise(event: Exercise): void {
     _loadOrCreateOptionContractEntity(contractAddress);
 
   //above-below
-  if (isContractRegisteredToAboveBelowRouter(optionContractInstance)) {
+  if (
+    isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
+    isContractRegisteredToAboveBelowV2Router(optionContractInstance)
+  ) {
     let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
       event.params.id,
       contractAddress
@@ -462,7 +477,8 @@ export function _handleUpdateReferral(event: UpdateReferral): void {
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
     isContractRegisteredToRouter(optionContractInstance) ||
-    isContractRegisteredToAboveBelowRouter(optionContractInstance)
+    isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
+    isContractRegisteredToAboveBelowV2Router(optionContractInstance)
   ) {
     let optionContractEntity =
       _loadOrCreateOptionContractEntity(optionContract);
@@ -600,7 +616,8 @@ export function _handlePause(event: Pause): void {
   if (
     isContractRegisteredToV2Router(optionContractInstance) ||
     isContractRegisteredToRouter(optionContractInstance) ||
-    isContractRegisteredToAboveBelowRouter(optionContractInstance)
+    isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
+    isContractRegisteredToAboveBelowV2Router(optionContractInstance)
   ) {
     optionContractInstance.isPaused = event.params.isPaused;
     optionContractInstance.save();

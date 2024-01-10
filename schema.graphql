@@ -223,7 +223,20 @@ type User @entity {
   id: String!
   address: Bytes!
 }
+type ABUser @entity {
+  id: String!
+  address: Bytes!
+}
 type UserStat @entity {
+  id: String!
+  uniqueCount: Int!
+  uniqueCountCumulative: Int!
+  period: Period!
+  timestamp: BigInt
+  existingCount: Int!
+  users: [User!]!
+}
+type ABUserStat @entity {
   id: String!
   uniqueCount: Int!
   uniqueCountCumulative: Int!
@@ -325,7 +338,27 @@ type FeeStat @entity {
   feeBFR: BigInt!
 }
 
+type ABFeeStat @entity {
+  id: ID!
+  fee: BigInt!
+  period: Period!
+  timestamp: BigInt!
+  feeARB: BigInt!
+  feeUSDC: BigInt!
+  feeBFR: BigInt!
+}
+
 type VolumeStat @entity {
+  id: String!
+  amount: BigInt!
+  period: Period!
+  timestamp: BigInt!
+  VolumeARB: BigInt!
+  VolumeUSDC: BigInt!
+  VolumeBFR: BigInt!
+}
+
+type ABVolumeStat @entity {
   id: String!
   amount: BigInt!
   period: Period!
@@ -361,6 +394,29 @@ type ReferralData @entity {
 }
 
 type TradingStat @entity {
+  id: ID!
+  profit: BigInt!
+  profitUSDC: BigInt!
+  profitARB: BigInt!
+  profitBFR: BigInt!
+  loss: BigInt!
+  lossUSDC: BigInt!
+  lossARB: BigInt!
+  lossBFR: BigInt!
+  profitCumulative: BigInt!
+  profitCumulativeUSDC: BigInt!
+  profitCumulativeARB: BigInt!
+  profitCumulativeBFR: BigInt!
+  lossCumulative: BigInt!
+  lossCumulativeUSDC: BigInt!
+  lossCumulativeARB: BigInt!
+  lossCumulativeBFR: BigInt!
+  openInterest: BigInt!
+  timestamp: BigInt!
+  period: Period!
+}
+
+type ABTradingStat @entity {
   id: ID!
   profit: BigInt!
   profitUSDC: BigInt!

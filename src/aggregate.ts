@@ -54,6 +54,8 @@ export function updateAboveBelowOpeningStats(
     //store above-below daily fees - USDC POOL
     storeABFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
 
+    //store defillama fees
+    storeDefillamaFees(timestamp, settlementFee);
     //store above-below daily volume - USDC POOL
     logABVolume(timestamp, totalFee, ZERO, totalFee, ZERO);
 
@@ -66,6 +68,9 @@ export function updateAboveBelowOpeningStats(
 
     //store above-below daily fees - ARB POOL
     storeABFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
+
+    //store defillama fees
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
 
     //store above-below daily volume - ARB POOL
     logABVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO, ZERO);
@@ -82,6 +87,9 @@ export function updateAboveBelowOpeningStats(
 
     //store above-below daily volume - BFR POOL
     logABVolume(timestamp, totalFeeUSDC, ZERO, ZERO, totalFeeUSDC);
+
+    //store defillama fees
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
 
     // Dashboard Page - overview
     updateDashboardOverviewStats(totalFee, settlementFee, "AB-" + poolToken);

@@ -2,10 +2,8 @@ import { Address } from "@graphprotocol/graph-ts";
 import {
   UpdateCircuitBreakerContract,
   UpdateCreationWindowContract,
-  UpdateIV,
-  UpdateMaxSkew,
+  UpdateMinFee,
   UpdateOptionStorageContract,
-  UpdatePayout,
   UpdatePlatformFee,
   UpdateSettlementFeeDisbursalContract,
   UpdateSf,
@@ -28,17 +26,17 @@ export function _loadOrCreateConfigContractEntity(
     entity.optionStorageContract = Address.fromHexString(ZeroAddress);
     entity.sfdContract = Address.fromHexString(ZeroAddress);
     entity.traderNFTContract = Address.fromHexString(ZeroAddress);
-    entity.iv = ZERO;
+    // entity.iv = ZERO;
     // entity.ivFactorITM = ZERO;
     // entity.ivFactorOTM = ZERO;
-    entity.payout = ZERO;
+    // entity.payout = ZERO;
     entity.platformFee = ZERO;
     entity.sf = ZERO;
-    entity.maxSkew = ZERO;
+    // entity.maxSkew = ZERO;
     entity.stepSize = ZERO;
     // entity.minPeriod = ZERO;
     // entity.maxPeriod = ZERO;
-    // entity.minFee = ZERO;
+    entity.minFee = ZERO;
     // entity.maxFee = ZERO;
     entity.save();
   }
@@ -57,11 +55,11 @@ export function _loadOrCreateConfigContractEntity(
 //   entity.save();
 // }
 
-// export function _handleUpdateMinFee(event: UpdateMinFee): void {
-//   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
-//   entity.minFee = event.params.value;
-//   entity.save();
-// }
+export function _handleUpdateMinFee(event: UpdateMinFee): void {
+  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+  entity.minFee = event.params.value;
+  entity.save();
+}
 
 // export function _handleUpdateMaxFee(event: UpdateMaxFee): void {
 //   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
@@ -77,11 +75,11 @@ export function _handleUpdateCreationWindowContract(
   entity.save();
 }
 
-export function _handleUpdateMaxSkew(event: UpdateMaxSkew): void {
-  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
-  entity.maxSkew = event.params._maxSkew;
-  entity.save();
-}
+// export function _handleUpdateMaxSkew(event: UpdateMaxSkew): void {
+//   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+//   entity.maxSkew = event.params._maxSkew;
+//   entity.save();
+// }
 
 export function _handleUpdateCircuitBreakerContract(
   event: UpdateCircuitBreakerContract
@@ -91,11 +89,11 @@ export function _handleUpdateCircuitBreakerContract(
   entity.save();
 }
 
-export function _handleUpdateIV(event: UpdateIV): void {
-  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
-  entity.iv = event.params._iv;
-  entity.save();
-}
+// export function _handleUpdateIV(event: UpdateIV): void {
+//   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+//   entity.iv = event.params._iv;
+//   entity.save();
+// }
 
 // export function _handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
 //   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
@@ -117,11 +115,11 @@ export function _handleUpdateOptionStorageContract(
   entity.save();
 }
 
-export function _handleUpdatePayout(event: UpdatePayout): void {
-  const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
-  entity.payout = event.params.payout;
-  entity.save();
-}
+// export function _handleUpdatePayout(event: UpdatePayout): void {
+//   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());
+//   entity.payout = event.params.payout;
+//   entity.save();
+// }
 
 export function _handleUpdatePlatformFee(event: UpdatePlatformFee): void {
   const entity = _loadOrCreateConfigContractEntity(event.address.toHexString());

@@ -1,6 +1,5 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
-  Market,
   OptionContract,
   QueuedOptionData,
   UserOptionData,
@@ -43,8 +42,8 @@ export function _loadOrCreateQueuedOptionEntity(
     entity.cancelTimestamp = ZERO;
     entity.lag = ZERO;
     entity.processTime = ZERO;
-    entity.maxFeePerContract = ZERO;
-    entity.numberOfContracts = ZERO;
+    // entity.maxFeePerContract = ZERO;
+    // entity.numberOfContracts = ZERO;
     entity.totalFee = ZERO;
     entity.save();
   }
@@ -87,11 +86,11 @@ export function _loadOrCreateUserStat(
   return userStat as UserStat;
 }
 
-export function _loadOrCreateMarket(id: Bytes): Market {
-  let market = Market.load(id);
-  if (market == null) {
-    market = new Market(id);
-    market.skew = ZERO;
-  }
-  return market as Market;
-}
+// export function _loadOrCreateMarket(id: Bytes): Market {
+//   let market = Market.load(id);
+//   if (market == null) {
+//     market = new Market(id);
+//     market.skew = ZERO;
+//   }
+//   return market as Market;
+// }

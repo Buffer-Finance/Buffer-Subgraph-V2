@@ -8,6 +8,6 @@ export enum State {
   opened = 6,
 }
 
-export const RouterAddress = "0x912B29A5efeA11d7994970799E82C3A7FB54a434";
+export const RouterAddress = "0x62fAc96f91D943aD52A972FEebD631E39161eABc";
 export const ZeroAddress = "0x0000000000000000000000000000000000000000";
 export const ONE = BigInt.fromI32(1);

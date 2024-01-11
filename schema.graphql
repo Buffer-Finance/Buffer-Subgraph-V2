@@ -22,30 +22,30 @@ type OptionContract @entity {
   # payoutForDown: BigInt
 }
 
-type Market @entity {
-  id: Bytes!
-  skew: BigInt!
-  strike: BigInt
-  expiration: BigInt
-  optionContract: OptionContract
-}
+# type Market @entity {
+#   id: Bytes!
+#   skew: BigInt!
+#   strike: BigInt
+#   expiration: BigInt
+#   optionContract: OptionContract
+# }
 
 type ConfigContract @entity {
   id: String!
   address: Bytes!
-  # minFee: BigInt!
+  minFee: BigInt!
   # maxFee: BigInt!
   # minPeriod: BigInt!
   # maxPeriod: BigInt!
-  maxSkew: BigInt!
+  # maxSkew: BigInt!
   creationWindowContract: Bytes!
   circuitBreakerContract: Bytes!
-  iv: BigInt!
+  # iv: BigInt!
   # ivFactorITM: BigInt!
   # ivFactorOTM: BigInt!
   optionStorageContract: Bytes!
   platformFee: BigInt!
-  payout: BigInt!
+  # payout: BigInt!
   sfdContract: Bytes!
   sf: BigInt!
   traderNFTContract: Bytes!
@@ -75,10 +75,10 @@ type QueuedOptionData @entity {
   queueTimestamp: BigInt!
   cancelTimestamp: BigInt!
   lag: BigInt!
-  maxFeePerContract: BigInt!
+  # maxFeePerContract: BigInt!
   processTime: BigInt!
   expirationTime: BigInt
-  numberOfContracts: BigInt!
+  # numberOfContracts: BigInt!
   totalFee: BigInt!
 }
 

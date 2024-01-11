@@ -1,6 +1,5 @@
 import {
   Create,
-  CreateMarket,
   CreateOptionsContract,
   Exercise,
   Expire,
@@ -14,12 +13,10 @@ import {
 import {
   UpdateCircuitBreakerContract,
   UpdateCreationWindowContract,
-  UpdateIV,
+
   // UpdateIVFactorITM,
   // UpdateIVFactorOTM,
-  UpdateMaxSkew,
   UpdateOptionStorageContract,
-  UpdatePayout,
   UpdatePlatformFee,
   UpdateSettlementFeeDisbursalContract,
   UpdateSf,
@@ -29,10 +26,7 @@ import {
 import {
   _handleUpdateCircuitBreakerContract,
   _handleUpdateCreationWindowContract,
-  _handleUpdateIV,
-  _handleUpdateMaxSkew,
   _handleUpdateOptionStorageContract,
-  _handleUpdatePayout,
   _handleUpdatePlatformFee,
   _handleUpdateSettlementFeeDisbursalContract,
   _handleUpdateSf,
@@ -42,7 +36,6 @@ import {
 import {
   _handleCreate,
   _handleCreateContract,
-  _handleCreateMarket,
   _handleExercise,
   _handleExpire,
   _handlePause,
@@ -85,9 +78,9 @@ export function handlePause(event: Pause): void {
   _handlePause(event);
 }
 
-export function handleCreateMarket(event: CreateMarket): void {
-  _handleCreateMarket(event);
-}
+// export function handleCreateMarket(event: CreateMarket): void {
+//   _handleCreateMarket(event);
+// }
 // export function handleUpdateMinPeriod(event: UpdateMinPeriod): void {
 //   _handlehandleUpdateMinPeriod(event);
 // }
@@ -110,9 +103,9 @@ export function handleUpdateCreationWindowContract(
   _handleUpdateCreationWindowContract(event);
 }
 
-export function handleUpdateMaxSkew(event: UpdateMaxSkew): void {
-  _handleUpdateMaxSkew(event);
-}
+// export function handleUpdateMaxSkew(event: UpdateMaxSkew): void {
+//   _handleUpdateMaxSkew(event);
+// }
 
 export function handleUpdateCircuitBreakerContract(
   event: UpdateCircuitBreakerContract
@@ -120,9 +113,9 @@ export function handleUpdateCircuitBreakerContract(
   _handleUpdateCircuitBreakerContract(event);
 }
 
-export function handleUpdateIV(event: UpdateIV): void {
-  _handleUpdateIV(event);
-}
+// export function handleUpdateIV(event: UpdateIV): void {
+//   _handleUpdateIV(event);
+// }
 
 // export function handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
 //   _handleUpdateIVFactorITM(event);
@@ -138,9 +131,9 @@ export function handleUpdateOptionStorageContract(
   _handleUpdateOptionStorageContract(event);
 }
 
-export function handleUpdatePayout(event: UpdatePayout): void {
-  _handleUpdatePayout(event);
-}
+// export function handleUpdatePayout(event: UpdatePayout): void {
+//   _handleUpdatePayout(event);
+// }
 
 export function handleUpdatePlatformFee(event: UpdatePlatformFee): void {
   _handleUpdatePlatformFee(event);

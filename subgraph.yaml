@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: BufferBinaryOptions
-      startBlock: 4916369
+      startBlock: 6090547
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -25,14 +25,14 @@ dataSources:
       eventHandlers:
         - event: CreateOptionsContract(address,address,address,string,string,uint8)
           handler: handleCreateContract
-        - event: Create(indexed address,indexed uint256,uint256,uint256,int256,bytes32)
+        - event: Create(indexed address,indexed uint256,uint256,uint256)
           handler: handleCreate
-        - event: Expire(indexed uint256,uint256,uint256,bool)
+        - event: Expire(indexed uint256,uint256,uint128,bool)
           handler: handleExpire
-        - event: Exercise(indexed address,indexed uint256,uint256,uint256,bool)
+        - event: Exercise(indexed address,indexed uint256,uint256,uint128,bool)
           handler: handleExercise
-        - event: CreateMarket(uint128,uint32,bytes32,address)
-          handler: handleCreateMarket
+        # - event: CreateMarket(uint128,uint32,bytes32,address)
+        #   handler: handleCreateMarket
         - event: Pause(bool)
           handler: handlePause
       file: ./src/mapping.ts
@@ -40,9 +40,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-sepolia
     source:
-      address: "0x912B29A5efeA11d7994970799E82C3A7FB54a434"
+      address: "0x62fAc96f91D943aD52A972FEebD631E39161eABc"
       abi: BufferRouter
-      startBlock: 4916369
+      startBlock: 6090547
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -60,7 +60,7 @@ dataSources:
           handler: handleInitiateTrade
         - event: CancelTrade(indexed address,uint256,string)
           handler: handleCancelTrade
-        - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address,uint256)
+        - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address)
           handler: handleOpenTrade
       file: ./src/mapping.ts
   - kind: ethereum/contract
@@ -68,7 +68,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: Config
-      startBlock: 4916369
+      startBlock: 6090547
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -85,24 +85,22 @@ dataSources:
         #   handler: handleUpdateMaxPeriod
         # - event: UpdateMaxFee(uint256)
         #   handler: handleUpdateMaxFee
-        # - event: UpdateMinFee(uint256)
-        #   handler: handleUpdateMinFee
+        - event: UpdateMinFee(uint256)
+          handler: handleUpdateMinFee
         - event: UpdateCreationWindowContract(address)
           handler: handleUpdateCreationWindowContract
-        - event: UpdateMaxSkew(int256)
-          handler: handleUpdateMaxSkew
         - event: UpdateCircuitBreakerContract(address)
           handler: handleUpdateCircuitBreakerContract
-        - event: UpdateIV(uint32)
-          handler: handleUpdateIV
+        # - event: UpdateIV(uint32)
+        #   handler: handleUpdateIV
         # - event: UpdateIVFactorITM(uint256)
         #   handler: handleUpdateIVFactorITM
         # - event: UpdateIVFactorOTM(uint256)
         #   handler: handleUpdateIVFactorOTM
         - event: UpdateOptionStorageContract(address)
           handler: handleUpdateOptionStorageContract
-        - event: UpdatePayout(uint256)
-          handler: handleUpdatePayout
+        # - event: UpdatePayout(uint256)
+        #   handler: handleUpdatePayout
         - event: UpdatePlatformFee(uint256)
           handler: handleUpdatePlatformFee
         - event: UpdateSettlementFeeDisbursalContract(address)

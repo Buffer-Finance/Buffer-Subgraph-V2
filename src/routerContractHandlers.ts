@@ -7,6 +7,7 @@ import {
 import { State } from "./config";
 import { logUser } from "./core";
 import {
+  ZERO,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
   _loadOrCreateQueuedOptionEntity,
@@ -16,7 +17,7 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
   let routerContract = BufferRouter.bind(event.address);
   let queueID = event.params.queueId;
   let queuedTradeData = routerContract.queuedTrades(queueID);
-  let contractAddress = queuedTradeData.value1.toHexString();
+  let contractAddress = queuedTradeData.value6.toHexString();
   _loadOrCreateOptionContractEntity(contractAddress);
   logUser(event.block.timestamp, event.params.user);
   let queuedOptionData = _loadOrCreateQueuedOptionEntity(
@@ -25,13 +26,13 @@ export function _handleInitiateTrade(event: InitiateTrade): void {
   );
   queuedOptionData.user = event.params.user;
   queuedOptionData.state = State.queued;
-  queuedOptionData.strike = queuedTradeData.value2;
-  queuedOptionData.expirationTime = queuedTradeData.value3;
-  queuedOptionData.numberOfContracts = queuedTradeData.value4;
-  queuedOptionData.maxFeePerContract = queuedTradeData.value10;
-  queuedOptionData.isAbove = queuedTradeData.value8 ? true : false;
-  queuedOptionData.queueTimestamp = queuedTradeData.value9;
-  queuedOptionData.totalFee = queuedTradeData.value12;
+  queuedOptionData.strike = ZERO;
+  queuedOptionData.expirationTime = queuedTradeData.value2;
+  // queuedOptionData.numberOfContracts = queuedTradeData.value4;
+  // queuedOptionData.maxFeePerContract = queuedTradeData.value10;
+  queuedOptionData.isAbove = queuedTradeData.value4;
+  queuedOptionData.queueTimestamp = queuedTradeData.value5;
+  queuedOptionData.totalFee = queuedTradeData.value9;
   queuedOptionData.save();
 }
 
@@ -40,7 +41,7 @@ export function _handleOpenTrade(event: OpenTrade): void {
   let queueID = event.params.queueId;
   let contractAddress = routerContract
     .queuedTrades(queueID)
-    .value1.toHexString();
+    .value6.toHexString();
   let userQueuedData = _loadOrCreateQueuedOptionEntity(
     queueID,
     contractAddress
@@ -68,7 +69,7 @@ export function _handleCancelTrade(event: CancelTrade): void {
   let routerContract = BufferRouter.bind(event.address);
   let contractAddress = routerContract
     .queuedTrades(queueID)
-    .value1.toHexString();
+    .value6.toHexString();
   let userQueuedData = _loadOrCreateQueuedOptionEntity(
     queueID,
     contractAddress

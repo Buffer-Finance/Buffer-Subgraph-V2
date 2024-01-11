@@ -2,18 +2,15 @@ import { Address } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
-  CreateMarket,
   CreateOptionsContract,
   Exercise,
   Expire,
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { updateClosingStats, updateOpeningStats } from "./aggregate";
 import { RouterAddress, State } from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
 import {
-  _loadOrCreateMarket,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
 } from "./initialize";
@@ -64,26 +61,26 @@ export function _handleCreate(event: Create): void {
     userOptionData.totalFee = event.params.totalFee;
     userOptionData.state = optionData.value0;
     userOptionData.strike = optionData.value1;
-    userOptionData.amount = optionData.value2;
-    userOptionData.expirationTime = optionData.value5;
-    userOptionData.isAbove = optionData.value8;
-    userOptionData.creationTime = optionData.value7;
+    userOptionData.amount = optionData.value5;
+    userOptionData.expirationTime = optionData.value2;
+    userOptionData.isAbove = optionData.value4;
+    userOptionData.creationTime = optionData.value3;
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.save();
 
-    const market = _loadOrCreateMarket(event.params.marketId);
-    if (market.skew !== event.params.skew) {
-      market.skew = event.params.skew;
-      market.save();
-    }
+    // const market = _loadOrCreateMarket(event.params.marketId);
+    // if (market.skew !== event.params.skew) {
+    //   market.skew = event.params.skew;
+    //   market.save();
+    // }
 
-    updateOpeningStats(
-      event.block.timestamp,
-      contractAddress.toHexString(),
-      userOptionData.totalFee,
-      userOptionData.settlementFee,
-      userOptionData.isAbove
-    );
+    // updateOpeningStats(
+    //   event.block.timestamp,
+    //   contractAddress.toHexString(),
+    //   userOptionData.totalFee,
+    //   userOptionData.settlementFee,
+    //   userOptionData.isAbove
+    // );
   }
 }
 
@@ -104,11 +101,11 @@ export function _handleExpire(event: Expire): void {
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 
-    updateClosingStats(
-      contractAddressString,
-      userOptionData.totalFee,
-      userOptionData.isAbove
-    );
+    // updateClosingStats(
+    //   contractAddressString,
+    //   userOptionData.totalFee,
+    //   userOptionData.isAbove
+    // );
   }
 }
 
@@ -130,11 +127,11 @@ export function _handleExercise(event: Exercise): void {
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 
-    updateClosingStats(
-      contractAddressString,
-      userOptionData.totalFee,
-      userOptionData.isAbove
-    );
+    // updateClosingStats(
+    //   contractAddressString,
+    //   userOptionData.totalFee,
+    //   userOptionData.isAbove
+    // );
   }
 }
 
@@ -147,13 +144,13 @@ export function _handlePause(event: Pause): void {
   optionContract.save();
 }
 
-export function _handleCreateMarket(event: CreateMarket): void {
-  const optionContract = _loadOrCreateOptionContractEntity(
-    event.params.optionsContract.toHexString()
-  );
-  const market = _loadOrCreateMarket(event.params.marketId);
-  market.optionContract = optionContract.id;
-  market.strike = event.params.strike;
-  market.expiration = event.params.expiration;
-  market.save();
-}
+// export function _handleCreateMarket(event: CreateMarket): void {
+//   const optionContract = _loadOrCreateOptionContractEntity(
+//     event.params.optionsContract.toHexString()
+//   );
+//   const market = _loadOrCreateMarket(event.params.marketId);
+//   market.optionContract = optionContract.id;
+//   market.strike = event.params.strike;
+//   market.expiration = event.params.expiration;
+//   market.save();
+// }

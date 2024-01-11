@@ -18,6 +18,7 @@ type OptionContract @entity {
   openDown: BigInt!
   openInterestUp: BigInt!
   openInterestDown: BigInt!
+  pool: String!
   # payoutForUp: BigInt
   # payoutForDown: BigInt
 }

@@ -8,12 +8,35 @@ import {
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
-import { RouterAddress, State } from "./config";
+import {
+  ARB_POOL_CONTRACT,
+  RouterAddress,
+  State,
+  USDC_POOL_CONTRACT,
+} from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
 import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
 } from "./initialize";
+
+export function findPoolAndTokenFromPoolAddress(
+  poolAddress: Address
+): string[] {
+  let token: string;
+  let pool: string;
+  if (poolAddress == Address.fromString(USDC_POOL_CONTRACT)) {
+    token = "USDC";
+    pool = "USDC";
+  } else if (poolAddress == Address.fromString(ARB_POOL_CONTRACT)) {
+    token = "ARB";
+    pool = "ARB";
+  } else {
+    token = "";
+    pool = "";
+  }
+  return [token, pool];
+}
 
 export function _handleCreateContract(event: CreateOptionsContract): void {
   const contractAddress = event.address;
@@ -30,13 +53,14 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
     const configContractEntity = _loadOrCreateConfigContractEntity(
       event.params.config.toHexString()
     );
-    let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
 
     optionContract.token0 = event.params.token0;
     optionContract.token1 = event.params.token1;
     optionContract.config = configContractEntity.id;
-    optionContract.poolContract = optionContractInstance.pool();
+    optionContract.poolContract = event.params.pool;
     optionContract.routerContract = Address.fromHexString(RouterAddress);
+    const tokenPool = findPoolAndTokenFromPoolAddress(event.params.pool);
+    optionContract.pool = tokenPool[1];
     optionContract.save();
   }
 }

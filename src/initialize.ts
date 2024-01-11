@@ -2,8 +2,12 @@ import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
+  ABFeeStat,
   ABQueuedOptionData,
+  ABTradingStat,
   ABUserOptionData,
+  ABUserStat,
+  ABVolumeStat,
   ARBPoolStat,
   AssetTradingStat,
   BurnedBFR,
@@ -645,4 +649,91 @@ export function _loadOrCreateNFT(tokenId: BigInt): NFT {
     entity.save();
   }
   return entity as NFT;
+}
+
+export function _loadOrCreateABFeeStat(
+  id: string,
+  period: string,
+  timestamp: BigInt
+): ABFeeStat {
+  let entity = ABFeeStat.load(id);
+  if (entity === null) {
+    entity = new ABFeeStat(id);
+    entity.period = period;
+    entity.timestamp = timestamp;
+    entity.fee = ZERO;
+    entity.feeARB = ZERO;
+    entity.feeUSDC = ZERO;
+    entity.feeBFR = ZERO;
+    entity.save();
+  }
+  return entity;
+}
+
+export function _loadOrCreateABVolumeStat(
+  id: string,
+  period: string,
+  timestamp: BigInt
+): ABVolumeStat {
+  let entity = ABVolumeStat.load(id);
+  if (entity === null) {
+    entity = new ABVolumeStat(id);
+    entity.period = period;
+    entity.timestamp = timestamp;
+    entity.amount = ZERO;
+    entity.VolumeUSDC = ZERO;
+    entity.VolumeARB = ZERO;
+    entity.VolumeBFR = ZERO;
+    entity.save();
+  }
+  return entity as ABVolumeStat;
+}
+
+export function _loadOrCreateABUserStat(
+  id: string,
+  period: string,
+  timestamp: BigInt
+): ABUserStat {
+  let userStat = ABUserStat.load(id);
+  if (userStat == null) {
+    userStat = new ABUserStat(id);
+    userStat.period = period;
+    userStat.timestamp = timestamp;
+    userStat.uniqueCount = 0;
+    userStat.uniqueCountCumulative = 0;
+    userStat.users = [];
+    userStat.existingCount = 0;
+  }
+  return userStat as ABUserStat;
+}
+
+export function _loadOrCreateABTradingStatEntity(
+  id: string,
+  period: string,
+  timestamp: BigInt
+): ABTradingStat {
+  let entity = ABTradingStat.load(id);
+  if (entity == null) {
+    entity = new ABTradingStat(id);
+    entity.period = period;
+    entity.profit = ZERO;
+    entity.loss = ZERO;
+    entity.profitCumulative = ZERO;
+    entity.lossCumulative = ZERO;
+    entity.profitUSDC = ZERO;
+    entity.lossUSDC = ZERO;
+    entity.profitCumulativeUSDC = ZERO;
+    entity.lossCumulativeUSDC = ZERO;
+    entity.profitARB = ZERO;
+    entity.lossARB = ZERO;
+    entity.profitCumulativeARB = ZERO;
+    entity.lossCumulativeARB = ZERO;
+    entity.profitBFR = ZERO;
+    entity.lossBFR = ZERO;
+    entity.profitCumulativeBFR = ZERO;
+    entity.lossCumulativeBFR = ZERO;
+    entity.openInterest = ZERO;
+  }
+  entity.timestamp = timestamp;
+  return entity as ABTradingStat;
 }

@@ -257,6 +257,7 @@ dataSources:
           handler: handleAboveBelowOpenTrade
       file: ./src/mapping.ts
 
+  # old- nft contract
   - kind: ethereum/contract
     name: DropERC721
     network: arbitrum-one
@@ -284,6 +285,7 @@ dataSources:
           handler: handleTokenClaim
       file: ./src/mapping.ts
 
+  # new-nft contract
   - kind: ethereum/contract
     name: OldDropERC721
     network: arbitrum-one

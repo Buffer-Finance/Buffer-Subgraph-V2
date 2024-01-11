@@ -38,7 +38,7 @@ import {
   V2_RouterAddress_3,
 } from "./config";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
-import { logUser, updateOptionContractData } from "./core";
+import { logABUser, logUser, updateOptionContractData } from "./core";
 import {
   ZERO,
   _loadOrCreateAboveBelowOptionDataEntity,
@@ -115,6 +115,10 @@ export function _handleCreateAB(event: CreateAB): void {
     isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
     isContractRegisteredToAboveBelowV2Router(optionContractInstance)
   ) {
+    logABUser(
+      event.block.timestamp,
+      Address.fromBytes(event.params.account).toHexString()
+    );
     let optionID = event.params.id;
     let optionContractInstance = AboveBelowBufferBinaryOptions.bind(
       event.address
@@ -156,7 +160,9 @@ export function _handleCreateAB(event: CreateAB): void {
       contractAddress,
       userOptionData.totalFee,
       userOptionData.settlementFee,
-      userOptionData.isAbove
+      userOptionData.isAbove,
+      userOptionData.depositToken,
+      userOptionData.poolToken
     );
   }
 }
@@ -314,7 +320,8 @@ export function _handleExpire(event: Expire): void {
       userOptionData.totalFee,
       userOptionData.creationTime,
       Address.fromBytes(userOptionData.user).toHexString(),
-      false
+      false,
+      userOptionData.settlementFee
     );
   }
   // v2
@@ -375,7 +382,8 @@ export function _handleExercise(event: Exercise): void {
       event.params.profit.minus(userOptionData.totalFee),
       userOptionData.creationTime,
       Address.fromBytes(userOptionData.user).toHexString(),
-      true
+      true,
+      userOptionData.settlementFee
     );
   }
   //v2

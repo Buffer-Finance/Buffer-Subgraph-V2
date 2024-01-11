@@ -14,8 +14,11 @@ import {
   logABVolumeAndSettlementFeePerContract,
 } from "./loggers";
 import {
+  logABVolume,
   logVolume,
   saveSettlementFeeDiscount,
+  storeABFees,
+  storeABPnl,
   storeDefillamaFees,
   storeFees,
   storePnl,
@@ -32,7 +35,9 @@ export function updateAboveBelowOpeningStats(
   contractAddress: string,
   totalFee: BigInt,
   settlementFee: BigInt,
-  isAbove: boolean
+  isAbove: boolean,
+  token: string,
+  poolToken: string
 ): void {
   logABVolumeAndSettlementFeePerContract(
     _getHourId(timestamp),
@@ -44,6 +49,52 @@ export function updateAboveBelowOpeningStats(
   );
 
   logABOpenInterst(contractAddress, isAbove, totalFee, true);
+
+  if (token == "USDC") {
+    //store above-below daily fees - USDC POOL
+    storeABFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
+
+    //store defillama fees
+    storeDefillamaFees(timestamp, settlementFee);
+    //store above-below daily volume - USDC POOL
+    logABVolume(timestamp, totalFee, ZERO, totalFee, ZERO);
+
+    // Dashboard Page - overview
+    updateDashboardOverviewStats(totalFee, settlementFee, "AB-" + poolToken);
+    updateDashboardOverviewStats(totalFee, settlementFee, "AB-total");
+  } else if (token == "ARB") {
+    let totalFeeUSDC = convertARBToUSDC(totalFee);
+    let settlementFeeUSDC = convertARBToUSDC(settlementFee);
+
+    //store above-below daily fees - ARB POOL
+    storeABFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
+
+    //store defillama fees
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
+
+    //store above-below daily volume - ARB POOL
+    logABVolume(timestamp, totalFeeUSDC, totalFeeUSDC, ZERO, ZERO);
+
+    // Dashboard Page - overview
+    updateDashboardOverviewStats(totalFee, settlementFee, "AB-" + poolToken);
+    updateDashboardOverviewStats(totalFeeUSDC, settlementFeeUSDC, "AB-total");
+  } else if (token == "BFR") {
+    let totalFeeUSDC = convertBFRToUSDC(totalFee);
+    let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+
+    //store above-below daily fees - BFR POOL
+    storeABFees(timestamp, settlementFeeUSDC, ZERO, ZERO, settlementFeeUSDC);
+
+    //store above-below daily volume - BFR POOL
+    logABVolume(timestamp, totalFeeUSDC, ZERO, ZERO, totalFeeUSDC);
+
+    //store defillama fees
+    storeDefillamaFees(timestamp, settlementFeeUSDC);
+
+    // Dashboard Page - overview
+    updateDashboardOverviewStats(totalFee, settlementFee, "AB-" + poolToken);
+    updateDashboardOverviewStats(totalFeeUSDC, settlementFeeUSDC, "AB-total");
+  }
 }
 
 export function updateAboveBelowClosingStats(
@@ -54,7 +105,8 @@ export function updateAboveBelowClosingStats(
   netPnL: BigInt,
   timestamp: BigInt,
   user: string,
-  isExercised: boolean
+  isExercised: boolean,
+  settlementFee: BigInt
 ): void {
   logABOpenInterst(contractAddress, isAbove, totalFee, false);
   let positiveNetPnl = netPnL;
@@ -63,6 +115,7 @@ export function updateAboveBelowClosingStats(
     positiveNetPnl = ZERO.minus(netPnL);
   }
   if (token == "USDC") {
+    // Update Leaderboards
     updateLeaderboards(
       totalFee,
       timestamp,
@@ -79,9 +132,22 @@ export function updateAboveBelowClosingStats(
       false,
       ZERO
     );
+
+    // Update daily & total PnL for stats page
+    storeABPnl(
+      timestamp,
+      totalFee.minus(settlementFee),
+      isExercised,
+      totalFee.minus(settlementFee),
+      ZERO,
+      ZERO
+    );
   } else if (token == "ARB") {
+    const settlementFeeUSDC = convertARBToUSDC(settlementFee);
     let totalFeeUSDC = convertARBToUSDC(totalFee);
     let positiveNetPnlUSDC = convertARBToUSDC(positiveNetPnl);
+
+    // Update Leaderboards
     updateLeaderboards(
       totalFeeUSDC,
       timestamp,
@@ -98,9 +164,21 @@ export function updateAboveBelowClosingStats(
       false,
       ZERO
     );
+    // Update daily & total PnL for stats page
+    storeABPnl(
+      timestamp,
+      totalFeeUSDC.minus(settlementFeeUSDC),
+      isExercised,
+      ZERO,
+      totalFeeUSDC.minus(settlementFeeUSDC),
+      ZERO
+    );
   } else if (token == "BFR") {
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
     let positiveNetPnlUSDC = convertBFRToUSDC(positiveNetPnl);
+    let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+
+    // Update Leaderboards
     updateLeaderboards(
       totalFeeUSDC,
       timestamp,
@@ -116,6 +194,16 @@ export function updateAboveBelowClosingStats(
       positiveNetPnl,
       true,
       totalFee
+    );
+
+    // Update daily & total PnL for stats page
+    storeABPnl(
+      timestamp,
+      totalFeeUSDC.minus(settlementFeeUSDC),
+      isExercised,
+      ZERO,
+      ZERO,
+      totalFeeUSDC.minus(settlementFeeUSDC)
     );
   }
 }

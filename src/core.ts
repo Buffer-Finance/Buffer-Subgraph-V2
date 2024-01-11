@@ -6,10 +6,11 @@ import {
   ipfs,
   json,
 } from "@graphprotocol/graph-ts";
-import { DailyUserStat, NFT, User } from "../generated/schema";
+import { ABUser, DailyUserStat, NFT, User } from "../generated/schema";
 import { _getDayId } from "./helpers";
 import {
   ZERO,
+  _loadOrCreateABUserStat,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateUserStat,
 } from "./initialize";
@@ -64,6 +65,37 @@ export function logUser(timestamp: BigInt, account: string): void {
     userStat.save();
 
     user = new User(account);
+    user.address = Address.fromString(account);
+    user.save();
+
+    let dailyUserStat = new DailyUserStat(dailyUserStatid);
+    dailyUserStat.save();
+  } else {
+    let entity = DailyUserStat.load(dailyUserStatid);
+    if (entity == null) {
+      userStat.existingCount += 1;
+      userStat.save();
+      entity = new DailyUserStat(dailyUserStatid);
+      entity.save();
+    }
+  }
+}
+
+export function logABUser(timestamp: BigInt, account: string): void {
+  let user = ABUser.load(account);
+  let id = _getDayId(timestamp);
+  let dailyUserStatid = `${id}-${account.toString()}`;
+  let userStat = _loadOrCreateABUserStat(id, "daily", timestamp);
+  if (user == null) {
+    let totalUserStat = _loadOrCreateABUserStat("total", "total", timestamp);
+    totalUserStat.uniqueCountCumulative =
+      totalUserStat.uniqueCountCumulative + 1;
+    totalUserStat.save();
+
+    userStat.uniqueCount = userStat.uniqueCount + 1;
+    userStat.save();
+
+    user = new ABUser(account);
     user.address = Address.fromString(account);
     user.save();
 

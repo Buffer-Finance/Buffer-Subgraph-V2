@@ -56,6 +56,7 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
 
     optionContract.token0 = event.params.token0;
     optionContract.token1 = event.params.token1;
+    optionContract.asset = event.params.token0 + event.params.token1;
     optionContract.config = configContractEntity.id;
     optionContract.poolContract = event.params.pool;
     optionContract.routerContract = Address.fromHexString(RouterAddress);

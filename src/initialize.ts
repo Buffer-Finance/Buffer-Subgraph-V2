@@ -20,6 +20,7 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.routerContract = Address.fromHexString(ZeroAddress);
     optionContract.token0 = "UNKNOWN";
     optionContract.token1 = "UNKNOWN";
+    optionContract.asset = "UNKNOWN";
     optionContract.pool = "UNKNOWN";
     optionContract.openUp = ZERO;
     optionContract.openDown = ZERO;

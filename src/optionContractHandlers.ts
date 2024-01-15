@@ -8,6 +8,7 @@ import {
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import { updateClosingStats, updateOpeningStats } from "./aggregate";
 import {
   ARB_POOL_CONTRACT,
   RouterAddress,
@@ -99,13 +100,13 @@ export function _handleCreate(event: Create): void {
     //   market.save();
     // }
 
-    // updateOpeningStats(
-    //   event.block.timestamp,
-    //   contractAddress.toHexString(),
-    //   userOptionData.totalFee,
-    //   userOptionData.settlementFee,
-    //   userOptionData.isAbove
-    // );
+    updateOpeningStats(
+      event.block.timestamp,
+      contractAddress.toHexString(),
+      userOptionData.totalFee,
+      userOptionData.settlementFee,
+      userOptionData.isAbove
+    );
   }
 }
 
@@ -126,11 +127,11 @@ export function _handleExpire(event: Expire): void {
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 
-    // updateClosingStats(
-    //   contractAddressString,
-    //   userOptionData.totalFee,
-    //   userOptionData.isAbove
-    // );
+    updateClosingStats(
+      contractAddressString,
+      userOptionData.totalFee,
+      userOptionData.isAbove
+    );
   }
 }
 
@@ -152,11 +153,11 @@ export function _handleExercise(event: Exercise): void {
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 
-    // updateClosingStats(
-    //   contractAddressString,
-    //   userOptionData.totalFee,
-    //   userOptionData.isAbove
-    // );
+    updateClosingStats(
+      contractAddressString,
+      userOptionData.totalFee,
+      userOptionData.isAbove
+    );
   }
 }
 

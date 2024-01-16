@@ -1,4 +1,4 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -16,6 +16,7 @@ import {
   USDC_POOL_CONTRACT,
 } from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
+import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import {
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
@@ -83,8 +84,20 @@ export function _handleCreate(event: Create): void {
       optionID,
       contractAddressString
     );
+    const tokenPool = findPoolAndTokenFromPoolAddress(
+      Address.fromBytes(
+        _loadOrCreateOptionContractEntity(contractAddressString).poolContract
+      )
+    );
+
+    userOptionData.depositToken = tokenPool[0];
     userOptionData.user = event.params.account;
     userOptionData.totalFee = event.params.totalFee;
+    userOptionData.totalFee_usd = convertToUSD(
+      event.params.totalFee,
+      tokenPool[0]
+    );
+
     userOptionData.state = optionData.value0;
     userOptionData.strike = optionData.value1;
     userOptionData.amount = optionData.value5;
@@ -150,6 +163,10 @@ export function _handleExercise(event: Exercise): void {
     );
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
+    userOptionData.payout_usd = convertToUSD(
+      event.params.profit,
+      userOptionData.depositToken
+    );
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 
@@ -180,3 +197,14 @@ export function _handlePause(event: Pause): void {
 //   market.expiration = event.params.expiration;
 //   market.save();
 // }
+
+function convertToUSD(payoutInToken: BigInt, depositToken: string): BigInt {
+  if (depositToken == "USDC") {
+    return payoutInToken;
+  } else if (depositToken == "ARB") {
+    return convertARBToUSDC(payoutInToken);
+  } else if (depositToken == "BFR") {
+    return convertBFRToUSDC(payoutInToken);
+  }
+  return payoutInToken;
+}

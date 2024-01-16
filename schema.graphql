@@ -102,6 +102,9 @@ type UserOptionData @entity {
   queueID: BigInt
   settlementFee: BigInt!
   lag: BigInt!
+  depositToken: String!
+  payout_usd: BigInt
+  totalFee_usd: BigInt
 }
 
 type User @entity {

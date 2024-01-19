@@ -202,6 +202,7 @@ dataSources:
       eventHandlers:
         - event: Create(indexed address,indexed uint256,uint256,uint256,int256,bytes32)
           handler: handleCreateAB
+          receipt: true
         - event: CreateMarket(uint128,uint32,bytes32,address)
           handler: handleCreateMarketAB
       file: ./src/mapping.ts
@@ -227,6 +228,9 @@ dataSources:
       eventHandlers:
         - event: OpenTrade(indexed address,uint256,uint256,address)
           handler: handleOpenTrade
+          receipt: true
+        - event: RevokeRouter(address,uint256,uint256,uint256,address)
+          handler: handleRevokeRouter
           receipt: true
       file: ./src/mapping.ts
 
@@ -341,6 +345,7 @@ dataSources:
           handler: handleRegisterAccount
         - event: DeregisterAccount(indexed address,uint256)
           handler: handleDeregisterAccount
+          receipt: true
       file: ./src/mapping.ts
 
   # BFR Tracking

@@ -49,7 +49,10 @@ import {
   UpdateSpreadFactor,
   UpdatetraderNFTContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import {
+  OpenTrade,
+  RevokeRouter,
+} from "../generated/BufferRouter/BufferRouter";
 import {
   Transfer as NFTtransfer,
   TokensClaimed,
@@ -113,6 +116,7 @@ import {
   _handleDeregisterAccount,
   _handleOpenTrade,
   _handleRegisterAccount,
+  _handleRevokeRouter,
 } from "./routerContractHandlers";
 
 export function handleOpenTrade(event: OpenTrade): void {
@@ -310,4 +314,8 @@ export const handleReveal = (event: TokenURIRevealed): void => {
 };
 export function handleLazyMint(event: TokensLazyMinted): void {
   _handleLazyMint(event);
+}
+
+export function handleRevokeRouter(event: RevokeRouter): void {
+  _handleRevokeRouter(event);
 }

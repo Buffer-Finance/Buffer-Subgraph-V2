@@ -9,7 +9,10 @@ import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import {
+  OpenTrade,
+  RevokeRouter,
+} from "../generated/BufferRouter/BufferRouter";
 import {
   DeregisteredAccount,
   EOAtoOneCT,
@@ -63,6 +66,7 @@ export function _handleRegisterAccount(event: RegisterAccount): void {
 }
 
 export function _handleDeregisterAccount(event: DeregisterAccount): void {
+  createTxnData(event.receipt, event.transaction, "DeregisterAccount");
   let account = event.params.account;
   let eoaToOneCT = EOAtoOneCT.load(account.toString());
   if (eoaToOneCT == null) {
@@ -168,4 +172,8 @@ export function _handleAboveBelowOpenTrade(event: AboveBelowOpenTrade): void {
     );
     userOptionData.save();
   }
+}
+
+export function _handleRevokeRouter(event: RevokeRouter): void {
+  createTxnData(event.receipt, event.transaction, "RevokeRouter");
 }

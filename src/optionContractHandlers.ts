@@ -107,6 +107,7 @@ function findPoolAndTokenReferranceID(poolToken: string): string[] {
 
 // Create - Above-Below
 export function _handleCreateAB(event: CreateAB): void {
+  createTxnData(event.receipt, event.transaction, "CreateAB");
   const contractAddress = Address.fromBytes(event.address).toHexString();
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
@@ -304,6 +305,8 @@ export function _handleExpire(event: Expire): void {
     isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
     isContractRegisteredToAboveBelowV2Router(optionContractInstance)
   ) {
+    createTxnData(event.receipt, event.transaction, "ExpireAB");
+
     let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
       event.params.id,
       contractAddress
@@ -365,6 +368,8 @@ export function _handleExercise(event: Exercise): void {
     isContractRegisteredToAboveBelowRouter(optionContractInstance) ||
     isContractRegisteredToAboveBelowV2Router(optionContractInstance)
   ) {
+    createTxnData(event.receipt, event.transaction, "ExerciseAB");
+
     let userOptionData = _loadOrCreateAboveBelowOptionDataEntity(
       event.params.id,
       contractAddress

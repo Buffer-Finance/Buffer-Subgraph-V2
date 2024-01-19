@@ -37,7 +37,8 @@ export function updateAboveBelowOpeningStats(
   settlementFee: BigInt,
   isAbove: boolean,
   token: string,
-  poolToken: string
+  poolToken: string,
+  userAddress: string
 ): void {
   logABVolumeAndSettlementFeePerContract(
     _getHourId(timestamp),
@@ -51,6 +52,15 @@ export function updateAboveBelowOpeningStats(
   logABOpenInterst(contractAddress, isAbove, totalFee, true);
 
   if (token == "USDC") {
+    // profile page - user cumulative option contract wise stats
+    updateTradeOpenStatsForUser(
+      totalFee,
+      totalFee,
+      userAddress,
+      contractAddress,
+      token
+    );
+
     //store above-below daily fees - USDC POOL
     storeABFees(timestamp, settlementFee, ZERO, settlementFee, ZERO);
 
@@ -65,6 +75,15 @@ export function updateAboveBelowOpeningStats(
   } else if (token == "ARB") {
     let totalFeeUSDC = convertARBToUSDC(totalFee);
     let settlementFeeUSDC = convertARBToUSDC(settlementFee);
+
+    // profile page - user cumulative option contract wise stats
+    updateTradeOpenStatsForUser(
+      totalFee,
+      totalFeeUSDC,
+      userAddress,
+      contractAddress,
+      token
+    );
 
     //store above-below daily fees - ARB POOL
     storeABFees(timestamp, settlementFeeUSDC, settlementFeeUSDC, ZERO, ZERO);
@@ -81,6 +100,15 @@ export function updateAboveBelowOpeningStats(
   } else if (token == "BFR") {
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
     let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+
+    // profile page - user cumulative option contract wise stats
+    updateTradeOpenStatsForUser(
+      totalFee,
+      totalFeeUSDC,
+      userAddress,
+      contractAddress,
+      token
+    );
 
     //store above-below daily fees - BFR POOL
     storeABFees(timestamp, settlementFeeUSDC, ZERO, ZERO, settlementFeeUSDC);
@@ -106,7 +134,8 @@ export function updateAboveBelowClosingStats(
   timestamp: BigInt,
   user: string,
   isExercised: boolean,
-  settlementFee: BigInt
+  settlementFee: BigInt,
+  payout: BigInt
 ): void {
   logABOpenInterst(contractAddress, isAbove, totalFee, false);
   let positiveNetPnl = netPnL;
@@ -115,6 +144,19 @@ export function updateAboveBelowClosingStats(
     positiveNetPnl = ZERO.minus(netPnL);
   }
   if (token == "USDC") {
+    // profile page - user cumulative option contract wise stats
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payout,
+      positiveNetPnl,
+      positiveNetPnl,
+      isExercised && netPnL.gt(ZERO),
+      contractAddress,
+      token
+    );
+
     // Update Leaderboards
     updateLeaderboards(
       totalFee,
@@ -146,6 +188,20 @@ export function updateAboveBelowClosingStats(
     const settlementFeeUSDC = convertARBToUSDC(settlementFee);
     let totalFeeUSDC = convertARBToUSDC(totalFee);
     let positiveNetPnlUSDC = convertARBToUSDC(positiveNetPnl);
+    const payoutUSDC = convertARBToUSDC(payout);
+
+    // profile page - user cumulative option contract wise stats
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payoutUSDC,
+      positiveNetPnl,
+      positiveNetPnlUSDC,
+      isExercised && netPnL.gt(ZERO),
+      contractAddress,
+      token
+    );
 
     // Update Leaderboards
     updateLeaderboards(
@@ -177,7 +233,20 @@ export function updateAboveBelowClosingStats(
     let totalFeeUSDC = convertBFRToUSDC(totalFee);
     let positiveNetPnlUSDC = convertBFRToUSDC(positiveNetPnl);
     let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
+    const payoutUSDC = convertARBToUSDC(payout);
 
+    // profile page - user cumulative option contract wise stats
+    updateTradeClosingStatsForUser(
+      user,
+      totalFee,
+      payout,
+      payoutUSDC,
+      positiveNetPnl,
+      positiveNetPnlUSDC,
+      isExercised && netPnL.gt(ZERO),
+      contractAddress,
+      token
+    );
     // Update Leaderboards
     updateLeaderboards(
       totalFeeUSDC,

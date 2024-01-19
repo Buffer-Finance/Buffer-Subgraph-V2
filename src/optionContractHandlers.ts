@@ -163,7 +163,8 @@ export function _handleCreateAB(event: CreateAB): void {
       userOptionData.settlementFee,
       userOptionData.isAbove,
       userOptionData.depositToken,
-      userOptionData.poolToken
+      userOptionData.poolToken,
+      Address.fromBytes(userOptionData.user).toHexString()
     );
   }
 }
@@ -324,7 +325,8 @@ export function _handleExpire(event: Expire): void {
       userOptionData.creationTime,
       Address.fromBytes(userOptionData.user).toHexString(),
       false,
-      userOptionData.settlementFee
+      userOptionData.settlementFee,
+      ZERO
     );
   }
   // v2
@@ -388,7 +390,8 @@ export function _handleExercise(event: Exercise): void {
       userOptionData.creationTime,
       Address.fromBytes(userOptionData.user).toHexString(),
       true,
-      userOptionData.settlementFee
+      userOptionData.settlementFee,
+      event.params.profit
     );
   }
   //v2

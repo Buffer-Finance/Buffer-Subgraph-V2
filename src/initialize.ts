@@ -3,6 +3,7 @@ import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBina
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
   ABFeeStat,
+  ABOptionStat,
   ABQueuedOptionData,
   ABTradingStat,
   ABUserOptionData,
@@ -736,4 +737,33 @@ export function _loadOrCreateABTradingStatEntity(
   }
   entity.timestamp = timestamp;
   return entity as ABTradingStat;
+}
+
+export function _loadOrCreateABOptionStats(
+  id: string,
+  optionContract: string,
+  token: string,
+  user: string
+): ABOptionStat {
+  let entity = ABOptionStat.load(id);
+
+  if (entity === null) {
+    entity = new ABOptionStat(id);
+    entity.optionContract = optionContract;
+    entity.token = token;
+    entity.tradeCount = 0;
+    entity.openInterest = ZERO;
+    entity.volume = ZERO;
+    entity.volume_usd = ZERO;
+    entity.payout = ZERO;
+    entity.payout_usd = ZERO;
+    entity.netPnl = ZERO;
+    entity.netPnl_usd = ZERO;
+    entity.tradesWon = 0;
+    entity.user = Address.fromString(user);
+    entity.tradesOpen = 0;
+    entity.save();
+  }
+
+  return entity as ABOptionStat;
 }

@@ -26,6 +26,8 @@ import {
   updateOpenInterest,
 } from "./stats";
 import {
+  updateABTradeClosingStatsForUser,
+  updateABTradeOpenStatsForUser,
   updateTradeClosingStatsForUser,
   updateTradeOpenStatsForUser,
 } from "./userStats";
@@ -53,7 +55,7 @@ export function updateAboveBelowOpeningStats(
 
   if (token == "USDC") {
     // profile page - user cumulative option contract wise stats
-    updateTradeOpenStatsForUser(
+    updateABTradeOpenStatsForUser(
       totalFee,
       totalFee,
       userAddress,
@@ -77,7 +79,7 @@ export function updateAboveBelowOpeningStats(
     let settlementFeeUSDC = convertARBToUSDC(settlementFee);
 
     // profile page - user cumulative option contract wise stats
-    updateTradeOpenStatsForUser(
+    updateABTradeOpenStatsForUser(
       totalFee,
       totalFeeUSDC,
       userAddress,
@@ -102,7 +104,7 @@ export function updateAboveBelowOpeningStats(
     let settlementFeeUSDC = convertBFRToUSDC(settlementFee);
 
     // profile page - user cumulative option contract wise stats
-    updateTradeOpenStatsForUser(
+    updateABTradeOpenStatsForUser(
       totalFee,
       totalFeeUSDC,
       userAddress,
@@ -145,7 +147,7 @@ export function updateAboveBelowClosingStats(
   }
   if (token == "USDC") {
     // profile page - user cumulative option contract wise stats
-    updateTradeClosingStatsForUser(
+    updateABTradeClosingStatsForUser(
       user,
       totalFee,
       payout,
@@ -191,7 +193,7 @@ export function updateAboveBelowClosingStats(
     const payoutUSDC = convertARBToUSDC(payout);
 
     // profile page - user cumulative option contract wise stats
-    updateTradeClosingStatsForUser(
+    updateABTradeClosingStatsForUser(
       user,
       totalFee,
       payout,
@@ -236,7 +238,7 @@ export function updateAboveBelowClosingStats(
     const payoutUSDC = convertARBToUSDC(payout);
 
     // profile page - user cumulative option contract wise stats
-    updateTradeClosingStatsForUser(
+    updateABTradeClosingStatsForUser(
       user,
       totalFee,
       payout,

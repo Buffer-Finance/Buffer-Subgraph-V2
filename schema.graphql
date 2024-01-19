@@ -60,6 +60,22 @@ type OptionStat @entity {
   tradesWon: Int!
   tradesOpen: Int!
 }
+type ABOptionStat @entity {
+  id: String! # optionContract+&+user
+  user: Bytes!
+  optionContract: OptionContract!
+  token: String!
+  tradeCount: Int!
+  openInterest: BigInt!
+  volume: BigInt!
+  volume_usd: BigInt!
+  payout: BigInt!
+  payout_usd: BigInt!
+  netPnl: BigInt!
+  netPnl_usd: BigInt!
+  tradesWon: Int!
+  tradesOpen: Int!
+}
 
 type OptionContract @entity {
   category: Int!

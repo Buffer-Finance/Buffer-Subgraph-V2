@@ -12,7 +12,6 @@ import {
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
-  V1Options,
 } from "../generated/V1Options/V1Options";
 import { OptionContract } from "../generated/schema";
 import {
@@ -21,13 +20,7 @@ import {
   updateLpProfitAndLoss,
   updateOpeningStats,
 } from "./aggregate";
-import {
-  RouterAddress,
-  State,
-  V2_RouterAddress,
-  V2_RouterAddress_2,
-  V2_RouterAddress_3,
-} from "./config";
+import { RouterAddress, State, V2_RouterAddress } from "./config";
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { logUser, updateOptionContractData } from "./core";
 import {
@@ -46,11 +39,7 @@ export function isContractRegisteredToRouter(
 export function isContractRegisteredToV2Router(
   optionContractInstance: OptionContract
 ): boolean {
-  return (
-    optionContractInstance.routerContract == V2_RouterAddress ||
-    optionContractInstance.routerContract == V2_RouterAddress_2 ||
-    optionContractInstance.routerContract == V2_RouterAddress_3
-  );
+  return optionContractInstance.routerContract == V2_RouterAddress;
 }
 export function _handleCreate(event: Create): void {
   let contractAddress = Address.fromBytes(event.address).toHexString();
@@ -119,58 +108,58 @@ export function _handleCreate(event: Create): void {
     );
   }
 
-  if (isContractRegisteredToRouter(optionContractInstance)) {
-    logUser(
-      event.block.timestamp,
-      Address.fromBytes(event.params.account).toHexString()
-    );
-    let optionID = event.params.id;
-    let optionContractInstance = V1Options.bind(event.address);
-    let optionData = optionContractInstance.options(optionID);
-    let totalFee = event.params.totalFee;
-    let poolToken = updateOptionContractData(true, totalFee, contractAddress);
-    let tokenReferrenceID = "";
-    if (poolToken == "USDC_POL") {
-      tokenReferrenceID = "USDC";
-    } else if (poolToken == "ARB") {
-      tokenReferrenceID = "ARB";
-    } else if (poolToken == "USDC") {
-      tokenReferrenceID = "USDC";
-    } else if (poolToken == "BFR") {
-      tokenReferrenceID = "BFR";
-    }
-    let userOptionData = _loadOrCreateOptionDataEntity(
-      optionID,
-      contractAddress
-    );
-    userOptionData.user = event.params.account;
-    userOptionData.totalFee = totalFee;
-    userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
-    userOptionData.state = optionData.value0;
-    userOptionData.strike = optionData.value1;
-    userOptionData.amount = optionData.value2;
-    userOptionData.expirationTime = optionData.value5;
-    userOptionData.isAbove = optionData.value6;
-    userOptionData.creationTime = optionData.value8;
-    userOptionData.settlementFee = event.params.settlementFee;
-    userOptionData.depositToken = tokenReferrenceID;
-    userOptionData.poolToken = poolToken;
-    userOptionData.creationEventTimeStamp = event.block.timestamp;
-    userOptionData.lag = userOptionData.creationEventTimeStamp.minus(
-      userOptionData.creationTime
-    );
-    userOptionData.save();
+  // if (isContractRegisteredToRouter(optionContractInstance)) {
+  //   logUser(
+  //     event.block.timestamp,
+  //     Address.fromBytes(event.params.account).toHexString()
+  //   );
+  //   let optionID = event.params.id;
+  //   let optionContractInstance = V1Options.bind(event.address);
+  //   let optionData = optionContractInstance.options(optionID);
+  //   let totalFee = event.params.totalFee;
+  //   let poolToken = updateOptionContractData(true, totalFee, contractAddress);
+  //   let tokenReferrenceID = "";
+  //   if (poolToken == "USDC_POL") {
+  //     tokenReferrenceID = "USDC";
+  //   } else if (poolToken == "ARB") {
+  //     tokenReferrenceID = "ARB";
+  //   } else if (poolToken == "USDC") {
+  //     tokenReferrenceID = "USDC";
+  //   } else if (poolToken == "BFR") {
+  //     tokenReferrenceID = "BFR";
+  //   }
+  //   let userOptionData = _loadOrCreateOptionDataEntity(
+  //     optionID,
+  //     contractAddress
+  //   );
+  //   userOptionData.user = event.params.account;
+  //   userOptionData.totalFee = totalFee;
+  //   userOptionData.totalFee_usd = convertToUSD(totalFee, tokenReferrenceID);
+  //   userOptionData.state = optionData.value0;
+  //   userOptionData.strike = optionData.value1;
+  //   userOptionData.amount = optionData.value2;
+  //   userOptionData.expirationTime = optionData.value5;
+  //   userOptionData.isAbove = optionData.value6;
+  //   userOptionData.creationTime = optionData.value8;
+  //   userOptionData.settlementFee = event.params.settlementFee;
+  //   userOptionData.depositToken = tokenReferrenceID;
+  //   userOptionData.poolToken = poolToken;
+  //   userOptionData.creationEventTimeStamp = event.block.timestamp;
+  //   userOptionData.lag = userOptionData.creationEventTimeStamp.minus(
+  //     userOptionData.creationTime
+  //   );
+  //   userOptionData.save();
 
-    updateOpeningStats(
-      userOptionData.depositToken,
-      event.block.timestamp,
-      totalFee,
-      userOptionData.settlementFee,
-      contractAddress,
-      userOptionData.poolToken,
-      Address.fromBytes(userOptionData.user).toHexString()
-    );
-  }
+  //   updateOpeningStats(
+  //     userOptionData.depositToken,
+  //     event.block.timestamp,
+  //     totalFee,
+  //     userOptionData.settlementFee,
+  //     contractAddress,
+  //     userOptionData.poolToken,
+  //     Address.fromBytes(userOptionData.user).toHexString()
+  //   );
+  // }
 }
 
 export function _handleExpire(event: Expire): void {
@@ -446,28 +435,28 @@ export function _handleExpireV1(event: ExpireV1): void {
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
-  if (isContractRegisteredToRouter(optionContractInstance)) {
-    let userOptionData = _loadOrCreateOptionDataEntity(
-      event.params.id,
-      contractAddress
-    );
-    userOptionData.state = State.expired;
-    userOptionData.expirationPrice = event.params.priceAtExpiration;
-    userOptionData.closeTime = event.block.timestamp;
-    userOptionData.save();
+  // if (isContractRegisteredToRouter(optionContractInstance)) {
+  //   let userOptionData = _loadOrCreateOptionDataEntity(
+  //     event.params.id,
+  //     contractAddress
+  //   );
+  //   userOptionData.state = State.expired;
+  //   userOptionData.expirationPrice = event.params.priceAtExpiration;
+  //   userOptionData.closeTime = event.block.timestamp;
+  //   userOptionData.save();
 
-    updateClosingStats(
-      userOptionData.depositToken,
-      userOptionData.creationTime,
-      userOptionData.totalFee,
-      userOptionData.settlementFee,
-      Address.fromBytes(userOptionData.user).toHexString(),
-      contractAddress,
-      false,
-      userOptionData.totalFee,
-      ZERO
-    );
-  }
+  //   updateClosingStats(
+  //     userOptionData.depositToken,
+  //     userOptionData.creationTime,
+  //     userOptionData.totalFee,
+  //     userOptionData.settlementFee,
+  //     Address.fromBytes(userOptionData.user).toHexString(),
+  //     contractAddress,
+  //     false,
+  //     userOptionData.totalFee,
+  //     ZERO
+  //   );
+  // }
 }
 
 export function _handleExerciseV1(event: ExerciseV1): void {
@@ -475,32 +464,32 @@ export function _handleExerciseV1(event: ExerciseV1): void {
   const optionContractInstance =
     _loadOrCreateOptionContractEntity(contractAddress);
 
-  if (isContractRegisteredToRouter(optionContractInstance)) {
-    let userOptionData = _loadOrCreateOptionDataEntity(
-      event.params.id,
-      contractAddress
-    );
-    userOptionData.state = State.exercised;
-    userOptionData.payout = event.params.profit;
-    userOptionData.payout_usd = convertToUSD(
-      event.params.profit,
-      userOptionData.depositToken
-    );
-    userOptionData.expirationPrice = event.params.priceAtExpiration;
-    userOptionData.save();
+  // if (isContractRegisteredToRouter(optionContractInstance)) {
+  //   let userOptionData = _loadOrCreateOptionDataEntity(
+  //     event.params.id,
+  //     contractAddress
+  //   );
+  //   userOptionData.state = State.exercised;
+  //   userOptionData.payout = event.params.profit;
+  //   userOptionData.payout_usd = convertToUSD(
+  //     event.params.profit,
+  //     userOptionData.depositToken
+  //   );
+  //   userOptionData.expirationPrice = event.params.priceAtExpiration;
+  //   userOptionData.save();
 
-    updateClosingStats(
-      userOptionData.depositToken,
-      userOptionData.creationTime,
-      userOptionData.totalFee,
-      userOptionData.settlementFee,
-      Address.fromBytes(userOptionData.user).toHexString(),
-      contractAddress,
-      true,
-      event.params.profit.minus(userOptionData.totalFee),
-      event.params.profit
-    );
-  }
+  //   updateClosingStats(
+  //     userOptionData.depositToken,
+  //     userOptionData.creationTime,
+  //     userOptionData.totalFee,
+  //     userOptionData.settlementFee,
+  //     Address.fromBytes(userOptionData.user).toHexString(),
+  //     contractAddress,
+  //     true,
+  //     event.params.profit.minus(userOptionData.totalFee),
+  //     event.params.profit
+  //   );
+  // }
 }
 
 function convertToUSD(payoutInToken: BigInt, depositToken: string): BigInt {

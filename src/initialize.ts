@@ -29,8 +29,6 @@ import {
   USDC_POOL_CONTRACT,
   V2_ARB_POOL_CONTRACT,
   V2_RouterAddress,
-  V2_RouterAddress_2,
-  V2_RouterAddress_3,
   V2_USDC_POOL_CONTRACT,
 } from "./config";
 
@@ -50,12 +48,6 @@ export function findRouterContract(address: string): string {
   const v2RouterContract = BufferRouter.bind(
     Address.fromString(V2_RouterAddress)
   );
-  const v2RouterContract_2 = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress_2)
-  );
-  const v2RouterContract_3 = BufferRouter.bind(
-    Address.fromString(V2_RouterAddress_3)
-  );
 
   if (routerContract.contractRegistry(contractAddress) == true) {
     return RouterAddress;
@@ -65,20 +57,6 @@ export function findRouterContract(address: string): string {
     v2RouterContract.contractRegistry(contractAddress) == true
   ) {
     return V2_RouterAddress;
-  } else if (
-    v2RouterContract_2.try_contractRegistry(contractAddress).reverted ==
-      false &&
-    v2RouterContract_2.try_contractRegistry(contractAddress).value == true &&
-    v2RouterContract_2.contractRegistry(contractAddress) == true
-  ) {
-    return V2_RouterAddress_2;
-  } else if (
-    v2RouterContract_3.try_contractRegistry(contractAddress).reverted ==
-      false &&
-    v2RouterContract_3.try_contractRegistry(contractAddress).value == true &&
-    v2RouterContract_3.contractRegistry(contractAddress) == true
-  ) {
-    return V2_RouterAddress_3;
   } else {
     return ADDRESS_ZERO;
   }

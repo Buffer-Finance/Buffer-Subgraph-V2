@@ -1,13 +1,13 @@
-specVersion: 0.0.4
+specVersion: 0.0.6
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: BufferConfigUpdates
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
       abi: BufferConfig
-      startBlock: 25576390
+      startBlock: 9051014
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -52,10 +52,10 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
       abi: BufferBinaryOptions
-      startBlock: 25576390
+      startBlock: 9051014
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -94,10 +94,10 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: V1Options
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
       abi: V1Options
-      startBlock: 25576390
+      startBlock: 9051014
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -122,10 +122,10 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferRouter
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
       abi: BufferRouter
-      startBlock: 25576390
+      startBlock: 9051014
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -143,11 +143,11 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: AccountRegistrar
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
-      address: "0xa31fAFF32b20B5AF11688953489A201d38421873"
+      address: "0xb167be9422B03C971BCec106E3B100E51B2489EF"
       abi: AccountRegistrar
-      startBlock: 25576390
+      startBlock: 9051014
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

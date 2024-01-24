@@ -13,6 +13,7 @@ import {
 import {
   UpdateCircuitBreakerContract,
   UpdateCreationWindowContract,
+  UpdateMinFee,
 
   // UpdateIVFactorITM,
   // UpdateIVFactorOTM,
@@ -26,6 +27,7 @@ import {
 import {
   _handleUpdateCircuitBreakerContract,
   _handleUpdateCreationWindowContract,
+  _handleUpdateMinFee,
   _handleUpdateOptionStorageContract,
   _handleUpdatePlatformFee,
   _handleUpdateSettlementFeeDisbursalContract,
@@ -89,9 +91,9 @@ export function handlePause(event: Pause): void {
 //   _handleUpdateMaxPeriod(event);
 // }
 
-// export function handleUpdateMinFee(event: UpdateMinFee): void {
-//   _handleUpdateMinFee(event);
-// }
+export function handleUpdateMinFee(event: UpdateMinFee): void {
+  _handleUpdateMinFee(event);
+}
 
 // export function handleUpdateMaxFee(event: UpdateMaxFee): void {
 //   _handleUpdateMaxFee(event);

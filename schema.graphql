@@ -28,6 +28,7 @@ type Market @entity {
   strike: BigInt
   expiration: BigInt
   optionContract: OptionContract
+  marketId: Bytes!
 }
 
 type ConfigContract @entity {

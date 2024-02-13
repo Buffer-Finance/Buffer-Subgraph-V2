@@ -71,7 +71,9 @@ export function _handleCreate(event: Create): void {
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.save();
 
-    const market = _loadOrCreateMarket(event.params.marketId);
+    const market = _loadOrCreateMarket(
+      event.params.marketId.concat(contractAddress)
+    );
     if (market.skew !== event.params.skew) {
       market.skew = event.params.skew;
       market.save();
@@ -155,5 +157,7 @@ export function _handleCreateMarket(event: CreateMarket): void {
   market.optionContract = optionContract.id;
   market.strike = event.params.strike;
   market.expiration = event.params.expiration;
+  market.marketId = event.params.marketId;
+
   market.save();
 }

@@ -1,7 +1,4 @@
-import {
-  Create as CreateAB,
-  CreateMarket,
-} from "../generated/AboveBelowBufferBinaryOptions/AboveBelowBufferBinaryOptions";
+import { Create as CreateAB } from "../generated/AboveBelowBufferBinaryOptions/AboveBelowBufferBinaryOptions";
 import {
   OpenTrade as AboveBelowOpenTrade,
   CancelTrade,
@@ -15,19 +12,11 @@ import {
   UpdateStrikeStepSize,
 } from "../generated/AboveBelowConfigs/AboveBelowConfig";
 import {
-  DeregisterAccount,
-  RegisterAccount,
-} from "../generated/AccountRegistrar/AccountRegistrar";
-import { Transfer } from "../generated/BFR/BFR";
-import {
   Create,
   CreateOptionsContract,
   Exercise,
   Expire,
-  LpLoss,
-  LpProfit,
   Pause,
-  UpdateReferral,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
   UpdateCreationWindowContract,
@@ -49,21 +38,11 @@ import {
   UpdateSpreadFactor,
   UpdatetraderNFTContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
-import {
-  OpenTrade,
-  RevokeRouter,
-} from "../generated/BufferRouter/BufferRouter";
-import {
-  Transfer as NFTtransfer,
-  TokensClaimed,
-  TokensLazyMinted,
-} from "../generated/DropERC721/DropERC721";
-import { TokenURIRevealed } from "../generated/OldDropERC721/DropERC721";
+import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
 } from "../generated/V1Options/V1Options";
-import { _handleTransfer } from "./BFRTracking";
 import {
   _handleCreateOptionsContract,
   _handleUpdateCircuitBreakerContract,
@@ -90,33 +69,21 @@ import {
   _handleUpdateStepSize,
   _handleUpdatetraderNFTContract,
 } from "./configContractHandlers";
-import {
-  _handleLazyMint,
-  _handleNftTransfer,
-  _handleReveal,
-  _handleTokenClaim,
-} from "./nftContractHandlers";
+
 import {
   _handleCreate,
   _handleCreateAB,
-  _handleCreateMarket,
   _handleExercise,
   _handleExerciseV1,
   _handleExpire,
   _handleExpireV1,
-  _handleLpLoss,
-  _handleLpProfit,
   _handlePause,
-  _handleUpdateReferral,
 } from "./optionContractHandlers";
 import {
   _handleAboveBelowCancelTrade,
   _handleAboveBelowInitiateTrade,
   _handleAboveBelowOpenTrade,
-  _handleDeregisterAccount,
   _handleOpenTrade,
-  _handleRegisterAccount,
-  _handleRevokeRouter,
 } from "./routerContractHandlers";
 
 export function handleOpenTrade(event: OpenTrade): void {
@@ -133,10 +100,6 @@ export function handleExercise(event: Exercise): void {
 
 export function handleExpire(event: Expire): void {
   _handleExpire(event);
-}
-
-export function handleUpdateReferral(event: UpdateReferral): void {
-  _handleUpdateReferral(event);
 }
 
 export function handlePause(event: Pause): void {
@@ -163,14 +126,6 @@ export function handleUpdateMinPeriod(event: UpdateMinPeriod): void {
 
 export function handleUpdatePlatformFee(event: UpdatePlatformFee): void {
   _handleUpdatePlatformFee(event);
-}
-
-export function handleRegisterAccount(event: RegisterAccount): void {
-  _handleRegisterAccount(event);
-}
-
-export function handleDeregisterAccount(event: DeregisterAccount): void {
-  _handleDeregisterAccount(event);
 }
 
 export function handleUpdateEarlyCloseThreshold(
@@ -212,14 +167,6 @@ export function handleUpdateCreationWindowContract(
   _handleUpdateCreationWindowContract(event);
 }
 
-export function handleLpProfit(event: LpProfit): void {
-  _handleLpProfit(event);
-}
-
-export function handleLpLoss(event: LpLoss): void {
-  _handleLpLoss(event);
-}
-
 export function handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
   _handleUpdateIVFactorOTM(event);
 }
@@ -237,9 +184,6 @@ export function handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
 }
 export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
   _handleUpdateSpreadFactor(event);
-}
-export function handleTransfer(event: Transfer): void {
-  _handleTransfer(event);
 }
 
 export function handleUpdateSettlementFeeDisbursalContract(
@@ -286,10 +230,6 @@ export function handleCreateAB(event: CreateAB): void {
   _handleCreateAB(event);
 }
 
-export function handleCreateMarketAB(event: CreateMarket): void {
-  _handleCreateMarket(event);
-}
-
 export function handleAboveBelowInitiateTrade(event: InitiateTrade): void {
   _handleAboveBelowInitiateTrade(event);
 }
@@ -300,22 +240,4 @@ export function handleAboveBelowCancelTrade(event: CancelTrade): void {
 
 export function handleAboveBelowOpenTrade(event: AboveBelowOpenTrade): void {
   _handleAboveBelowOpenTrade(event);
-}
-
-export function handleNftTransfer(event: NFTtransfer): void {
-  _handleNftTransfer(event);
-}
-
-export function handleTokenClaim(event: TokensClaimed): void {
-  _handleTokenClaim(event);
-}
-export const handleReveal = (event: TokenURIRevealed): void => {
-  _handleReveal(event);
-};
-export function handleLazyMint(event: TokensLazyMinted): void {
-  _handleLazyMint(event);
-}
-
-export function handleRevokeRouter(event: RevokeRouter): void {
-  _handleRevokeRouter(event);
 }

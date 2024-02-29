@@ -5,62 +5,6 @@ enum Period {
   total
 }
 
-type NFT @entity {
-  id: String!
-  tokenId: BigInt!
-  owner: Bytes!
-  tier: String!
-  nftImage: String!
-  ipfs: String!
-  batchId: BigInt!
-  hasRevealed: Boolean!
-  claimTimestamp: BigInt
-  phaseId: BigInt
-}
-
-type NFTBatch @entity {
-  id: String!
-  tokenIds: [BigInt!]!
-}
-
-type Transaction @entity {
-  id: String!
-  transactionHash: String!
-  blockNumber: BigInt
-  cumulativeGasUsed: BigInt
-  gasUsed: BigInt
-  contractAddress: Bytes
-  from: Bytes!
-  to: Bytes
-  input: Bytes
-  eventName: String!
-}
-
-type Market @entity {
-  id: Bytes!
-  skew: BigInt!
-  strike: BigInt
-  expiration: BigInt
-  optionContract: OptionContract
-}
-
-type OptionStat @entity {
-  id: String! # optionContract+&+user
-  user: Bytes!
-  optionContract: OptionContract!
-  token: String!
-  tradeCount: Int!
-  openInterest: BigInt!
-  volume: BigInt!
-  volume_usd: BigInt!
-  payout: BigInt!
-  payout_usd: BigInt!
-  netPnl: BigInt!
-  netPnl_usd: BigInt!
-  tradesWon: Int!
-  tradesOpen: Int!
-}
-
 type OptionContract @entity {
   category: Int!
   id: String!
@@ -73,19 +17,17 @@ type OptionContract @entity {
   volume: BigInt!
   currentUtilization: BigInt
   token: String!
-  # payoutForUp: BigInt
-  # payoutForDown: BigInt
   asset: String
   pool: String!
   configContract: ConfigContract
   poolContract: Bytes
   routerContract: String
-
   token0: String
   token1: String
   openInterestUp: BigInt!
   openInterestDown: BigInt!
 }
+
 type ABQueuedOptionData @entity {
   id: String!
   optionContract: OptionContract!
@@ -94,7 +36,6 @@ type ABQueuedOptionData @entity {
   state: Int
   isAbove: Boolean
   queueID: BigInt
-  # slippage: BigInt
   depositToken: String
   reason: String
   queueTimestamp: BigInt!
@@ -149,7 +90,6 @@ type ConfigContract @entity {
   SpreadConfig1: BigInt!
   SpreadConfig2: BigInt!
   SpreadFactor: BigInt!
-
   maxSkew: BigInt!
   circuitBreakerContract: Bytes!
   optionStorageContract: Bytes!
@@ -158,40 +98,6 @@ type ConfigContract @entity {
   sf: BigInt!
   traderNFTContract: Bytes!
   stepSize: BigInt!
-}
-
-type EOAtoOneCT @entity {
-  id: String!
-  updatedAt: BigInt!
-  oneCT: Bytes!
-  eoa: Bytes!
-  nonce: BigInt!
-}
-
-type DeregisteredAccount @entity {
-  id: String!
-  updatedAt: BigInt!
-  eoa: Bytes!
-  nonce: BigInt!
-}
-
-type VolumePerContract @entity {
-  id: String!
-  amount: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  depositToken: String!
-  optionContract: OptionContract!
-  settlementFee: BigInt!
-}
-
-type ABVolumePerContract @entity {
-  id: String!
-  amount: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  optionContract: OptionContract!
-  settlementFee: BigInt!
 }
 
 type UserOptionData @entity {
@@ -217,296 +123,4 @@ type UserOptionData @entity {
   closeTime: BigInt
   creationEventTimeStamp: BigInt!
   isAbove: Boolean
-}
-
-type User @entity {
-  id: String!
-  address: Bytes!
-}
-type ABUser @entity {
-  id: String!
-  address: Bytes!
-}
-type UserStat @entity {
-  id: String!
-  uniqueCount: Int!
-  uniqueCountCumulative: Int!
-  period: Period!
-  timestamp: BigInt
-  existingCount: Int!
-  users: [User!]!
-}
-type ABUserStat @entity {
-  id: String!
-  uniqueCount: Int!
-  uniqueCountCumulative: Int!
-  period: Period!
-  timestamp: BigInt
-  existingCount: Int!
-  users: [User!]!
-}
-
-type DailyUserStat @entity {
-  id: String!
-}
-
-type DailyRevenueAndFee @entity {
-  id: String!
-  dayId: String!
-  tokenId: String!
-  totalFee: BigInt!
-  settlementFee: BigInt!
-  timestamp: BigInt!
-}
-
-type WeeklyRevenueAndFee @entity {
-  id: String!
-  weekId: String!
-  tokenId: String!
-  totalFee: BigInt!
-  settlementFee: BigInt!
-  timestamp: BigInt!
-}
-
-type Leaderboard @entity {
-  id: String!
-  user: Bytes!
-  netPnL: BigInt!
-  totalTrades: Int!
-  volume: BigInt!
-  timestamp: String!
-  tradesWon: Int!
-  winRate: Int!
-  arbVolume: BigInt!
-  arbNetPnL: BigInt!
-  arbTotalTrades: Int!
-  arbTradesWon: Int!
-  arbWinRate: Int!
-  usdcVolume: BigInt!
-  usdcNetPnL: BigInt!
-  usdcTotalTrades: Int!
-  usdcTradesWon: Int!
-  usdcWinRate: Int!
-  bfrVolume: BigInt!
-  bfrNetPnL: BigInt!
-  bfrTotalTrades: Int!
-  bfrTradesWon: Int!
-  bfrWinRate: Int!
-}
-
-type WeeklyLeaderboard @entity {
-  id: String!
-  user: Bytes!
-  netPnL: BigInt!
-  totalTrades: Int!
-  volume: BigInt!
-  timestamp: String!
-  tradesWon: Int!
-  winRate: Int!
-  arbVolume: BigInt!
-  arbNetPnL: BigInt!
-  arbTotalTrades: Int!
-  arbTradesWon: Int!
-  arbWinRate: Int!
-  usdcVolume: BigInt!
-  usdcNetPnL: BigInt!
-  usdcTotalTrades: Int!
-  usdcTradesWon: Int!
-  usdcWinRate: Int!
-  bfrVolume: BigInt!
-  bfrNetPnL: BigInt!
-  bfrTotalTrades: Int!
-  bfrTradesWon: Int!
-  bfrWinRate: Int!
-}
-
-type DashboardStat @entity {
-  id: String!
-  totalVolume: BigInt!
-  totalSettlementFees: BigInt!
-  totalTrades: Int!
-  openInterest: BigInt!
-}
-
-type FeeStat @entity {
-  id: ID!
-  fee: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  feeARB: BigInt!
-  feeUSDC: BigInt!
-  feeBFR: BigInt!
-}
-
-type ABFeeStat @entity {
-  id: ID!
-  fee: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  feeARB: BigInt!
-  feeUSDC: BigInt!
-  feeBFR: BigInt!
-}
-
-type VolumeStat @entity {
-  id: String!
-  amount: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  VolumeARB: BigInt!
-  VolumeUSDC: BigInt!
-  VolumeBFR: BigInt!
-}
-
-type ABVolumeStat @entity {
-  id: String!
-  amount: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  VolumeARB: BigInt!
-  VolumeUSDC: BigInt!
-  VolumeBFR: BigInt!
-}
-
-type ReferralData @entity {
-  id: String!
-  user: Bytes!
-  totalTradesReferred: Int!
-  totalTradesReferredARB: Int!
-  totalTradesReferredUSDC: Int!
-  totalTradesReferredBFR: Int!
-  totalVolumeOfReferredTrades: BigInt!
-  totalVolumeOfReferredTradesARB: BigInt!
-  totalVolumeOfReferredTradesUSDC: BigInt!
-  totalVolumeOfReferredTradesBFR: BigInt!
-  totalRebateEarned: BigInt!
-  totalRebateEarnedARB: BigInt!
-  totalRebateEarnedUSDC: BigInt!
-  totalRebateEarnedBFR: BigInt!
-  totalTradingVolume: BigInt!
-  totalTradingVolumeARB: BigInt!
-  totalTradingVolumeUSDC: BigInt!
-  totalTradingVolumeBFR: BigInt!
-  totalDiscountAvailed: BigInt!
-  totalDiscountAvailedARB: BigInt!
-  totalDiscountAvailedUSDC: BigInt!
-  totalDiscountAvailedBFR: BigInt!
-}
-
-type TradingStat @entity {
-  id: ID!
-  profit: BigInt!
-  profitUSDC: BigInt!
-  profitARB: BigInt!
-  profitBFR: BigInt!
-  loss: BigInt!
-  lossUSDC: BigInt!
-  lossARB: BigInt!
-  lossBFR: BigInt!
-  profitCumulative: BigInt!
-  profitCumulativeUSDC: BigInt!
-  profitCumulativeARB: BigInt!
-  profitCumulativeBFR: BigInt!
-  lossCumulative: BigInt!
-  lossCumulativeUSDC: BigInt!
-  lossCumulativeARB: BigInt!
-  lossCumulativeBFR: BigInt!
-  openInterest: BigInt!
-  timestamp: BigInt!
-  period: Period!
-}
-
-type ABTradingStat @entity {
-  id: ID!
-  profit: BigInt!
-  profitUSDC: BigInt!
-  profitARB: BigInt!
-  profitBFR: BigInt!
-  loss: BigInt!
-  lossUSDC: BigInt!
-  lossARB: BigInt!
-  lossBFR: BigInt!
-  profitCumulative: BigInt!
-  profitCumulativeUSDC: BigInt!
-  profitCumulativeARB: BigInt!
-  profitCumulativeBFR: BigInt!
-  lossCumulative: BigInt!
-  lossCumulativeUSDC: BigInt!
-  lossCumulativeARB: BigInt!
-  lossCumulativeBFR: BigInt!
-  openInterest: BigInt!
-  timestamp: BigInt!
-  period: Period!
-}
-
-type PoolStat @entity {
-  id: ID!
-  amount: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  rate: BigInt!
-}
-
-type ARBPoolStat @entity {
-  id: ID!
-  amount: BigInt!
-  period: Period!
-  timestamp: BigInt!
-  rate: BigInt!
-}
-
-type AssetTradingStat @entity {
-  id: String!
-  contractAddress: Bytes!
-  periodID: String!
-  profit: BigInt!
-  profitARB: BigInt!
-  profitBFR: BigInt!
-  profitUSDC: BigInt!
-  loss: BigInt!
-  lossARB: BigInt!
-  lossBFR: BigInt!
-  lossUSDC: BigInt!
-  profitCumulative: BigInt!
-  profitCumulativeUSDC: BigInt!
-  profitCumulativeARB: BigInt!
-  profitCumulativeBFR: BigInt!
-  lossCumulative: BigInt!
-  lossCumulativeUSDC: BigInt!
-  lossCumulativeARB: BigInt!
-  lossCumulativeBFR: BigInt!
-  timestamp: BigInt!
-  period: Period!
-}
-
-type UserRewards @entity {
-  id: ID!
-  referralReward: BigInt!
-  referralDiscount: BigInt!
-  nftDiscount: BigInt!
-  cumulativeReward: BigInt!
-  period: Period!
-  timestamp: BigInt!
-}
-
-type BFRHolderData @entity {
-  id: String!
-  holders: Int!
-  period: Period!
-  timestamp: BigInt!
-}
-
-type DefillamaFeeStat @entity {
-  id: ID!
-  fee: BigInt!
-  period: Period!
-  timestamp: BigInt!
-}
-
-type BurnedBFR @entity {
-  id: ID!
-  timestamp: BigInt!
-  period: Period!
-  amount: BigInt!
-  cumulativeAmount: BigInt!
 }

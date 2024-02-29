@@ -7,6 +7,7 @@ import {
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import {
   CancelTrade,
+  ContractRegistryUpdated,
   InitiateTrade,
   OpenTrade,
 } from "../generated/BufferRouter/BufferRouter";
@@ -44,6 +45,7 @@ import {
 } from "./optionContractHandlers";
 import {
   _handleCancelTrade,
+  _handleContractRegistryUpdated,
   _handleInitiateTrade,
   _handleOpenTrade,
 } from "./routerContractHandlers";
@@ -159,4 +161,10 @@ export function handleUpdatetraderNFTContract(
 
 export function handleUpdateStrikeStepSize(event: UpdateStrikeStepSize): void {
   _handleUpdateStepSize(event);
+}
+
+export function handleContractRegistryUpdated(
+  event: ContractRegistryUpdated
+): void {
+  _handleContractRegistryUpdated(event);
 }

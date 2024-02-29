@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: BufferBinaryOptions
-      startBlock: 6090547
+      startBlock: 18576428
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -25,14 +25,12 @@ dataSources:
       eventHandlers:
         - event: CreateOptionsContract(address,address,address,string,string,uint8)
           handler: handleCreateContract
-        - event: Create(indexed address,indexed uint256,uint256,uint256)
+        - event: Create(indexed address,indexed uint256,uint256,uint256,uint128,uint32,uint32,bool,uint256)
           handler: handleCreate
         - event: Expire(indexed uint256,uint256,uint128,bool)
           handler: handleExpire
         - event: Exercise(indexed address,indexed uint256,uint256,uint128,bool)
           handler: handleExercise
-        # - event: CreateMarket(uint128,uint32,bytes32,address)
-        #   handler: handleCreateMarket
         - event: Pause(bool)
           handler: handlePause
       file: ./src/mapping.ts
@@ -40,9 +38,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-sepolia
     source:
-      address: "0x62fAc96f91D943aD52A972FEebD631E39161eABc"
+      address: "0x3ca907E4FADf6a7e705D177d122c3105D1dAaC40"
       abi: BufferRouter
-      startBlock: 6090547
+      startBlock: 18576428
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -56,9 +54,11 @@ dataSources:
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
-        - event: InitiateTrade(indexed address,uint256,uint256)
+        - event: ContractRegistryUpdated(address,bool)
+          handler: handleContractRegistryUpdated
+        - event: InitiateTrade(indexed address,uint256,bytes,uint256,bool,uint32,bool,uint32,address,string,uint256)
           handler: handleInitiateTrade
-        - event: CancelTrade(indexed address,uint256,string)
+        - event: CancelTrade(indexed address,uint256,string,address)
           handler: handleCancelTrade
         - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address)
           handler: handleOpenTrade
@@ -68,7 +68,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: Config
-      startBlock: 6090547
+      startBlock: 18576428
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

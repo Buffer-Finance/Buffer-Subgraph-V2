@@ -3,10 +3,52 @@
     "inputs": [
       { "internalType": "address", "name": "_publisher", "type": "address" },
       { "internalType": "address", "name": "_admin", "type": "address" },
-      { "internalType": "contract IPyth", "name": "_pyth", "type": "address" }
+      { "internalType": "contract IPyth", "name": "_pyth", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_accountRegistrar",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "deadline",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "tokenX",
+        "type": "address"
+      }
+    ],
+    "name": "ApproveRouter",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -28,6 +70,12 @@
         "internalType": "string",
         "name": "reason",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "targetContract",
+        "type": "address"
       }
     ],
     "name": "CancelTrade",
@@ -50,6 +98,25 @@
       }
     ],
     "name": "ContractRegistryUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes",
+        "name": "id",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "FailOpen",
     "type": "event"
   },
   {
@@ -138,8 +205,56 @@
       },
       {
         "indexed": false,
+        "internalType": "bytes",
+        "name": "id",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "allowPartialFill",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "expiration",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isAbove",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "queuedTime",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "targetContract",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "referralCode",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalFee",
         "type": "uint256"
       }
     ],
@@ -175,6 +290,43 @@
       }
     ],
     "name": "OpenTrade",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "deadline",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "tokenX",
+        "type": "address"
+      }
+    ],
+    "name": "RevokeRouter",
     "type": "event"
   },
   {
@@ -270,6 +422,19 @@
     "inputs": [],
     "name": "MAX_WAIT_TIME",
     "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "accountRegistrar",
+    "outputs": [
+      {
+        "internalType": "contract IAccountRegistrar",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -373,6 +538,8 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" },
+      { "internalType": "bytes", "name": "id", "type": "bytes" },
       {
         "components": [
           {
@@ -390,7 +557,7 @@
           { "internalType": "uint256", "name": "totalFee", "type": "uint256" },
           { "internalType": "string", "name": "referralCode", "type": "string" }
         ],
-        "internalType": "struct IBufferRouter.TradeInitiationParamas",
+        "internalType": "struct IBufferRouter.TradeParams",
         "name": "params",
         "type": "tuple"
       }
@@ -400,6 +567,106 @@
       { "internalType": "uint256", "name": "queueId", "type": "uint256" }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "targetContract",
+                "type": "address"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowPartialFill",
+                "type": "bool"
+              },
+              { "internalType": "bool", "name": "isAbove", "type": "bool" },
+              {
+                "internalType": "uint32",
+                "name": "expiration",
+                "type": "uint32"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalFee",
+                "type": "uint256"
+              },
+              {
+                "internalType": "string",
+                "name": "referralCode",
+                "type": "string"
+              }
+            ],
+            "internalType": "struct IBufferRouter.TradeParams",
+            "name": "tradeParams",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              { "internalType": "bytes", "name": "signature", "type": "bytes" },
+              {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct IBufferRouter.SignInfo",
+            "name": "userSignInfo",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              { "internalType": "uint256", "name": "value", "type": "uint256" },
+              {
+                "internalType": "uint256",
+                "name": "deadline",
+                "type": "uint256"
+              },
+              { "internalType": "uint8", "name": "v", "type": "uint8" },
+              { "internalType": "bytes32", "name": "r", "type": "bytes32" },
+              { "internalType": "bytes32", "name": "s", "type": "bytes32" },
+              {
+                "internalType": "bool",
+                "name": "shouldApprove",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct IBufferRouter.Permit",
+            "name": "permit",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              { "internalType": "address", "name": "oneCT", "type": "address" },
+              { "internalType": "bytes", "name": "signature", "type": "bytes" },
+              {
+                "internalType": "bool",
+                "name": "shouldRegister",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct IBufferRouter.Register",
+            "name": "register",
+            "type": "tuple"
+          },
+          { "internalType": "address", "name": "user", "type": "address" },
+          { "internalType": "bytes", "name": "secondaryId", "type": "bytes" }
+        ],
+        "internalType": "struct IBufferRouter.TradeInitiationParamasViaKeeper[]",
+        "name": "params",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "initiateViaKeeper",
+    "outputs": [
+      { "internalType": "uint256", "name": "queueId", "type": "uint256" }
+    ],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -427,6 +694,13 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
+    "name": "prevSignature",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "publisher",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
@@ -446,6 +720,7 @@
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "queuedTrades",
     "outputs": [
+      { "internalType": "bytes", "name": "id", "type": "bytes" },
       { "internalType": "address", "name": "user", "type": "address" },
       { "internalType": "bool", "name": "allowPartialFill", "type": "bool" },
       { "internalType": "uint32", "name": "expiration", "type": "uint32" },
@@ -517,6 +792,44 @@
     "name": "resolveQueuedTrades",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "address", "name": "tokenX", "type": "address" },
+          { "internalType": "address", "name": "user", "type": "address" },
+          {
+            "components": [
+              { "internalType": "uint256", "name": "value", "type": "uint256" },
+              {
+                "internalType": "uint256",
+                "name": "deadline",
+                "type": "uint256"
+              },
+              { "internalType": "uint8", "name": "v", "type": "uint8" },
+              { "internalType": "bytes32", "name": "r", "type": "bytes32" },
+              { "internalType": "bytes32", "name": "s", "type": "bytes32" },
+              {
+                "internalType": "bool",
+                "name": "shouldApprove",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct IBufferRouter.Permit",
+            "name": "permit",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct IBufferRouter.RevokeParams[]",
+        "name": "revokeParams",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "revokeApprovals",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

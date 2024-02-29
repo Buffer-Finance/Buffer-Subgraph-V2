@@ -8,7 +8,7 @@ export enum State {
   opened = 6,
 }
 
-export const RouterAddress = "0x62fAc96f91D943aD52A972FEebD631E39161eABc";
+export const RouterAddress = "0x3ca907E4FADf6a7e705D177d122c3105D1dAaC40";
 export const USDC_POOL_CONTRACT = "0x464c93cab18A051a24BD520bb97c22C583b48F01";
 export const ARB_POOL_CONTRACT = "0x52126176479d8aFADF2Bc32eDe79dfDdFe69189c";
 export const ZeroAddress = "0x0000000000000000000000000000000000000000";

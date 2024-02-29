@@ -1,13 +1,11 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
-  BufferBinaryOptions,
   Create,
   CreateOptionsContract,
   Exercise,
   Expire,
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { updateClosingStats, updateOpeningStats } from "./aggregate";
 import {
   ARB_POOL_CONTRACT,
@@ -43,15 +41,10 @@ export function findPoolAndTokenFromPoolAddress(
 export function _handleCreateContract(event: CreateOptionsContract): void {
   const contractAddress = event.address;
   const contractAddressString = contractAddress.toHexString();
-  const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
-    const optionContract = _loadOrCreateOptionContractEntity(
-      contractAddressString
-    );
+  const optionContract = _loadOrCreateOptionContractEntity(
+    contractAddressString
+  );
+  if (optionContract.routerContract == Address.fromHexString(RouterAddress)) {
     const configContractEntity = _loadOrCreateConfigContractEntity(
       event.params.config.toHexString()
     );
@@ -71,23 +64,18 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
   let contractAddressString = contractAddress.toHexString();
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
+  const optionContract = _loadOrCreateOptionContractEntity(
+    contractAddressString
+  );
+  if (optionContract.routerContract == Address.fromHexString(RouterAddress)) {
     let optionID = event.params.id;
-    let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
-    let optionData = optionContractInstance.options(optionID);
+
     let userOptionData = _loadOrCreateOptionDataEntity(
       optionID,
       contractAddressString
     );
     const tokenPool = findPoolAndTokenFromPoolAddress(
-      Address.fromBytes(
-        _loadOrCreateOptionContractEntity(contractAddressString).poolContract
-      )
+      Address.fromBytes(optionContract.poolContract)
     );
 
     userOptionData.depositToken = tokenPool[0];
@@ -98,20 +86,14 @@ export function _handleCreate(event: Create): void {
       tokenPool[0]
     );
 
-    userOptionData.state = optionData.value0;
-    userOptionData.strike = optionData.value1;
-    userOptionData.amount = optionData.value5;
-    userOptionData.expirationTime = optionData.value2;
-    userOptionData.isAbove = optionData.value4;
-    userOptionData.creationTime = optionData.value3;
+    userOptionData.state = State.active;
+    userOptionData.strike = event.params.strike;
+    userOptionData.amount = event.params.amount;
+    userOptionData.expirationTime = event.params.expiration;
+    userOptionData.isAbove = event.params.isAbove;
+    userOptionData.creationTime = event.params.createdAt;
     userOptionData.settlementFee = event.params.settlementFee;
     userOptionData.save();
-
-    // const market = _loadOrCreateMarket(event.params.marketId);
-    // if (market.skew !== event.params.skew) {
-    //   market.skew = event.params.skew;
-    //   market.save();
-    // }
 
     updateOpeningStats(
       event.block.timestamp,
@@ -126,12 +108,10 @@ export function _handleCreate(event: Create): void {
 export function _handleExpire(event: Expire): void {
   let contractAddress = event.address;
   let contractAddressString = contractAddress.toHexString();
-
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
+  const optionContract = _loadOrCreateOptionContractEntity(
+    contractAddressString
+  );
+  if (optionContract.routerContract == Address.fromHexString(RouterAddress)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddressString
@@ -152,11 +132,10 @@ export function _handleExercise(event: Exercise): void {
   let contractAddress = event.address;
   let contractAddressString = contractAddress.toHexString();
 
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
+  const optionContract = _loadOrCreateOptionContractEntity(
+    contractAddressString
+  );
+  if (optionContract.routerContract == Address.fromHexString(RouterAddress)) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddressString

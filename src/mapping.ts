@@ -1,4 +1,8 @@
 import {
+  DeregisterAccount,
+  RegisterAccount,
+} from "../generated/AccountRegistrar/AccountRegistrar";
+import {
   Create,
   CreateOptionsContract,
   Exercise,
@@ -25,6 +29,7 @@ import {
   UpdateStrikeStepSize,
   UpdatetraderNFTContract,
 } from "../generated/Config/Config";
+import { _handleDeregisterAccount, _handleRegisterAccount } from "./Registrar";
 import {
   _handleUpdateCircuitBreakerContract,
   _handleUpdateCreationWindowContract,
@@ -167,4 +172,12 @@ export function handleContractRegistryUpdated(
   event: ContractRegistryUpdated
 ): void {
   _handleContractRegistryUpdated(event);
+}
+
+export function handleRegisterAccount(event: RegisterAccount): void {
+  _handleRegisterAccount(event);
+}
+
+export function handleDeregisterAccount(event: DeregisterAccount): void {
+  _handleDeregisterAccount(event);
 }

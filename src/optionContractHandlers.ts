@@ -6,6 +6,7 @@ import {
   Expire,
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
+import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import { updateClosingStats, updateOpeningStats } from "./aggregate";
 import {
   ARB_POOL_CONTRACT,
@@ -41,10 +42,15 @@ export function findPoolAndTokenFromPoolAddress(
 export function _handleCreateContract(event: CreateOptionsContract): void {
   const contractAddress = event.address;
   const contractAddressString = contractAddress.toHexString();
-  const optionContract = _loadOrCreateOptionContractEntity(
-    contractAddressString
-  );
-  if (optionContract.routerContract == Address.fromHexString(RouterAddress)) {
+  const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+
+  if (
+    routerContract.try_contractRegistry(contractAddress).reverted === false &&
+    routerContract.try_contractRegistry(contractAddress).value === true
+  ) {
+    const optionContract = _loadOrCreateOptionContractEntity(
+      contractAddressString
+    );
     const configContractEntity = _loadOrCreateConfigContractEntity(
       event.params.config.toHexString()
     );

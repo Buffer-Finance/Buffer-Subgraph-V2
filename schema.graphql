@@ -125,3 +125,18 @@ type UserStat @entity {
 type DailyUserStat @entity {
   id: String!
 }
+
+type EOAtoOneCT @entity {
+  id: String!
+  updatedAt: BigInt!
+  oneCT: Bytes!
+  eoa: Bytes!
+  nonce: BigInt!
+}
+
+type DeregisteredAccount @entity {
+  id: String!
+  updatedAt: BigInt!
+  eoa: Bytes!
+  nonce: BigInt!
+}

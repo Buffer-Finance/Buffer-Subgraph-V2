@@ -376,6 +376,10 @@ export function _handleExercise(event: Exercise): void {
     );
     userOptionData.state = State.exercised;
     userOptionData.payout = event.params.profit;
+    userOptionData.payout_usd = convertToUSD(
+      event.params.profit,
+      userOptionData.depositToken
+    );
     userOptionData.expirationPrice = event.params.priceAtExpiration;
     userOptionData.save();
 

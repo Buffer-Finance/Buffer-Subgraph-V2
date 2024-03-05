@@ -118,6 +118,7 @@ type ABUserOptionData @entity {
   queuedTimestamp: BigInt!
   expirationPrice: BigInt
   payout: BigInt
+  payout_usd: BigInt
   state: Int
   amount: BigInt!
   expirationTime: BigInt

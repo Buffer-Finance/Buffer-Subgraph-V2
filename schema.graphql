@@ -17,7 +17,7 @@ type OptionContract @entity {
   token1: String
 
   poolContract: Bytes
-  routerContract: String
+  routerContract: Bytes
   configContract: ConfigContract
 
   tradeCount: BigInt!

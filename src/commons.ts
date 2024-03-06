@@ -2,7 +2,10 @@ import { Bytes } from "@graphprotocol/graph-ts";
 import { OptionContract } from "../generated/schema";
 import { ZERO } from "./config";
 
-export function registerAmarket(targetContract: Bytes): void {
+export function registerAmarket(
+  targetContract: Bytes,
+  routerAddress: Bytes
+): void {
   const market = OptionContract.load(targetContract.toHex());
   if (market == null) {
     const market = new OptionContract(targetContract.toHex());
@@ -17,6 +20,7 @@ export function registerAmarket(targetContract: Bytes): void {
     market.openDown = ZERO;
     market.openInterestUp = ZERO;
     market.openInterestDown = ZERO;
+    market.routerContract = routerAddress;
     market.save();
   }
 }

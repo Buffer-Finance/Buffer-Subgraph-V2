@@ -18,7 +18,7 @@ export function handleABContractRegistryUpdated(
   event: ContractRegistryUpdated
 ): void {
   if (event.params.register) {
-    registerAmarket(event.params.targetContract);
+    registerAmarket(event.params.targetContract, event.address);
   }
 }
 
@@ -34,7 +34,7 @@ export function handleABContractRegistryUpdated_2(
   event: ContractRegistryUpdated_2
 ): void {
   if (event.params.register) {
-    registerAmarket(event.params.targetContract);
+    registerAmarket(event.params.targetContract, event.address);
   }
 }
 

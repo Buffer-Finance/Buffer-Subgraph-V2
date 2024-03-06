@@ -153,7 +153,9 @@ export function _handleCreateMarket(event: CreateMarket): void {
   const optionContract = _loadOrCreateOptionContractEntity(
     event.params.optionsContract.toHexString()
   );
-  const market = _loadOrCreateMarket(event.params.marketId);
+  const market = _loadOrCreateMarket(
+    event.params.marketId.concat(event.params.optionsContract)
+  );
   market.optionContract = optionContract.id;
   market.strike = event.params.strike;
   market.expiration = event.params.expiration;

@@ -6,24 +6,25 @@ enum Period {
 }
 
 type OptionContract @entity {
-  category: Int!
   id: String!
-  address: Bytes
+  address: Bytes!
+  category: Int!
   isPaused: Boolean!
-  openUp: BigInt!
-  openDown: BigInt!
-  openInterest: BigInt!
-  tradeCount: Int!
-  volume: BigInt!
-  currentUtilization: BigInt
   token: String!
-  asset: String
   pool: String!
-  configContract: ConfigContract
-  poolContract: Bytes
-  routerContract: String
+  asset: String
   token0: String
   token1: String
+
+  poolContract: Bytes
+  routerContract: String
+  configContract: ConfigContract
+
+  tradeCount: BigInt!
+  volume: BigInt!
+
+  openUp: BigInt!
+  openDown: BigInt!
   openInterestUp: BigInt!
   openInterestDown: BigInt!
 }
@@ -69,6 +70,7 @@ type ABUserOptionData @entity {
   totalFee_usd: BigInt!
   depositToken: String!
   poolToken: String!
+  payout_usd: BigInt!
 }
 type ConfigContract @entity {
   id: String!

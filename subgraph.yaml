@@ -92,7 +92,7 @@ dataSources:
     name: V2_Router_3
     network: arbitrum-one
     source:
-      address: "0x075EEA84D1122A0c2F2A6C9265F8126F64087d44"
+      address: "0xFd1EDa553d25448383FBD72bBE4530182266ed8D"
       abi: V2_Router_3
       startBlock: 145432274
     mapping:

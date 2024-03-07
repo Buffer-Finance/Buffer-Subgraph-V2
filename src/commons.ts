@@ -1,6 +1,11 @@
 import { Bytes } from "@graphprotocol/graph-ts";
 import { OptionContract } from "../generated/schema";
-import { ZERO } from "./config";
+import {
+  ARB_POOL_CONTRACT,
+  BFR_POOL_CONTRACT,
+  USDC_POOL_CONTRACT,
+  ZERO,
+} from "./config";
 
 export function registerAmarket(
   targetContract: Bytes,
@@ -22,5 +27,18 @@ export function registerAmarket(
     market.openInterestDown = ZERO;
     market.routerContract = routerAddress;
     market.save();
+  }
+}
+
+export function getPoolNameFromAddress(poolAddress: Bytes): string {
+  // convert switch case into if else ladder
+  if (poolAddress.toHexString() === USDC_POOL_CONTRACT) {
+    return "USDC";
+  } else if (poolAddress.toHexString() === ARB_POOL_CONTRACT) {
+    return "ARB";
+  } else if (poolAddress.toHexString() === BFR_POOL_CONTRACT) {
+    return "BFR";
+  } else {
+    return "UNKNOWN";
   }
 }

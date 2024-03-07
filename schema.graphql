@@ -10,9 +10,9 @@ type OptionContract @entity {
   address: Bytes!
   category: Int!
   isPaused: Boolean!
-  token: String!
-  pool: String!
   asset: String
+  pool: String!
+  token: String!
   token0: String
   token1: String
 

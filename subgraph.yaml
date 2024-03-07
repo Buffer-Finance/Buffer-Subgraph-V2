@@ -22,6 +22,8 @@ dataSources:
       abis:
         - name: V1_Router
           file: ./abis/UpDownV1/Router.json
+        - name: V1_Market
+          file: ./abis/UpDownV1/Market.json
       eventHandlers:
         - event: InitiateTrade(indexed address,uint256,uint256)
           handler: handleV1InitiateTrade

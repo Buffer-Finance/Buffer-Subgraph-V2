@@ -73,6 +73,8 @@ export function _handleCreateOptionsContract(
     optionContractInstance.poolContract = Address.fromBytes(
       event.params.pool
     ).toHexString();
+    optionContractInstance.token0 = event.params.token0;
+    optionContractInstance.token1 = event.params.token1;
     optionContractInstance.asset = event.params.token0 + event.params.token1;
     optionContractInstance.save();
   }

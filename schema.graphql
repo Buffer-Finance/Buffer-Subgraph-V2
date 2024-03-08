@@ -41,6 +41,8 @@ type OptionContract @entity {
   configContract: ConfigContract
   poolContract: String
   routerContract: String
+  token0: String
+  token1: String
 }
 
 type ConfigContract @entity {

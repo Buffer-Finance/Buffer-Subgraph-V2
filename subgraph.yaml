@@ -4,91 +4,6 @@ features:
 schema:
   file: ./schema.graphql
 dataSources:
-  # v1 - router
-  - kind: ethereum/contract
-    name: V1_Router
-    network: arbitrum-one
-    source:
-      address: "0x0e0A1241C9cE6649d5D30134a194BA3E24130305"
-      abi: V1_Router
-      startBlock: 56585555
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - OptionContract
-        - UserOptionData
-      abis:
-        - name: V1_Router
-          file: ./abis/UpDownV1/Router.json
-        - name: V1_Market
-          file: ./abis/UpDownV1/Market.json
-      eventHandlers:
-        - event: InitiateTrade(indexed address,uint256,uint256)
-          handler: handleV1InitiateTrade
-        - event: CancelTrade(indexed address,uint256,string)
-          handler: handleV1CancelTrade
-        - event: OpenTrade(indexed address,uint256,uint256)
-          handler: handleV1OpenTrade
-      file: ./src/UpDownV1Handlers/mapping.ts
-
-  # v2 - router
-  - kind: ethereum/contract
-    name: V2_Router
-    network: arbitrum-one
-    source:
-      address: "0x3890F9664188a2A7292319Ce67320037BE634D3a"
-      abi: V2_Router
-      startBlock: 125999696
-      # endBlock: 135395329
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - OptionContract
-        - UserOptionData
-      abis:
-        - name: V2_Router
-          file: ./abis/UpDownV2/Router.json
-      eventHandlers:
-        - event: ContractRegistryUpdated(address,bool)
-          handler: handleV2ContractRegistryUpdated
-        - event: CancelTrade(indexed address,uint256,string)
-          handler: handleV2CancelTrade
-        - event: OpenTrade(indexed address,uint256,uint256,address)
-          handler: handleV2OpenTrade
-      file: ./src/UpDownV2Handlers/mapping.ts
-
-  # v2 - router-2
-  - kind: ethereum/contract
-    name: V2_Router_2
-    network: arbitrum-one
-    source:
-      address: "0x075EEA84D1122A0c2F2A6C9265F8126F64087d44"
-      abi: V2_Router_2
-      startBlock: 135354708
-      # endBlock: 145711491
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - OptionContract
-        - UserOptionData
-      abis:
-        - name: V2_Router_2
-          file: ./abis/UpDownV2/Router2.json
-      eventHandlers:
-        - event: ContractRegistryUpdated(address,bool)
-          handler: handleV2ContractRegistryUpdated_2
-        - event: CancelTrade(indexed address,uint256,string)
-          handler: handleV2CancelTrade_2
-        - event: OpenTrade(indexed address,uint256,uint256,address)
-          handler: handleV2OpenTrade_2
-      file: ./src/UpDownV2Handlers/mapping.ts
-
   # v2 - router-3
   - kind: ethereum/contract
     name: V2_Router_3
@@ -103,17 +18,16 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - OptionContract
-        - UserOptionData
       abis:
         - name: V2_Router_3
           file: ./abis/UpDownV2/Router3.json
       eventHandlers:
         - event: ContractRegistryUpdated(address,bool)
           handler: handleV2ContractRegistryUpdated_3
-        - event: CancelTrade(indexed address,uint256,string)
-          handler: handleV2CancelTrade_3
-        - event: OpenTrade(indexed address,uint256,uint256,address)
-          handler: handleV2OpenTrade_3
+        # - event: CancelTrade(indexed address,uint256,string)
+        #   handler: handleV2CancelTrade_3
+        # - event: OpenTrade(indexed address,uint256,uint256,address)
+        #   handler: handleV2OpenTrade_3
       file: ./src/UpDownV2Handlers/mapping.ts
 
   # ab - router
@@ -131,20 +45,18 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - OptionContract
-        - ABUserOptionData
-        - ABQueuedOptionData
       abis:
         - name: ab_router
           file: ./abis/AboveBelow/Router.json
       eventHandlers:
         - event: ContractRegistryUpdated(address,bool)
           handler: handleABContractRegistryUpdated
-        - event: CancelTrade(indexed address,uint256,string)
-          handler: handleABCancelTrade
-        - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address,uint256)
-          handler: handleABOpenTrade
-        - event: InitiateTrade(indexed address,uint256,uint256)
-          handler: handleABInitiateTrade
+        # - event: CancelTrade(indexed address,uint256,string)
+        #   handler: handleABCancelTrade
+        # - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address,uint256)
+        #   handler: handleABOpenTrade
+        # - event: InitiateTrade(indexed address,uint256,uint256)
+        #   handler: handleABInitiateTrade
       file: ./src/AboveBelowHandlers/mapping.ts
 
   # ab - router-2
@@ -161,18 +73,68 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - OptionContract
-        - ABUserOptionData
-        - ABQueuedOptionData
       abis:
         - name: ab_router_2
           file: ./abis/AboveBelow/Router2.json
       eventHandlers:
         - event: ContractRegistryUpdated(address,bool)
           handler: handleABContractRegistryUpdated_2
-        - event: CancelTrade(indexed address,uint256,string)
-          handler: handleABCancelTrade_2
-        - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address,uint256)
-          handler: handleABOpenTrade_2
-        - event: InitiateTrade(indexed address,uint256,uint256)
-          handler: handleABInitiateTrade_2
+        # - event: CancelTrade(indexed address,uint256,string)
+        #   handler: handleABCancelTrade_2
+        # - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address,uint256)
+        #   handler: handleABOpenTrade_2
+        # - event: InitiateTrade(indexed address,uint256,uint256)
+        #   handler: handleABInitiateTrade_2
+      file: ./src/AboveBelowHandlers/mapping.ts
+
+  - kind: ethereum/contract
+    name: v2_markets
+    network: arbitrum-one
+    source:
+      abi: v2_markets
+      startBlock: 145432274
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - OptionContract
+      abis:
+        - name: v2_markets
+          file: ./abis/UpDownV2/Market.json
+        - name: UniswapPool
+          file: ./abis/UniswapPool.json
+      eventHandlers:
+        - event: Create(indexed address,indexed uint256,uint256,uint256)
+          handler: handleV2Create
+        - event: LpLoss(indexed uint256,uint256)
+          handler: handleV2LpLoss
+        - event: CreateOptionsContract(address,address,address,string,string,uint8) #common fo v2 and ab
+          handler: handleV2CreateOptionsContract
+      file: ./src/UpDownV2Handlers/mapping.ts
+
+  - kind: ethereum/contract
+    name: ab_markets
+    network: arbitrum-one
+    source:
+      abi: ab_markets
+      startBlock: 164890633
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - OptionContract
+      abis:
+        - name: ab_markets
+          file: ./abis/AboveBelow/Market.json
+        - name: UniswapPool
+          file: ./abis/UniswapPool.json
+      eventHandlers:
+        - event: Exercise(indexed address,indexed uint256,uint256,uint256,bool)
+          handler: handleABExercise
+        # - event: Expire(indexed uint256,uint256,uint256,bool)
+        #   handler: handleABExpire
+        - event: Create(indexed address,indexed uint256,uint256,uint256,int256,bytes32)
+          handler: handleABCreate
       file: ./src/AboveBelowHandlers/mapping.ts

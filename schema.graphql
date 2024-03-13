@@ -5,124 +5,81 @@ enum Period {
   total
 }
 
+enum Leagues {
+  Bronze
+  Silver
+  Gold
+  Platinum
+  Diamond
+}
+
 type OptionContract @entity {
   id: String!
   address: Bytes!
-  category: Int!
-  isPaused: Boolean!
-  asset: String
   pool: String!
-  token: String!
-  token0: String
-  token1: String
-
   poolContract: Bytes
   routerContract: Bytes
-  configContract: ConfigContract
+}
 
-  tradeCount: BigInt!
+type Trade @entity {
+  id: String!
+  userAddress: Bytes!
+  token: String!
   volume: BigInt!
-
-  openUp: BigInt!
-  openDown: BigInt!
-  openInterestUp: BigInt!
-  openInterestDown: BigInt!
 }
 
-type ABQueuedOptionData @entity {
+type DailyLeaderboard @entity {
   id: String!
-  optionContract: OptionContract!
-  strike: BigInt
-  user: Bytes
-  state: Int
-  isAbove: Boolean
-  queueID: BigInt
-  depositToken: String
-  reason: String
-  queueTimestamp: BigInt!
-  cancelTimestamp: BigInt!
-  lag: BigInt!
-  maxFeePerContract: BigInt!
-  processTime: BigInt!
-  expirationTime: BigInt
-  numberOfContracts: BigInt!
-  totalFee: BigInt!
+  userAddress: Bytes!
+  USDCVolume: BigInt!
+  USDCPnl: BigInt!
+  USDCTrades: BigInt!
+  USDCTradesWon: BigInt!
+  ARBVolume: BigInt!
+  ARBPnl: BigInt!
+  ARBTrades: BigInt!
+  ARBTradesWon: BigInt!
+  BFRVolume: BigInt!
+  BFRPnl: BigInt!
+  BFRTrades: BigInt!
+  BFRTradesWon: BigInt!
+  league: String!
+  dayId: String!
+  weekId: String!
+  totalVolume: BigInt!
+  totalPnl: BigInt!
+  totalTrades: BigInt!
 }
 
-type ABUserOptionData @entity {
+type WeeklyLeaderboard @entity {
   id: String!
-  optionContract: OptionContract!
-  optionID: BigInt
-  strike: BigInt
-  totalFee: BigInt!
-  user: Bytes!
-  creationTime: BigInt!
-  queuedTimestamp: BigInt!
-  expirationPrice: BigInt
-  payout: BigInt
-  state: Int
-  amount: BigInt!
-  expirationTime: BigInt
-  isAbove: Boolean
-  queueID: BigInt
-  settlementFee: BigInt!
-  lag: BigInt!
-  totalFee_usd: BigInt!
-  depositToken: String!
-  poolToken: String!
-  payout_usd: BigInt!
-}
-type ConfigContract @entity {
-  id: String!
-  address: Bytes
-  minPeriod: BigInt!
-  maxPeriod: BigInt!
-  minFee: BigInt!
-  maxFee: BigInt!
-  platformFee: BigInt!
-  earlyCloseThreshold: BigInt!
-  isEarlyCloseEnabled: Boolean!
-  marketOIaddress: Bytes!
-  poolOIaddress: Bytes!
-  IV: BigInt!
-  IVchangeTimestamp: BigInt!
-  creationWindowAddress: Bytes!
-  IVFactorOTM: BigInt!
-  IVFactorITM: BigInt!
-  SpreadConfig1: BigInt!
-  SpreadConfig2: BigInt!
-  SpreadFactor: BigInt!
-  maxSkew: BigInt!
-  circuitBreakerContract: Bytes!
-  optionStorageContract: Bytes!
-  payout: BigInt!
-  sfdContract: Bytes!
-  sf: BigInt!
-  traderNFTContract: Bytes!
-  stepSize: BigInt!
+  userAddress: Bytes!
+  USDCVolume: BigInt!
+  USDCPnl: BigInt!
+  USDCTrades: BigInt!
+  USDCTradesWon: BigInt!
+  ARBVolume: BigInt!
+  ARBPnl: BigInt!
+  ARBTrades: BigInt!
+  ARBTradesWon: BigInt!
+  BFRVolume: BigInt!
+  BFRPnl: BigInt!
+  BFRTrades: BigInt!
+  BFRTradesWon: BigInt!
+  league: String!
+  weekId: String!
+  totalVolume: BigInt!
+  totalPnl: BigInt!
+  totalTrades: BigInt!
 }
 
-type UserOptionData @entity {
-  id: String!
-  optionContract: OptionContract!
-  optionID: BigInt
-  strike: BigInt
-  totalFee: BigInt!
-  totalFee_usd: BigInt!
-  user: Bytes!
-  creationTime: BigInt!
-  expirationPrice: BigInt
-  payout: BigInt
-  payout_usd: BigInt
-  state: Int
-  amount: BigInt!
-  expirationTime: BigInt
-  depositToken: String!
-  settlementFee: BigInt!
-  lag: BigInt!
-  poolToken: String!
-  queueID: BigInt
-  closeTime: BigInt
-  creationEventTimeStamp: BigInt!
-  isAbove: Boolean
+type TotalData @entity {
+  id: String! # dayid / weekid
+  trades: BigInt!
+  volume: BigInt!
 }
+
+# type Test @entity {
+#   id: Bytes!
+#   name: String!
+# }

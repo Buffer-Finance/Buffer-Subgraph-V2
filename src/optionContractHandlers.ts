@@ -1,4 +1,3 @@
-import { Address } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -10,7 +9,7 @@ import {
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { OptionContract } from "../generated/schema";
 import { updateClosingStats, updateOpeningStats } from "./aggregate";
-import { RouterAddress, State } from "./config";
+import { State } from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
 import {
   _loadOrCreateMarket,
@@ -37,7 +36,7 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
     optionContract.token1 = event.params.token1;
     optionContract.config = configContractEntity.id;
     optionContract.poolContract = optionContractInstance.pool();
-    optionContract.routerContract = Address.fromHexString(RouterAddress);
+    // optionContract.routerContract = Address.fromHexString(RouterAddress);
     optionContract.save();
   }
 }

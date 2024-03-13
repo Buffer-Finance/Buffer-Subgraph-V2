@@ -8,7 +8,7 @@ import {
   Expire,
   Pause,
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
-import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
+import { OptionContract } from "../generated/schema";
 import { updateClosingStats, updateOpeningStats } from "./aggregate";
 import { RouterAddress, State } from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
@@ -21,12 +21,10 @@ import {
 export function _handleCreateContract(event: CreateOptionsContract): void {
   const contractAddress = event.address;
   const contractAddressString = contractAddress.toHexString();
-  const routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
 
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
+  const optionContract = OptionContract.load(contractAddressString);
+
+  if (optionContract !== null) {
     const optionContract = _loadOrCreateOptionContractEntity(
       contractAddressString
     );
@@ -47,28 +45,17 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
 export function _handleCreate(event: Create): void {
   let contractAddress = event.address;
   let contractAddressString = contractAddress.toHexString();
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
+  const optionContract = OptionContract.load(contractAddressString);
 
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
-    let optionID = event.params.id;
-    let optionContractInstance = BufferBinaryOptions.bind(contractAddress);
-    let optionData = optionContractInstance.options(optionID);
+  if (optionContract !== null) {
     let userOptionData = _loadOrCreateOptionDataEntity(
-      optionID,
+      event.params.id,
       contractAddressString
     );
-    userOptionData.user = event.params.account;
     userOptionData.totalFee = event.params.totalFee;
-    userOptionData.state = optionData.value0;
-    userOptionData.strike = optionData.value1;
-    userOptionData.amount = optionData.value2;
-    userOptionData.expirationTime = optionData.value5;
-    userOptionData.isAbove = optionData.value8;
-    userOptionData.creationTime = optionData.value7;
     userOptionData.settlementFee = event.params.settlementFee;
+    userOptionData.amount = event.params.amount;
+
     userOptionData.save();
 
     const market = _loadOrCreateMarket(
@@ -90,14 +77,11 @@ export function _handleCreate(event: Create): void {
 }
 
 export function _handleExpire(event: Expire): void {
-  let contractAddress = event.address;
-  let contractAddressString = contractAddress.toHexString();
+  const contractAddressString = event.address.toHexString();
 
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
+  const optionContract = OptionContract.load(contractAddressString);
+
+  if (optionContract !== null) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddressString
@@ -115,14 +99,11 @@ export function _handleExpire(event: Expire): void {
 }
 
 export function _handleExercise(event: Exercise): void {
-  let contractAddress = event.address;
-  let contractAddressString = contractAddress.toHexString();
+  const contractAddressString = event.address.toHexString();
 
-  let routerContract = BufferRouter.bind(Address.fromString(RouterAddress));
-  if (
-    routerContract.try_contractRegistry(contractAddress).reverted === false &&
-    routerContract.try_contractRegistry(contractAddress).value === true
-  ) {
+  const optionContract = OptionContract.load(contractAddressString);
+
+  if (optionContract !== null) {
     let userOptionData = _loadOrCreateOptionDataEntity(
       event.params.id,
       contractAddressString
@@ -141,25 +122,37 @@ export function _handleExercise(event: Exercise): void {
 }
 
 export function _handlePause(event: Pause): void {
-  let optionContract = _loadOrCreateOptionContractEntity(
-    event.address.toHexString()
-  );
+  const contractAddressString = event.address.toHexString();
 
-  optionContract.isPaused = event.params.isPaused;
-  optionContract.save();
+  const optionContract = OptionContract.load(contractAddressString);
+
+  if (optionContract !== null) {
+    let optionContract = _loadOrCreateOptionContractEntity(
+      event.address.toHexString()
+    );
+
+    optionContract.isPaused = event.params.isPaused;
+    optionContract.save();
+  }
 }
 
 export function _handleCreateMarket(event: CreateMarket): void {
-  const optionContract = _loadOrCreateOptionContractEntity(
-    event.params.optionsContract.toHexString()
-  );
-  const market = _loadOrCreateMarket(
-    event.params.marketId.concat(event.params.optionsContract)
-  );
-  market.optionContract = optionContract.id;
-  market.strike = event.params.strike;
-  market.expiration = event.params.expiration;
-  market.marketId = event.params.marketId;
+  const contractAddressString = event.address.toHexString();
 
-  market.save();
+  const optionContract = OptionContract.load(contractAddressString);
+
+  if (optionContract !== null) {
+    const optionContract = _loadOrCreateOptionContractEntity(
+      event.params.optionsContract.toHexString()
+    );
+    const market = _loadOrCreateMarket(
+      event.params.marketId.concat(event.params.optionsContract)
+    );
+    market.optionContract = optionContract.id;
+    market.strike = event.params.strike;
+    market.expiration = event.params.expiration;
+    market.marketId = event.params.marketId;
+
+    market.save();
+  }
 }

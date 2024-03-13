@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: BufferBinaryOptions
-      startBlock: 4916369
+      startBlock: 22651929
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -25,7 +25,7 @@ dataSources:
       eventHandlers:
         - event: CreateOptionsContract(address,address,address,string,string,uint8)
           handler: handleCreateContract
-        - event: Create(indexed address,indexed uint256,uint256,uint256,int256,bytes32)
+        - event: Create(indexed address,indexed uint256,uint256,uint256,int256,bytes32,uint256)
           handler: handleCreate
         - event: Expire(indexed uint256,uint256,uint256,bool)
           handler: handleExpire
@@ -40,9 +40,9 @@ dataSources:
     name: BufferRouter
     network: arbitrum-sepolia
     source:
-      address: "0x912B29A5efeA11d7994970799E82C3A7FB54a434"
+      address: "0x99Dd51897d1C362204A383CE946C0589C56BB902"
       abi: BufferRouter
-      startBlock: 4916369
+      startBlock: 22651929
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -56,11 +56,13 @@ dataSources:
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
-        - event: InitiateTrade(indexed address,uint256,uint256)
+        - event: ContractRegistryUpdated(address,bool)
+          handler: handleContractRegistryUpdated
+        - event: InitiateTrade(indexed address,uint256,uint256,address,bool,uint128,uint256,uint32,uint256)
           handler: handleInitiateTrade
-        - event: CancelTrade(indexed address,uint256,string)
+        - event: CancelTrade(indexed address,uint256,string,address)
           handler: handleCancelTrade
-        - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address,uint256)
+        - event: OpenTrade(indexed address,indexed uint256,indexed uint256,address)
           handler: handleOpenTrade
       file: ./src/mapping.ts
   - kind: ethereum/contract
@@ -68,7 +70,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: Config
-      startBlock: 4916369
+      startBlock: 22651929
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -79,38 +81,18 @@ dataSources:
         - name: Config
           file: ./abis/Config.json
       eventHandlers:
-        # - event: UpdateMinPeriod(uint32)
-        #   handler: handleUpdateMinPeriod
-        # - event: UpdateMaxPeriod(uint32)
-        #   handler: handleUpdateMaxPeriod
-        # - event: UpdateMaxFee(uint256)
-        #   handler: handleUpdateMaxFee
-        # - event: UpdateMinFee(uint256)
-        #   handler: handleUpdateMinFee
         - event: UpdateCreationWindowContract(address)
           handler: handleUpdateCreationWindowContract
         - event: UpdateMaxSkew(int256)
           handler: handleUpdateMaxSkew
-        - event: UpdateCircuitBreakerContract(address)
-          handler: handleUpdateCircuitBreakerContract
         - event: UpdateIV(uint32)
           handler: handleUpdateIV
-        # - event: UpdateIVFactorITM(uint256)
-        #   handler: handleUpdateIVFactorITM
-        # - event: UpdateIVFactorOTM(uint256)
-        #   handler: handleUpdateIVFactorOTM
-        - event: UpdateOptionStorageContract(address)
-          handler: handleUpdateOptionStorageContract
         - event: UpdatePayout(uint256)
           handler: handleUpdatePayout
         - event: UpdatePlatformFee(uint256)
           handler: handleUpdatePlatformFee
-        - event: UpdateSettlementFeeDisbursalContract(address)
-          handler: handleUpdateSettlementFeeDisbursalContract
         - event: UpdateSf(uint256)
           handler: handleUpdateSf
-        - event: UpdatetraderNFTContract(address)
-          handler: handleUpdatetraderNFTContract
         - event: UpdateStrikeStepSize(uint128)
           handler: handleUpdateStrikeStepSize
       file: ./src/mapping.ts

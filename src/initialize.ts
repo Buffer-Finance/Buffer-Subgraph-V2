@@ -25,6 +25,7 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.openDown = ZERO;
     optionContract.openInterestUp = ZERO;
     optionContract.openInterestDown = ZERO;
+    optionContract.config = "UNKNOWN";
   }
   return optionContract as OptionContract;
 }
@@ -45,7 +46,6 @@ export function _loadOrCreateQueuedOptionEntity(
     entity.processTime = ZERO;
     entity.maxFeePerContract = ZERO;
     entity.numberOfContracts = ZERO;
-    entity.totalFee = ZERO;
     entity.save();
   }
   return entity as QueuedOptionData;

@@ -88,6 +88,12 @@
         "internalType": "bytes32",
         "name": "marketId",
         "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
     "name": "Create",
@@ -598,7 +604,7 @@
         "name": "optionParams",
         "type": "tuple"
       },
-      { "internalType": "uint32", "name": "queuedTime", "type": "uint32" }
+      { "internalType": "uint32", "name": "queueTimestamp", "type": "uint32" }
     ],
     "name": "createFromRouter",
     "outputs": [
@@ -651,14 +657,21 @@
     ],
     "name": "evaluateParams",
     "outputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "fee", "type": "uint256" },
       {
-        "internalType": "uint256",
-        "name": "revisedContracts",
-        "type": "uint256"
-      },
-      { "internalType": "uint256", "name": "revisedSf", "type": "uint256" }
+        "components": [
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "uint256", "name": "fee", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "revisedContracts",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "revisedSf", "type": "uint256" }
+        ],
+        "internalType": "struct IBufferBinaryOptions.RevisedData",
+        "name": "revisedData",
+        "type": "tuple"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -692,16 +705,6 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "marketId", "type": "bytes32" },
-      { "internalType": "bool", "name": "isAbove", "type": "bool" }
-    ],
-    "name": "getLoss",
-    "outputs": [{ "internalType": "int256", "name": "", "type": "int256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "uint256", "name": "strike", "type": "uint256" },
       { "internalType": "uint256", "name": "expiration", "type": "uint256" }
     ],
@@ -717,11 +720,17 @@
         "internalType": "uint256",
         "name": "_baseFeePerContract",
         "type": "uint256"
-      },
-      { "internalType": "bool", "name": "isAbove", "type": "bool" }
+      }
     ],
     "name": "getMaxPermissibleContracts",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMaxSkew",
+    "outputs": [{ "internalType": "int256", "name": "", "type": "int256" }],
     "stateMutability": "view",
     "type": "function"
   },

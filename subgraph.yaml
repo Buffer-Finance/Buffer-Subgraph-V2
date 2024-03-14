@@ -49,6 +49,8 @@ dataSources:
           handler: handleUpdateSpreadConfig2
         - event: UpdateSpreadFactor(uint32)
           handler: handleUpdateSpreadFactor
+        - event: UpdateIncentivePoolContract(indexed address)
+          handler: handleUpdateIncentivePoolContract
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: BufferBinaryOptions
@@ -168,4 +170,24 @@ dataSources:
           handler: handleRegisterAccount
         - event: DeregisterAccount(indexed address,uint256)
           handler: handleDeregisterAccount
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: IncentivePool
+    network: arbitrum-sepolia
+    source:
+      abi: IncentivePool
+      startBlock: 9051014
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - UserOptionData
+        - ConfigContract
+      abis:
+        - name: IncentivePool
+          file: ./abis/IncentivePool.json
+      eventHandlers:
+        - event: JackpotWinningsTransferred(indexed address,uint256,indexed address,uint256)
+          handler: handleJackpotWinningsTransferred
       file: ./src/mapping.ts

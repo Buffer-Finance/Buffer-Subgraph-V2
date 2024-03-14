@@ -16,6 +16,7 @@ import {
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
+  UpdateIncentivePoolContract
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { ConfigContract } from "../generated/schema";
 import { ADDRESS_ZERO } from "./config";
@@ -212,5 +213,13 @@ export function _handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
   const entity = _loadorCreateConfigContractEntity(address);
 
   entity.SpreadFactor = event.params.ivFactorOTM;
+  entity.save();
+}
+
+export function _handleUpdateIncentivePoolContract(event: UpdateIncentivePoolContract): void {
+  const address = event.address;
+  const entity = _loadorCreateConfigContractEntity(address);
+
+  entity.IncentivePoolContract = event.params.incentivePool.toHexString();
   entity.save();
 }

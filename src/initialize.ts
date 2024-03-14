@@ -19,6 +19,7 @@ import {
   VolumeStat,
   WeeklyLeaderboard,
   WeeklyRevenueAndFee,
+  JackpotData
 } from "../generated/schema";
 import {
   ADDRESS_ZERO,
@@ -486,4 +487,27 @@ export function _loadOrCreateOptionStats(
   }
 
   return entity as OptionStat;
+}
+
+
+export function _loadorCreateJackpotData(
+  id: string,
+  optionContract: string,
+  amount: BigInt,
+  user: string,
+  optionID: BigInt,
+  timestamp: BigInt
+): JackpotData {
+  let entity = JackpotData.load(id);
+
+  if (entity === null) {
+    entity = new JackpotData(id);
+    entity.optionContract = optionContract;
+    entity.amount = amount;
+    entity.user = Address.fromString(user);
+    entity.optionID = optionID;
+    entity.timestamp = timestamp;
+    entity.save();
+  }
+  return entity as JackpotData;
 }

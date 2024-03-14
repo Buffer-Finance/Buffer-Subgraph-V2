@@ -28,12 +28,16 @@ import {
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
+  UpdateIncentivePoolContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
 } from "../generated/V1Options/V1Options";
+import {
+  JackpotWinningsTransferred,
+} from "../generated/IncentivePool/IncentivePool";
 import {
   _handleCreateOptionsContract,
   _handleUpdateCreationWindowContract,
@@ -51,6 +55,7 @@ import {
   _handleUpdateSpreadConfig1,
   _handleUpdateSpreadConfig2,
   _handleUpdateSpreadFactor,
+  _handleUpdateIncentivePoolContract,
 } from "./configContractHandlers";
 import {
   _handleCreate,
@@ -68,6 +73,10 @@ import {
   _handleOpenTrade,
   _handleRegisterAccount,
 } from "./routerContractHandlers";
+import {
+  _handleJackpotWinningsTransferred,
+} from "./jackpotHandlers";
+
 
 export function handleOpenTrade(event: OpenTrade): void {
   _handleOpenTrade(event);
@@ -185,6 +194,15 @@ export function handleUpdateSpreadConfig1(event: UpdateSpreadConfig1): void {
 export function handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
   _handleUpdateSpreadConfig2(event);
 }
+
 export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
   _handleUpdateSpreadFactor(event);
+}
+
+export function handleUpdateIncentivePoolContract(event: UpdateIncentivePoolContract): void {
+  _handleUpdateIncentivePoolContract(event);
+}
+
+export function handleJackpotWinningsTransferred(event: JackpotWinningsTransferred): void {
+  _handleJackpotWinningsTransferred(event);
 }

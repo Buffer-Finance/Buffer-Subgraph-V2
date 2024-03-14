@@ -6,9 +6,21 @@ enum Period {
 }
 
 type PoolStat @entity {
-  id: ID!
+  id: String!
   amount: BigInt!
-  period: Period!
+  blp_amount: BigInt!
   timestamp: BigInt!
   rate: BigInt!
+}
+
+type BLPtxns @entity {
+  id: String! #txn hash
+  timestamp: BigInt!
+  amount: BigInt!
+  type: String!
+  blp_rate: BigInt!
+  units_minted_burned: BigInt!
+  txHash: Bytes!
+  user: Bytes!
+  poolAddress: Bytes!
 }

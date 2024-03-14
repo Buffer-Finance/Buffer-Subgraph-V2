@@ -4,4 +4,3 @@ generated/*
 package.json
 package-lock.json
 *.lock
-*.json

@@ -36,7 +36,7 @@ import {
   Expire as ExpireV1,
 } from "../generated/V1Options/V1Options";
 import {
-  JackpotWinningsTransferred,
+  JackpotTriggered,
 } from "../generated/IncentivePool/IncentivePool";
 import {
   _handleCreateOptionsContract,
@@ -203,6 +203,6 @@ export function handleUpdateIncentivePoolContract(event: UpdateIncentivePoolCont
   _handleUpdateIncentivePoolContract(event);
 }
 
-export function handleJackpotWinningsTransferred(event: JackpotWinningsTransferred): void {
+export function handleJackpotWinningsTransferred(event: JackpotTriggered): void {
   _handleJackpotWinningsTransferred(event);
 }

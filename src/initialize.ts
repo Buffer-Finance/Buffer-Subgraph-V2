@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { BufferBinaryOptions } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { BufferRouter } from "../generated/BufferRouter/BufferRouter";
 import {
@@ -492,11 +492,14 @@ export function _loadOrCreateOptionStats(
 
 export function _loadorCreateJackpotData(
   id: string,
-  optionContract: string,
+  optionContract: Bytes,
   amount: BigInt,
-  user: string,
+  user: Bytes,
   optionID: BigInt,
-  timestamp: BigInt
+  timestamp: BigInt,
+  jackpotAmount: BigInt,
+  routerContract: Bytes,
+  txn_hash: Bytes
 ): JackpotData {
   let entity = JackpotData.load(id);
 
@@ -504,9 +507,12 @@ export function _loadorCreateJackpotData(
     entity = new JackpotData(id);
     entity.optionContract = optionContract;
     entity.amount = amount;
-    entity.user = Address.fromString(user);
+    entity.user = user;
     entity.optionID = optionID;
     entity.timestamp = timestamp;
+    entity.jackpotAmount = jackpotAmount,
+    entity.routerContract = routerContract;
+    entity.txn_hash = txn_hash;
     entity.save();
   }
   return entity as JackpotData;

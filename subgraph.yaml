@@ -188,6 +188,6 @@ dataSources:
         - name: IncentivePool
           file: ./abis/IncentivePool.json
       eventHandlers:
-        - event: JackpotWinningsTransferred(indexed address,uint256,indexed address,uint256)
-          handler: handleJackpotWinningsTransferred
+        - event: JackpotTriggered(indexed address,uint256,indexed address,uint256,indexed address,uint256)
+          handler: handleJackpotTriggered
       file: ./src/mapping.ts

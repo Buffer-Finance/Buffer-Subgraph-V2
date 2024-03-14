@@ -1,5 +1,5 @@
 import { Address } from "@graphprotocol/graph-ts";
-import { JackpotWinningsTransferred } from "../generated/IncentivePool/IncentivePool";
+import { JackpotTriggered } from "../generated/IncentivePool/IncentivePool";
 import { ConfigContract, OptionContract } from "../generated/schema";
 import { ADDRESS_ZERO } from "./config";
 import {
@@ -10,14 +10,17 @@ const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 
 export function _handleJackpotWinningsTransferred(
-    event: JackpotWinningsTransferred
+    event: JackpotTriggered
   ): void {
     const jackpotInstance = _loadorCreateJackpotData(
       event.transaction.hash.toHexString() + "-" + event.logIndex.toString(),
-      Address.fromBytes(event.params.token).toHexString(),
+      event.params.optionContract,
       event.params.amount,
-      event.params.to.toString(),
-      event.params.queueId,
-      event.block.timestamp
+      event.params.userAddress,
+      event.params.optionId,
+      event.block.timestamp,
+      event.params.jackpotWinAmount,
+      event.params.router,
+      event.transaction.hash
     );
   }

@@ -41,7 +41,7 @@ dataSources:
     name: BufferRouter
     network: arbitrum-sepolia
     source:
-      address: "0xdC4A81864DaefCEdbdAB7206032154f462170458"
+      address: "0xA747eeE75fF4a917c6c822C7b7815cdd28c37974"
       abi: BufferRouter
       startBlock: 22682161
     mapping:

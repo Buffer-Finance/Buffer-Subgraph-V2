@@ -109,6 +109,8 @@ dataSources:
           handler: handleV2Create
         - event: LpLoss(indexed uint256,uint256)
           handler: handleV2LpLoss
+        - event: LpProfit(indexed uint256,uint256)
+          handler: handleV2LpProfit
         - event: CreateOptionsContract(address,address,address,string,string,uint8) #common fo v2 and ab
           handler: handleV2CreateOptionsContract
       file: ./src/UpDownV2Handlers/mapping.ts
@@ -133,8 +135,8 @@ dataSources:
       eventHandlers:
         - event: Exercise(indexed address,indexed uint256,uint256,uint256,bool)
           handler: handleABExercise
-        # - event: Expire(indexed uint256,uint256,uint256,bool)
-        #   handler: handleABExpire
+        - event: Expire(indexed uint256,uint256,uint256,bool)
+          handler: handleABExpire
         - event: Create(indexed address,indexed uint256,uint256,uint256,int256,bytes32)
           handler: handleABCreate
       file: ./src/AboveBelowHandlers/mapping.ts

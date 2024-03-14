@@ -76,7 +76,21 @@ export function handleV2Create(event: Create): void {
   }
 }
 
-export function handleV2LpProfit(event: LpLoss): void {}
+export function handleV2LpProfit(event: LpLoss): void {
+  const trade = Trade.load(
+    event.params.id.toString() + event.address.toHexString().toLowerCase()
+  );
+  if (trade != null) {
+    _createOrUpdateLeaderBoards(
+      event.block.timestamp,
+      trade.userAddress,
+      trade.volume,
+      trade.token,
+      event.params.amount,
+      false
+    );
+  }
+}
 
 export function handleV2LpLoss(event: LpProfit): void {
   const trade = Trade.load(
@@ -88,7 +102,8 @@ export function handleV2LpLoss(event: LpProfit): void {
       trade.userAddress,
       trade.volume,
       trade.token,
-      event.params.amount
+      event.params.amount,
+      true
     );
   }
 }

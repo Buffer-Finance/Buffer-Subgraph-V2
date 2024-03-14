@@ -83,3 +83,8 @@ type TotalData @entity {
 #   id: Bytes!
 #   name: String!
 # }
+
+type LastWeekLeaderboard @entity {
+  id: String!
+  userAddress: Bytes!
+}

@@ -1,6 +1,7 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import {
   DailyLeaderboard,
+  LastWeekLeaderboard,
   OptionContract,
   TotalData,
   Trade,
@@ -69,8 +70,11 @@ export function _createOrUpdateLeaderBoards(
   userAddress: Bytes,
   volume: BigInt,
   depositToken: string,
-  winAmount: BigInt
+  amount: BigInt,
+  isWin: boolean
 ): void {
+  _createOrUpdateTotalData(timestamp, volume, depositToken);
+  const winAmount = isWin ? amount : ZERO.minus(amount);
   const dayId = _getDayId(timestamp);
 
   const id = dayId + userAddress.toHexString();
@@ -80,9 +84,9 @@ export function _createOrUpdateLeaderBoards(
   let usdcTrades = ZERO;
   let arbTrades = ZERO;
   let bfrTrades = ZERO;
-  let arbPnl = winAmount;
-  let bfrPnl = winAmount;
-  let usdcPnl = winAmount;
+  let arbPnl = ZERO;
+  let bfrPnl = ZERO;
+  let usdcPnl = ZERO;
   let usdcTradesWon = ZERO;
   let arbTradesWon = ZERO;
   let bfrTradesWon = ZERO;
@@ -94,37 +98,39 @@ export function _createOrUpdateLeaderBoards(
     usdcVolume = volume;
     usdcTrades = ONE;
     totalVolume = volume;
+    usdcPnl = winAmount;
+    totalPnl = winAmount;
     if (winAmount > ZERO) {
-      usdcPnl = winAmount;
       usdcTradesWon = ONE;
-      totalPnl = winAmount;
     }
   } else if (depositToken == "ARB") {
     arbVolume = convertToUSD(volume, "ARB");
     arbTrades = ONE;
     totalVolume = arbVolume;
+    arbPnl = convertToUSD(winAmount, "ARB");
+    totalPnl = arbPnl;
     if (winAmount > ZERO) {
-      arbPnl = convertToUSD(winAmount, "ARB");
       arbTradesWon = ONE;
-      totalPnl = arbPnl;
     }
   } else if (depositToken == "BFR") {
     bfrVolume = convertToUSD(volume, "BFR");
     bfrTrades = ONE;
     totalVolume = bfrVolume;
+    bfrPnl = convertToUSD(winAmount, "BFR");
+    totalPnl = bfrPnl;
     if (winAmount > ZERO) {
-      bfrPnl = convertToUSD(winAmount, "BFR");
       bfrTradesWon = ONE;
-      totalPnl = bfrPnl;
     }
   }
 
   let dailyLeaderboard = DailyLeaderboard.load(id);
 
   const weekId = _getLeaderboardWeekId(timestamp);
-
+  const lastWeekId = _getLeaderboardWeekId(
+    timestamp.minus(BigInt.fromI32(604800))
+  );
   if (dailyLeaderboard == null) {
-    const league = getLeagueFromLastWeek(weekId, userAddress);
+    const league = getLeagueFromLastWeek(lastWeekId, userAddress);
 
     dailyLeaderboard = new DailyLeaderboard(id);
     dailyLeaderboard.ARBVolume = arbVolume;
@@ -176,7 +182,7 @@ export function _createOrUpdateLeaderBoards(
   );
 
   if (weekleaderboard == null) {
-    const league = getLeagueFromLastWeek(weekId, userAddress);
+    const league = getLeagueFromLastWeek(lastWeekId, userAddress);
 
     const weekleaderboard = new WeeklyLeaderboard(
       weekId + userAddress.toHexString()
@@ -223,21 +229,28 @@ export function _createOrUpdateLeaderBoards(
   }
 }
 
-function getLeagueFromLastWeek(weekId: string, userAddress: Bytes): string {
-  const lastWeekId = parseInt(weekId) - 1;
-
+function getLeagueFromLastWeek(lastWeekId: string, userAddress: Bytes): string {
   const lastWeekLeaderboard = WeeklyLeaderboard.load(
     lastWeekId.toString() + userAddress.toHexString()
   );
+  const last = new LastWeekLeaderboard(
+    lastWeekId.toString() + userAddress.toHexString()
+  );
+  if (last !== null) {
+    last.userAddress = userAddress;
+    last.save();
+  }
   let league = "Bronze";
   if (lastWeekLeaderboard != null) {
-    if (lastWeekLeaderboard.totalVolume > BigInt.fromI64(25000000000)) {
+    if (lastWeekLeaderboard.totalVolume.gt(BigInt.fromI64(25000000000))) {
       league = "Diamond";
-    } else if (lastWeekLeaderboard.totalVolume > BigInt.fromI64(10000000000)) {
+    } else if (
+      lastWeekLeaderboard.totalVolume.gt(BigInt.fromI64(10000000000))
+    ) {
       league = "Platinum";
-    } else if (lastWeekLeaderboard.totalVolume > BigInt.fromI64(5000000000)) {
+    } else if (lastWeekLeaderboard.totalVolume.gt(BigInt.fromI64(5000000000))) {
       league = "Gold";
-    } else if (lastWeekLeaderboard.totalVolume > BigInt.fromI64(2000000000)) {
+    } else if (lastWeekLeaderboard.totalVolume.gt(BigInt.fromI64(2000000000))) {
       league = "Silver";
     }
   }

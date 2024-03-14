@@ -78,9 +78,24 @@ export function handleABExercise(event: Exercise): void {
       trade.userAddress,
       trade.volume,
       trade.token,
-      event.params.profit
+      event.params.profit,
+      true
     );
   }
 }
 
-export function handleABExpire(event: Expire): void {}
+export function handleABExpire(event: Expire): void {
+  const trade = Trade.load(
+    event.params.id.toString() + event.address.toHexString().toLowerCase()
+  );
+  if (trade != null) {
+    _createOrUpdateLeaderBoards(
+      event.block.timestamp,
+      trade.userAddress,
+      trade.volume,
+      trade.token,
+      trade.volume,
+      false
+    );
+  }
+}

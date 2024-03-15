@@ -104,20 +104,20 @@ export function _createOrUpdateLeaderBoards(
       usdcTradesWon = ONE;
     }
   } else if (depositToken == "ARB") {
-    arbVolume = convertToUSD(volume, "ARB");
+    arbVolume = volume;
     arbTrades = ONE;
-    totalVolume = arbVolume;
-    arbPnl = convertToUSD(winAmount, "ARB");
-    totalPnl = arbPnl;
+    totalVolume = convertToUSD(volume, "ARB");
+    arbPnl = winAmount;
+    totalPnl = convertToUSD(winAmount, "ARB");
     if (winAmount > ZERO) {
       arbTradesWon = ONE;
     }
   } else if (depositToken == "BFR") {
-    bfrVolume = convertToUSD(volume, "BFR");
+    bfrVolume = volume;
     bfrTrades = ONE;
-    totalVolume = bfrVolume;
-    bfrPnl = convertToUSD(winAmount, "BFR");
-    totalPnl = bfrPnl;
+    totalVolume = convertToUSD(volume, "BFR");
+    bfrPnl = winAmount;
+    totalPnl = convertToUSD(winAmount, "BFR");
     if (winAmount > ZERO) {
       bfrTradesWon = ONE;
     }

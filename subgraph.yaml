@@ -138,6 +138,8 @@ dataSources:
         - name: BufferRouter
           file: ./abis/BufferRouter.json
       eventHandlers:
+        - event: ContractRegistryUpdated(address,bool)
+          handler: handleContractRegistryUpdated
         - event: OpenTrade(indexed address,uint256,uint256,address)
           handler: handleOpenTrade
       file: ./src/mapping.ts

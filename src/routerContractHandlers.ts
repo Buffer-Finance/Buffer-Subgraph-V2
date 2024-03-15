@@ -3,7 +3,10 @@ import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import {
+  ContractRegistryUpdated,
+  OpenTrade,
+} from "../generated/BufferRouter/BufferRouter";
 import {
   DeregisteredAccount,
   EOAtoOneCT,
@@ -12,6 +15,20 @@ import {
 import { ADDRESS_ZERO } from "./config";
 import { _loadOrCreateOptionContractEntity } from "./initialize";
 import { isContractRegisteredToV2Router } from "./optionContractHandlers";
+
+export function _handleContractRegistryUpdated(
+  event: ContractRegistryUpdated
+): void {
+  if (event.params.register === false) {
+    let contractAddress = Address.fromBytes(
+      event.params.targetContract
+    ).toHexString();
+    let optionContractInstance =
+      _loadOrCreateOptionContractEntity(contractAddress);
+    optionContractInstance.isRegistered = false;
+    optionContractInstance.save();
+  }
+}
 
 export function _handleOpenTrade(event: OpenTrade): void {
   let queueID = event.params.queueId;

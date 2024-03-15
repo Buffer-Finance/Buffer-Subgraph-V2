@@ -43,6 +43,7 @@ type OptionContract @entity {
   routerContract: String
   token0: String
   token1: String
+  isRegistered: Boolean!
 }
 
 type ConfigContract @entity {

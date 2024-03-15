@@ -78,6 +78,7 @@ export function _loadOrCreateOptionContractEntity(
     //    optionContract.payoutForDown = ZERO;
     //    optionContract.payoutForUp = ZERO;
     optionContract.category = -1;
+    optionContract.isRegistered = true;
 
     if (
       optionContract.routerContract == ADDRESS_ZERO ||

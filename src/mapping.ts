@@ -29,7 +29,10 @@ import {
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
 } from "../generated/BufferConfigUpdates/BufferConfig";
-import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import {
+  ContractRegistryUpdated,
+  OpenTrade,
+} from "../generated/BufferRouter/BufferRouter";
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
@@ -64,6 +67,7 @@ import {
   _handleUpdateReferral,
 } from "./optionContractHandlers";
 import {
+  _handleContractRegistryUpdated,
   _handleDeregisterAccount,
   _handleOpenTrade,
   _handleRegisterAccount,
@@ -187,4 +191,9 @@ export function handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
 }
 export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
   _handleUpdateSpreadFactor(event);
+}
+export function handleContractRegistryUpdated(
+  event: ContractRegistryUpdated
+): void {
+  _handleContractRegistryUpdated(event);
 }

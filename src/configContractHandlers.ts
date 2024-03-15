@@ -52,6 +52,7 @@ function _loadorCreateConfigContractEntity(address: Address): ConfigContract {
     entity.SpreadConfig1 = ZERO;
     entity.SpreadConfig2 = ZERO;
     entity.SpreadFactor = ZERO;
+    entity.IncentivePoolContract = zeroAddress;
   }
   return entity;
 }

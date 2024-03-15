@@ -19,6 +19,7 @@ import {
   UpdateIV,
   UpdateIVFactorITM,
   UpdateIVFactorOTM,
+  UpdateIncentivePoolContract,
   UpdateMarketOIConfigContract,
   UpdateMaxPeriod,
   UpdateMinFee,
@@ -28,16 +29,13 @@ import {
   UpdateSpreadConfig1,
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
-  UpdateIncentivePoolContract,
 } from "../generated/BufferConfigUpdates/BufferConfig";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
+import { JackpotTriggered } from "../generated/IncentivePool/IncentivePool";
 import {
   Exercise as ExerciseV1,
   Expire as ExpireV1,
 } from "../generated/V1Options/V1Options";
-import {
-  JackpotTriggered,
-} from "../generated/IncentivePool/IncentivePool";
 import {
   _handleCreateOptionsContract,
   _handleUpdateCreationWindowContract,
@@ -46,6 +44,7 @@ import {
   _handleUpdateIV,
   _handleUpdateIVFactorITM,
   _handleUpdateIVFactorOTM,
+  _handleUpdateIncentivePoolContract,
   _handleUpdateMaxPeriod,
   _handleUpdateMinFee,
   _handleUpdateMinPeriod,
@@ -55,8 +54,8 @@ import {
   _handleUpdateSpreadConfig1,
   _handleUpdateSpreadConfig2,
   _handleUpdateSpreadFactor,
-  _handleUpdateIncentivePoolContract,
 } from "./configContractHandlers";
+import { _handleJackpotWinningsTransferred } from "./jackpotHandlers";
 import {
   _handleCreate,
   _handleExercise,
@@ -73,10 +72,6 @@ import {
   _handleOpenTrade,
   _handleRegisterAccount,
 } from "./routerContractHandlers";
-import {
-  _handleJackpotWinningsTransferred,
-} from "./jackpotHandlers";
-
 
 export function handleOpenTrade(event: OpenTrade): void {
   _handleOpenTrade(event);
@@ -199,10 +194,12 @@ export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
   _handleUpdateSpreadFactor(event);
 }
 
-export function handleUpdateIncentivePoolContract(event: UpdateIncentivePoolContract): void {
+export function handleUpdateIncentivePoolContract(
+  event: UpdateIncentivePoolContract
+): void {
   _handleUpdateIncentivePoolContract(event);
 }
 
-export function handleJackpotWinningsTransferred(event: JackpotTriggered): void {
+export function handleJackpotTriggered(event: JackpotTriggered): void {
   _handleJackpotWinningsTransferred(event);
 }

@@ -1,27 +1,9 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { UniswapPool } from "../generated/v2_markets/UniswapPool";
-import { ARB_UNISWAP_POOL_CONTRACT, BFR_UNISWAP_POOL_CONTRACT } from "./config";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 export function convertARBToUSDC(amount: BigInt): BigInt {
-  let uniswapPool = UniswapPool.bind(
-    Address.fromString(ARB_UNISWAP_POOL_CONTRACT)
-  );
-  let slot0_data = uniswapPool.slot0();
-  let arbToUSDC = slot0_data.value0
-    .pow(2)
-    .times(amount)
-    .div(BigInt.fromI32(2).pow(192));
-  return arbToUSDC;
+  return amount.times(BigInt.fromI32(12)).div(BigInt.fromI64(100000000000000));
 }
 
 export function convertBFRToUSDC(amount: BigInt): BigInt {
-  let uniswapPool = UniswapPool.bind(
-    Address.fromString(BFR_UNISWAP_POOL_CONTRACT)
-  );
-  let slot0_data = uniswapPool.slot0();
-  let bfrToUSDC = slot0_data.value0
-    .pow(2)
-    .times(amount)
-    .div(BigInt.fromI32(2).pow(192));
-  return bfrToUSDC.div(BigInt.fromI32(2));
+  return amount.times(BigInt.fromI32(12)).div(BigInt.fromI64(10000000000000));
 }

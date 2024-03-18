@@ -17,6 +17,11 @@ import {
 import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { _getDayId, _getLeaderboardWeekId } from "./helpers";
 
+export function checkTimeThreshold(blockTimestamp: BigInt): boolean {
+  const threshold = BigInt.fromI32(1710743400);
+  return blockTimestamp.gt(threshold);
+}
+
 export function registerAmarket(
   targetContract: Bytes,
   routerAddress: Bytes
@@ -31,6 +36,28 @@ export function registerAmarket(
     market.pool = "UNKNOWN";
     market.save();
   }
+}
+
+export function isRegisteredToV2Router(targetContract: Bytes): boolean {
+  const market = OptionContract.load(targetContract.toHexString());
+  if (market) {
+    return (
+      market.routerContract ==
+      Address.fromString("0x0511b76254e86A4E6c94a86725CdfF0E7A8B4326")
+    );
+  }
+  return false;
+}
+
+export function isRegisteredTOABRouter(targetContract: Bytes): boolean {
+  const market = OptionContract.load(targetContract.toHexString());
+  if (market) {
+    return (
+      market.routerContract ==
+      Address.fromString("0xA747eeE75fF4a917c6c822C7b7815cdd28c37974")
+    );
+  }
+  return false;
 }
 
 export function getPoolNameFromAddress(poolAddress: Bytes): string {
@@ -70,11 +97,9 @@ export function _createOrUpdateLeaderBoards(
   userAddress: Bytes,
   volume: BigInt,
   depositToken: string,
-  amount: BigInt,
-  isWin: boolean
+  winAmount: BigInt
 ): void {
   _createOrUpdateTotalData(timestamp, volume, depositToken);
-  const winAmount = isWin ? amount : ZERO.minus(amount);
   const dayId = _getDayId(timestamp);
 
   const id = dayId + userAddress.toHexString();

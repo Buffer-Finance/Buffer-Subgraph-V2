@@ -13,15 +13,18 @@ import { OptionContract, Trade } from "../../generated/schema";
 import {
   Create,
   CreateOptionsContract,
-  LpLoss,
-  LpProfit,
+  Exercise,
+  Expire,
 } from "../../generated/v2_markets/v2_markets";
 import {
   _createOrUpdateLeaderBoards,
   _createTradeEntity,
+  checkTimeThreshold,
   getPoolNameFromAddress,
+  isRegisteredToV2Router,
   registerAmarket,
 } from "../commons";
+import { ZERO } from "../config";
 
 // V2 Router 1
 export function handleV2ContractRegistryUpdated(
@@ -63,58 +66,102 @@ export function handleV2CancelTrade_3(event: CancelTrade_3): void {}
 export function handleV2OpenTrade_3(event: OpenTrade_3): void {}
 
 export function handleV2Create(event: Create): void {
-  const market = OptionContract.load(event.address.toHexString().toLowerCase());
-
-  if (market != null) {
-    _createTradeEntity(
-      event.params.id,
-      event.address,
-      event.params.account,
-      event.params.totalFee,
-      market.pool
+  if (checkTimeThreshold(event.block.timestamp)) {
+    const market = OptionContract.load(
+      event.address.toHexString().toLowerCase()
     );
+
+    if (isRegisteredToV2Router(event.address) && market != null) {
+      _createTradeEntity(
+        event.params.id,
+        event.address,
+        event.params.account,
+        event.params.totalFee,
+        market.pool
+      );
+    }
   }
 }
 
-export function handleV2LpProfit(event: LpLoss): void {
-  const trade = Trade.load(
-    event.params.id.toString() + event.address.toHexString().toLowerCase()
-  );
-  if (trade != null) {
-    _createOrUpdateLeaderBoards(
-      event.block.timestamp,
-      trade.userAddress,
-      trade.volume,
-      trade.token,
-      event.params.amount,
-      false
-    );
-  }
-}
+// export function handleV2LpProfit(event: LpLoss): void {
+//   const trade = Trade.load(
+//     event.params.id.toString() + event.address.toHexString().toLowerCase()
+//   );
+//   if (trade != null) {
+//     _createOrUpdateLeaderBoards(
+//       event.block.timestamp,
+//       trade.userAddress,
+//       trade.volume,
+//       trade.token,
+//       event.params.amount,
+//       false
+//     );
+//   }
+// }
 
-export function handleV2LpLoss(event: LpProfit): void {
-  const trade = Trade.load(
-    event.params.id.toString() + event.address.toHexString().toLowerCase()
-  );
-  if (trade != null) {
-    _createOrUpdateLeaderBoards(
-      event.block.timestamp,
-      trade.userAddress,
-      trade.volume,
-      trade.token,
-      event.params.amount,
-      true
-    );
-  }
-}
+// export function handleV2LpLoss(event: LpProfit): void {
+//   const trade = Trade.load(
+//     event.params.id.toString() + event.address.toHexString().toLowerCase()
+//   );
+//   if (trade != null) {
+//     _createOrUpdateLeaderBoards(
+//       event.block.timestamp,
+//       trade.userAddress,
+//       trade.volume,
+//       trade.token,
+//       event.params.amount,
+//       true
+//     );
+//   }
+// }
 
 export function handleV2CreateOptionsContract(
   event: CreateOptionsContract
 ): void {
   const market = OptionContract.load(event.address.toHexString().toLowerCase());
-  if (market != null) {
+  if (isRegisteredToV2Router(event.address) && market != null) {
     market.pool = getPoolNameFromAddress(event.params.pool);
     market.poolContract = event.params.pool;
     market.save();
+  }
+}
+
+export function handleV2Expire(event: Expire): void {
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredToV2Router(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
+    );
+    if (trade != null) {
+      _createOrUpdateLeaderBoards(
+        event.block.timestamp,
+        trade.userAddress,
+        trade.volume,
+        trade.token,
+        ZERO
+      );
+    }
+  }
+}
+
+export function handleV2Exercise(event: Exercise): void {
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredToV2Router(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
+    );
+    if (trade != null) {
+      _createOrUpdateLeaderBoards(
+        event.block.timestamp,
+        trade.userAddress,
+        trade.volume,
+        trade.token,
+        event.params.profit.minus(trade.volume)
+      );
+    }
   }
 }

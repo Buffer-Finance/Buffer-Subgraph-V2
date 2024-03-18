@@ -1,5 +1,6 @@
 import {
   Create,
+  CreateOptionsContract,
   Exercise,
   Expire,
 } from "../../generated/ab_markets/ab_markets";
@@ -19,8 +20,12 @@ import { OptionContract, Trade } from "../../generated/schema";
 import {
   _createOrUpdateLeaderBoards,
   _createTradeEntity,
+  checkTimeThreshold,
+  getPoolNameFromAddress,
+  isRegisteredTOABRouter,
   registerAmarket,
 } from "../commons";
+import { ZERO } from "../config";
 
 // ab Router 1
 
@@ -40,7 +45,7 @@ export function handleABInitiateTrade(event: InitiateTrade): void {}
 
 //ab Router 2
 
-export function handleABContractRegistryUpdated_2(
+export function handleABContractRegistryUpdated_3(
   event: ContractRegistryUpdated_2
 ): void {
   if (event.params.register) {
@@ -55,47 +60,70 @@ export function handleABOpenTrade_2(event: OpenTrade_2): void {}
 export function handleABInitiateTrade_2(event: InitiateTrade_2): void {}
 
 export function handleABCreate(event: Create): void {
-  const market = OptionContract.load(event.address.toHexString().toLowerCase());
-
-  if (market != null) {
-    _createTradeEntity(
-      event.params.id,
-      event.address,
-      event.params.account,
-      event.params.totalFee,
-      market.pool
+  if (checkTimeThreshold(event.block.timestamp)) {
+    const market = OptionContract.load(
+      event.address.toHexString().toLowerCase()
     );
+
+    if (isRegisteredTOABRouter(event.address) && market != null) {
+      _createTradeEntity(
+        event.params.id,
+        event.address,
+        event.params.account,
+        event.params.totalFee,
+        market.pool
+      );
+    }
   }
 }
 
 export function handleABExercise(event: Exercise): void {
-  const trade = Trade.load(
-    event.params.id.toString() + event.address.toHexString().toLowerCase()
-  );
-  if (trade != null) {
-    _createOrUpdateLeaderBoards(
-      event.block.timestamp,
-      trade.userAddress,
-      trade.volume,
-      trade.token,
-      event.params.profit,
-      true
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredTOABRouter(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
     );
+    if (trade != null) {
+      _createOrUpdateLeaderBoards(
+        event.block.timestamp,
+        trade.userAddress,
+        trade.volume,
+        trade.token,
+        event.params.profit.minus(trade.volume)
+      );
+    }
   }
 }
 
 export function handleABExpire(event: Expire): void {
-  const trade = Trade.load(
-    event.params.id.toString() + event.address.toHexString().toLowerCase()
-  );
-  if (trade != null) {
-    _createOrUpdateLeaderBoards(
-      event.block.timestamp,
-      trade.userAddress,
-      trade.volume,
-      trade.token,
-      trade.volume,
-      false
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredTOABRouter(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
     );
+    if (trade != null) {
+      _createOrUpdateLeaderBoards(
+        event.block.timestamp,
+        trade.userAddress,
+        trade.volume,
+        trade.token,
+        ZERO
+      );
+    }
+  }
+}
+
+export function handleABCreateOptionsContract(
+  event: CreateOptionsContract
+): void {
+  const market = OptionContract.load(event.address.toHexString().toLowerCase());
+  if (isRegisteredTOABRouter(event.address) && market != null) {
+    market.pool = getPoolNameFromAddress(event.params.pool);
+    market.poolContract = event.params.pool;
+    market.save();
   }
 }

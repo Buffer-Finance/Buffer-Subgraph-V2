@@ -18,7 +18,7 @@ type OptionContract @entity {
   address: Bytes!
   pool: String!
   poolContract: Bytes
-  routerContract: Bytes
+  routerContract: Bytes!
 }
 
 type Trade @entity {

@@ -1,7 +1,6 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import {
   DailyLeaderboard,
-  LastWeekLeaderboard,
   OptionContract,
   TotalData,
   Trade,
@@ -18,7 +17,7 @@ import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { _getDayId, _getLeaderboardWeekId } from "./helpers";
 
 export function checkTimeThreshold(blockTimestamp: BigInt): boolean {
-  const threshold = BigInt.fromI32(1710743400);
+  const threshold = BigInt.fromI32(1709136000);
   return blockTimestamp.gt(threshold);
 }
 
@@ -100,9 +99,7 @@ export function _createOrUpdateLeaderBoards(
   winAmount: BigInt
 ): void {
   _createOrUpdateTotalData(timestamp, volume, depositToken);
-  const dayId = _getDayId(timestamp);
 
-  const id = dayId + userAddress.toHexString();
   let arbVolume = ZERO;
   let bfrVolume = ZERO;
   let usdcVolume = ZERO;
@@ -148,6 +145,9 @@ export function _createOrUpdateLeaderBoards(
     }
   }
 
+  const dayId = _getDayId(timestamp);
+  const id = dayId + userAddress.toHexString();
+
   let dailyLeaderboard = DailyLeaderboard.load(id);
 
   const weekId = _getLeaderboardWeekId(timestamp);
@@ -179,6 +179,12 @@ export function _createOrUpdateLeaderBoards(
     dailyLeaderboard.weekId = weekId;
     dailyLeaderboard.save();
   } else {
+    const dailyTotal = TotalData.load(dayId);
+    if (dailyTotal) {
+      dailyTotal.participents = dailyTotal.participents.plus(ONE);
+      dailyTotal.save();
+    }
+
     dailyLeaderboard.ARBVolume = dailyLeaderboard.ARBVolume.plus(arbVolume);
     dailyLeaderboard.BFRVolume = dailyLeaderboard.BFRVolume.plus(bfrVolume);
     dailyLeaderboard.USDCVolume = dailyLeaderboard.USDCVolume.plus(usdcVolume);
@@ -232,6 +238,12 @@ export function _createOrUpdateLeaderBoards(
     weekleaderboard.totalTrades = totalTrades;
     weekleaderboard.save();
   } else {
+    const weekTotal = TotalData.load(weekId);
+    if (weekTotal) {
+      weekTotal.participents = weekTotal.participents.plus(ONE);
+      weekTotal.save();
+    }
+
     weekleaderboard.ARBVolume = weekleaderboard.ARBVolume.plus(arbVolume);
     weekleaderboard.BFRVolume = weekleaderboard.BFRVolume.plus(bfrVolume);
     weekleaderboard.USDCVolume = weekleaderboard.USDCVolume.plus(usdcVolume);
@@ -258,13 +270,6 @@ function getLeagueFromLastWeek(lastWeekId: string, userAddress: Bytes): string {
   const lastWeekLeaderboard = WeeklyLeaderboard.load(
     lastWeekId.toString() + userAddress.toHexString()
   );
-  const last = new LastWeekLeaderboard(
-    lastWeekId.toString() + userAddress.toHexString()
-  );
-  if (last !== null) {
-    last.userAddress = userAddress;
-    last.save();
-  }
   let league = "Bronze";
   if (lastWeekLeaderboard != null) {
     if (lastWeekLeaderboard.totalVolume.gt(BigInt.fromI64(25000000000))) {
@@ -311,6 +316,7 @@ export function _createOrUpdateTotalData(
     dailyData = new TotalData(dayId);
     dailyData.volume = convertToUSD(volume, depositToken);
     dailyData.trades = ONE;
+    dailyData.participents = ONE;
     dailyData.save();
   } else {
     dailyData.volume = dailyData.volume.plus(
@@ -328,6 +334,7 @@ export function _createOrUpdateTotalData(
     weeklyData = new TotalData(weekId);
     weeklyData.volume = convertToUSD(volume, depositToken);
     weeklyData.trades = ONE;
+    weeklyData.participents = ONE;
     weeklyData.save();
   } else {
     weeklyData.volume = weeklyData.volume.plus(

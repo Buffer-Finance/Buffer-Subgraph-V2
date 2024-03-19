@@ -1,12 +1,8 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 
-// export function _getDayId(timestamp: BigInt): string {
-//   let dayTimestamp = (timestamp.toI32() - 16 * 3600) / 86400;
-//   return dayTimestamp.toString();
-// }
-
 export function _getDayId(timestamp: BigInt): string {
-  return _get5MinuteId(timestamp);
+  let dayTimestamp = (timestamp.toI32() - 16 * 3600) / 86400;
+  return dayTimestamp.toString();
 }
 
 export function _getWeekId(timestamp: BigInt): string {
@@ -19,13 +15,9 @@ export function _getHourId(timestamp: BigInt): string {
   return hourTimestamp.toString();
 }
 
-// export function _getLeaderboardWeekId(timestamp: BigInt): string {
-//   let weekTimestamp = (timestamp.toI32() - 6 * 86400 - 16 * 3600) / (86400 * 7);
-//   return weekTimestamp.toString();
-// }
-
 export function _getLeaderboardWeekId(timestamp: BigInt): string {
-  return _get10MinuteId(timestamp);
+  let weekTimestamp = (timestamp.toI32() - 6 * 86400 - 16 * 3600) / (86400 * 7);
+  return weekTimestamp.toString();
 }
 
 export function _getDefillamaDayId(timestamp: BigInt): string {
@@ -33,12 +25,12 @@ export function _getDefillamaDayId(timestamp: BigInt): string {
   return dayTimestamp.toString();
 }
 
-export function _get5MinuteId(timestamp: BigInt): string {
-  let fiveMinuteTimestamp = (timestamp.toI32() - 16 * 3600) / 300;
-  return fiveMinuteTimestamp.toString();
-}
+// export function _get5MinuteId(timestamp: BigInt): string {
+//   let fiveMinuteTimestamp = (timestamp.toI32() - 16 * 3600) / 300;
+//   return fiveMinuteTimestamp.toString();
+// }
 
-export function _get10MinuteId(timestamp: BigInt): string {
-  let tenMinuteTimestamp = (timestamp.toI32() - 16 * 3600) / 600;
-  return tenMinuteTimestamp.toString();
-}
+// export function _get10MinuteId(timestamp: BigInt): string {
+//   let tenMinuteTimestamp = (timestamp.toI32() - 16 * 3600) / 600;
+//   return tenMinuteTimestamp.toString();
+// }

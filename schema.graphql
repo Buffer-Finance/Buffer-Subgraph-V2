@@ -77,14 +77,5 @@ type TotalData @entity {
   id: String! # dayid / weekid
   trades: BigInt!
   volume: BigInt!
-}
-
-# type Test @entity {
-#   id: Bytes!
-#   name: String!
-# }
-
-type LastWeekLeaderboard @entity {
-  id: String!
-  userAddress: Bytes!
+  participents: BigInt!
 }

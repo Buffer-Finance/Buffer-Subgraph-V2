@@ -140,7 +140,7 @@ export function handleV2Expire(event: Expire): void {
         trade.userAddress,
         trade.volume,
         trade.token,
-        ZERO
+        ZERO.minus(trade.volume)
       );
     }
   }

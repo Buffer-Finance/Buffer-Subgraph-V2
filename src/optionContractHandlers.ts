@@ -1,3 +1,4 @@
+import { Address, Bytes } from "@graphprotocol/graph-ts";
 import {
   BufferBinaryOptions,
   Create,
@@ -9,13 +10,31 @@ import {
 } from "../generated/BufferBinaryOptions/BufferBinaryOptions";
 import { OptionContract } from "../generated/schema";
 import { updateClosingStats, updateOpeningStats } from "./aggregate";
-import { State } from "./config";
+import {
+  ARB_POOL_CONTRACT,
+  BFR_POOL_CONTRACT,
+  State,
+  USDC_POOL_CONTRACT,
+} from "./config";
 import { _loadOrCreateConfigContractEntity } from "./configContractHandlers";
 import {
   _loadOrCreateMarket,
   _loadOrCreateOptionContractEntity,
   _loadOrCreateOptionDataEntity,
 } from "./initialize";
+
+export function getPoolNameFromAddress(poolAddress: Bytes): string {
+  // convert switch case into if else ladder
+  if (poolAddress == Address.fromString(USDC_POOL_CONTRACT)) {
+    return "USDC";
+  } else if (poolAddress == Address.fromString(ARB_POOL_CONTRACT)) {
+    return "ARB";
+  } else if (poolAddress == Address.fromString(BFR_POOL_CONTRACT)) {
+    return "BFR";
+  } else {
+    return "NOPE";
+  }
+}
 
 export function _handleCreateContract(event: CreateOptionsContract): void {
   const contractAddress = event.address;
@@ -34,6 +53,9 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
 
     optionContract.token0 = event.params.token0;
     optionContract.token1 = event.params.token1;
+    optionContract.asset = event.params.token0 + event.params.token1;
+    optionContract.category = event.params.category;
+
     optionContract.config = configContractEntity.id;
     optionContract.poolContract = optionContractInstance.pool();
     // optionContract.routerContract = Address.fromHexString(RouterAddress);

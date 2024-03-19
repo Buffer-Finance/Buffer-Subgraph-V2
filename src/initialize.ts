@@ -25,6 +25,9 @@ export function _loadOrCreateOptionContractEntity(
     optionContract.openDown = ZERO;
     optionContract.openInterestUp = ZERO;
     optionContract.openInterestDown = ZERO;
+    optionContract.pool = "UNKNOWN";
+    optionContract.category = 0;
+    optionContract.asset = "UNKNOWN";
     optionContract.config = "UNKNOWN";
   }
   return optionContract as OptionContract;

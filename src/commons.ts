@@ -17,7 +17,7 @@ import { convertARBToUSDC, convertBFRToUSDC } from "./convertToUSDC";
 import { _getDayId, _getLeaderboardWeekId } from "./helpers";
 
 export function checkTimeThreshold(blockTimestamp: BigInt): boolean {
-  const threshold = BigInt.fromI32(1709136000);
+  const threshold = BigInt.fromI32(1707321600);
   return blockTimestamp.gt(threshold);
 }
 
@@ -155,6 +155,11 @@ export function _createOrUpdateLeaderBoards(
     timestamp.minus(BigInt.fromI32(604800))
   );
   if (dailyLeaderboard == null) {
+    const weekTotal = TotalData.load(weekId);
+    if (weekTotal) {
+      weekTotal.participents = weekTotal.participents.plus(ONE);
+      weekTotal.save();
+    }
     const league = getLeagueFromLastWeek(lastWeekId, userAddress);
 
     dailyLeaderboard = new DailyLeaderboard(id);
@@ -213,6 +218,12 @@ export function _createOrUpdateLeaderBoards(
   );
 
   if (weekleaderboard == null) {
+    const weekTotal = TotalData.load(weekId);
+    if (weekTotal) {
+      weekTotal.participents = weekTotal.participents.plus(ONE);
+      weekTotal.save();
+    }
+
     const league = getLeagueFromLastWeek(lastWeekId, userAddress);
 
     const weekleaderboard = new WeeklyLeaderboard(
@@ -238,12 +249,6 @@ export function _createOrUpdateLeaderBoards(
     weekleaderboard.totalTrades = totalTrades;
     weekleaderboard.save();
   } else {
-    const weekTotal = TotalData.load(weekId);
-    if (weekTotal) {
-      weekTotal.participents = weekTotal.participents.plus(ONE);
-      weekTotal.save();
-    }
-
     weekleaderboard.ARBVolume = weekleaderboard.ARBVolume.plus(arbVolume);
     weekleaderboard.BFRVolume = weekleaderboard.BFRVolume.plus(bfrVolume);
     weekleaderboard.USDCVolume = weekleaderboard.USDCVolume.plus(usdcVolume);
@@ -316,7 +321,7 @@ export function _createOrUpdateTotalData(
     dailyData = new TotalData(dayId);
     dailyData.volume = convertToUSD(volume, depositToken);
     dailyData.trades = ONE;
-    dailyData.participents = ONE;
+    dailyData.participents = ZERO;
     dailyData.save();
   } else {
     dailyData.volume = dailyData.volume.plus(
@@ -334,7 +339,7 @@ export function _createOrUpdateTotalData(
     weeklyData = new TotalData(weekId);
     weeklyData.volume = convertToUSD(volume, depositToken);
     weeklyData.trades = ONE;
-    weeklyData.participents = ONE;
+    weeklyData.participents = ZERO;
     weeklyData.save();
   } else {
     weeklyData.volume = weeklyData.volume.plus(

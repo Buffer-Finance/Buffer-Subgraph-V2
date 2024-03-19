@@ -350,3 +350,13 @@ type JackpotData @entity {
   jackpotAmount : BigInt!
   txn_hash : Bytes!
 }
+
+type TraderRebate @entity {
+  id: String!
+  user: Int!
+  weekId: Period!
+  timestamp: BigInt!
+  amountClaimed: BigInt!
+  type: String!
+
+}

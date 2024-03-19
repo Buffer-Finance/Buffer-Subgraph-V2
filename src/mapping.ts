@@ -30,6 +30,9 @@ import {
   UpdateSpreadConfig2,
   UpdateSpreadFactor,
 } from "../generated/BufferConfigUpdates/BufferConfig";
+import {
+  RebateClaimed
+} from "../generated/TraderRebate/TraderRebate";
 import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import { JackpotTriggered } from "../generated/IncentivePool/IncentivePool";
 import {
@@ -55,7 +58,7 @@ import {
   _handleUpdateSpreadConfig2,
   _handleUpdateSpreadFactor,
 } from "./configContractHandlers";
-import { _handleJackpotWinningsTransferred } from "./jackpotHandlers";
+import { _handleJackpotWinningsTransferred, _handleTraderRebate } from "./jackpotHandlers";
 import {
   _handleCreate,
   _handleExercise,
@@ -202,4 +205,8 @@ export function handleUpdateIncentivePoolContract(
 
 export function handleJackpotTriggered(event: JackpotTriggered): void {
   _handleJackpotWinningsTransferred(event);
+}
+
+export function handleRebateClaimed(event: RebateClaimed): void {
+  _handleTraderRebate(event);
 }

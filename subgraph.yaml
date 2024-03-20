@@ -177,6 +177,7 @@ dataSources:
     source:
       abi: IncentivePool
       startBlock: 9051014
+      address: "0xf45D4d11A63b62f3913176F885Ae61ce332292F7"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -190,24 +191,4 @@ dataSources:
       eventHandlers:
         - event: JackpotTriggered(indexed address,uint256,indexed address,uint256,indexed address,uint256)
           handler: handleJackpotTriggered
-      file: ./src/mapping.ts
-  - kind: ethereum/contract
-    name: TraderRebate
-    network: arbitrum-sepolia
-    source:
-      abi: TraderRebate
-      address: "0xd8368366Cd879b6E7A48E3Da732C63fbE53A3762"
-      startBlock: 24498451
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - TraderRebate
-      abis:
-        - name: TraderRebate
-          file: ./abis/TraderRebate.json
-      eventHandlers:
-        - event: RebateClaimed(indexed address,uint256,uint256)
-          handler: handleRebateClaimed
       file: ./src/mapping.ts

@@ -22,3 +22,23 @@ dataSources:
         - event: RebateClaimed(indexed address,uint256,uint256)
           handler: handleRebateClaimed
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: Jackpot
+    network: arbitrum-sepolia
+    source:
+      abi: Jackpot
+      address: "0xf45D4d11A63b62f3913176F885Ae61ce332292F7"
+      startBlock: 25015296
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - JackpotData
+      abis:
+        - name: Jackpot
+          file: ./abis/Jackpot.json
+      eventHandlers:
+        - event: JackpotTriggered(indexed address,uint256,indexed address,uint256,indexed address,uint256)
+          handler: handleJackpotTriggered
+      file: ./src/mapping.ts

@@ -6,3 +6,15 @@ type Rebate @entity {
   amount: BigInt!
   type: String!
 }
+
+type JackpotData @entity {
+  id: String!
+  optionContract: Bytes!
+  optionID: BigInt
+  user: Bytes!
+  timestamp: BigInt!
+  amount: BigInt!
+  routerContract: Bytes!
+  jackpotAmount: BigInt!
+  txn_hash: Bytes!
+}

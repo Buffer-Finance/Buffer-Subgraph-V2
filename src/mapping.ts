@@ -1,6 +1,7 @@
+import { ClaimResult } from "../generated/CompetitionRewards/CompetitionRewards";
 import { JackpotTriggered } from "../generated/Jackpot/Jackpot";
 import { RebateClaimed } from "../generated/TraderRebate/TraderRebate";
-import { JackpotData, Rebate } from "../generated/schema";
+import { CompetitionReward, JackpotData, Rebate } from "../generated/schema";
 
 export function handleRebateClaimed(event: RebateClaimed): void {
   const rebateEntity = new Rebate(
@@ -27,4 +28,15 @@ export function handleJackpotTriggered(event: JackpotTriggered): void {
   jackpotEntity.jackpotAmount = event.params.jackpotWinAmount;
   jackpotEntity.txn_hash = event.transaction.hash;
   jackpotEntity.save();
+}
+
+export function handleClaimResult(event: ClaimResult): void {
+  if (event.params.success == true) {
+    const competitionRewardEntity = new CompetitionReward(
+      event.transaction.hash.toHexString()
+    );
+
+    competitionRewardEntity.reward_id = event.params.reward_id;
+    competitionRewardEntity.save();
+  }
 }

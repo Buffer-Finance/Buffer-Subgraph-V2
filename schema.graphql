@@ -18,3 +18,8 @@ type JackpotData @entity {
   jackpotAmount: BigInt!
   txn_hash: Bytes!
 }
+
+type CompetitionReward @entity {
+  id: String!
+  reward_id: BigInt
+}

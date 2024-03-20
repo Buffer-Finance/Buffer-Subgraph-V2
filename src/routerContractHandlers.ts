@@ -9,10 +9,7 @@ import {
   DeregisterAccount,
   RegisterAccount,
 } from "../generated/AccountRegistrar/AccountRegistrar";
-import {
-  OpenTrade,
-  RevokeRouter,
-} from "../generated/BufferRouter/BufferRouter";
+import { OpenTrade } from "../generated/BufferRouter/BufferRouter";
 import {
   DeregisteredAccount,
   EOAtoOneCT,
@@ -172,8 +169,4 @@ export function _handleAboveBelowOpenTrade(event: AboveBelowOpenTrade): void {
     );
     userOptionData.save();
   }
-}
-
-export function _handleRevokeRouter(event: RevokeRouter): void {
-  createTxnData(event.receipt, event.transaction, "RevokeRouter");
 }

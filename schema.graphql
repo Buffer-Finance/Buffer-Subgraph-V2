@@ -89,21 +89,21 @@ type QueuedOptionData @entity {
 type UserOptionData @entity {
   id: String!
   optionContract: OptionContract!
-  optionID: BigInt
+  optionID: BigInt!
   strike: BigInt
   totalFee: BigInt!
-  user: Bytes!
-  creationTime: BigInt!
-  queuedTimestamp: BigInt!
+  user: Bytes
+  creationTime: BigInt
+  queuedTimestamp: BigInt
   expirationPrice: BigInt
   payout: BigInt
   state: Int
-  amount: BigInt!
+  amount: BigInt
   expirationTime: BigInt
   isAbove: Boolean
   queueID: BigInt
   settlementFee: BigInt!
-  lag: BigInt!
+  lag: BigInt
 }
 
 type User @entity {

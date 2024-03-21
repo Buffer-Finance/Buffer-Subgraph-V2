@@ -58,7 +58,7 @@ export function _handleCreateContract(event: CreateOptionsContract): void {
 
     optionContract.config = configContractEntity.id;
     optionContract.poolContract = optionContractInstance.pool();
-    // optionContract.routerContract = Address.fromHexString(RouterAddress);
+    optionContract.pool = getPoolNameFromAddress(optionContract.poolContract);
     optionContract.save();
   }
 }

@@ -12,7 +12,6 @@ export function handleRebateClaimed(event: RebateClaimed): void {
   rebateEntity.amount = event.params.amount;
   rebateEntity.weekId = event.params.weekId;
   rebateEntity.timestamp = event.block.timestamp;
-  rebateEntity.type = "Rebates";
   rebateEntity.save();
 }
 
@@ -37,6 +36,8 @@ export function handleClaimResult(event: ClaimResult): void {
     );
 
     competitionRewardEntity.reward_id = event.params.reward_id;
+    competitionRewardEntity.user = event.params.user;
+    competitionRewardEntity.amount = event.params.amount;
     competitionRewardEntity.save();
   }
 }

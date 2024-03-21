@@ -4,7 +4,6 @@ type Rebate @entity {
   weekId: BigInt!
   timestamp: BigInt!
   amount: BigInt!
-  type: String!
 }
 
 type JackpotData @entity {
@@ -21,5 +20,7 @@ type JackpotData @entity {
 
 type CompetitionReward @entity {
   id: String!
-  reward_id: BigInt
+  reward_id: BigInt!
+  user: Bytes!
+  amount: BigInt!
 }

@@ -7,8 +7,8 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: TraderRebate
-      address: "0xd8368366Cd879b6E7A48E3Da732C63fbE53A3762"
-      startBlock: 24498451
+      address: "0x684E76C4Edf04Dc73CA2233aCC18B7cA4fB66DB9"
+      startBlock: 25397975
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -49,8 +49,8 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: CompetitionRewards
-      address: "0x0990a841681469DbC6beBBE58A4e9a2F1f168791"
-      startBlock: 24368237
+      address: "0x1E8B0352d951fe53685A0181e333E9645B9ce24C"
+      startBlock: 25362774
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -61,6 +61,6 @@ dataSources:
         - name: CompetitionRewards
           file: ./abis/CompetitionRewards.json
       eventHandlers:
-        - event: ClaimResult(uint256,bool)
+        - event: ClaimResult(uint256,address,uint256,bool)
           handler: handleClaimResult
       file: ./src/mapping.ts

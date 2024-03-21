@@ -63,7 +63,7 @@ export function _handleOpenTrade(event: OpenTrade): void {
   userOptionData.queueID = queueID;
   userOptionData.user = userQueuedData.user;
   userOptionData.state = State.active;
-  userOptionData.expirationPrice = userQueuedData.expirationTime;
+  userOptionData.expirationTime = userQueuedData.expirationTime;
   userOptionData.isAbove = userQueuedData.isAbove;
   userOptionData.creationTime = userQueuedData.queueTimestamp;
   userOptionData.queuedTimestamp = userQueuedData.queueTimestamp;

@@ -81,7 +81,7 @@ type QueuedOptionData @entity {
   lag: BigInt!
   maxFeePerContract: BigInt!
   processTime: BigInt!
-  expirationTime: BigInt
+  expirationTime: BigInt!
   numberOfContracts: BigInt!
   # totalFee: BigInt!
 }

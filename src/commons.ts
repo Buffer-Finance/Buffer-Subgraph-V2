@@ -96,13 +96,17 @@ export function _createOrUpdateLeaderBoards(
   userAddress: Bytes,
   volume: BigInt,
   depositToken: string,
+  fee: BigInt,
   winAmount: BigInt
 ): void {
-  _createOrUpdateTotalData(timestamp, volume, depositToken);
+  _createOrUpdateTotalData(timestamp, volume, fee, depositToken);
 
   let arbVolume = ZERO;
   let bfrVolume = ZERO;
   let usdcVolume = ZERO;
+  let usdcFee = ZERO;
+  let arbFee = ZERO;
+  let bfrFee = ZERO;
   let usdcTrades = ZERO;
   let arbTrades = ZERO;
   let bfrTrades = ZERO;
@@ -115,6 +119,7 @@ export function _createOrUpdateLeaderBoards(
   let totalVolume = ZERO;
   let totalPnl = ZERO;
   let totalTrades = ONE;
+  let totalFee = ZERO;
 
   if (depositToken == "USDC") {
     usdcVolume = volume;
@@ -122,6 +127,8 @@ export function _createOrUpdateLeaderBoards(
     totalVolume = volume;
     usdcPnl = winAmount;
     totalPnl = winAmount;
+    usdcFee = fee;
+    totalFee = fee;
     if (winAmount > ZERO) {
       usdcTradesWon = ONE;
     }
@@ -131,6 +138,8 @@ export function _createOrUpdateLeaderBoards(
     totalVolume = convertToUSD(volume, "ARB");
     arbPnl = winAmount;
     totalPnl = convertToUSD(winAmount, "ARB");
+    arbFee = fee;
+    totalFee = convertToUSD(fee, "ARB");
     if (winAmount > ZERO) {
       arbTradesWon = ONE;
     }
@@ -140,6 +149,8 @@ export function _createOrUpdateLeaderBoards(
     totalVolume = convertToUSD(volume, "BFR");
     bfrPnl = winAmount;
     totalPnl = convertToUSD(winAmount, "BFR");
+    bfrFee = fee;
+    totalFee = convertToUSD(fee, "BFR");
     if (winAmount > ZERO) {
       bfrTradesWon = ONE;
     }
@@ -178,9 +189,13 @@ export function _createOrUpdateLeaderBoards(
     dailyLeaderboard.BFRPnl = bfrPnl;
     dailyLeaderboard.USDCPnl = usdcPnl;
     dailyLeaderboard.league = league;
+    dailyLeaderboard.USDCFee = usdcFee;
+    dailyLeaderboard.ARBFee = arbFee;
+    dailyLeaderboard.BFRFee = bfrFee;
     dailyLeaderboard.totalPnl = totalPnl;
     dailyLeaderboard.totalVolume = totalVolume;
     dailyLeaderboard.totalTrades = totalTrades;
+    dailyLeaderboard.totalFee = totalFee;
     dailyLeaderboard.weekId = weekId;
     dailyLeaderboard.save();
   } else {
@@ -199,6 +214,9 @@ export function _createOrUpdateLeaderBoards(
     dailyLeaderboard.ARBPnl = dailyLeaderboard.ARBPnl.plus(arbPnl);
     dailyLeaderboard.BFRPnl = dailyLeaderboard.BFRPnl.plus(bfrPnl);
     dailyLeaderboard.USDCPnl = dailyLeaderboard.USDCPnl.plus(usdcPnl);
+    dailyLeaderboard.USDCFee = dailyLeaderboard.USDCFee.plus(usdcFee);
+    dailyLeaderboard.ARBFee = dailyLeaderboard.ARBFee.plus(arbFee);
+    dailyLeaderboard.BFRFee = dailyLeaderboard.BFRFee.plus(bfrFee);
     dailyLeaderboard.USDCTradesWon =
       dailyLeaderboard.USDCTradesWon.plus(usdcTradesWon);
     dailyLeaderboard.ARBTradesWon =
@@ -210,6 +228,7 @@ export function _createOrUpdateLeaderBoards(
       dailyLeaderboard.totalVolume.plus(totalVolume);
     dailyLeaderboard.totalTrades =
       dailyLeaderboard.totalTrades.plus(totalTrades);
+    dailyLeaderboard.totalFee = dailyLeaderboard.totalFee.plus(totalFee);
     dailyLeaderboard.save();
   }
 
@@ -244,9 +263,13 @@ export function _createOrUpdateLeaderBoards(
     weekleaderboard.ARBTradesWon = arbTradesWon;
     weekleaderboard.BFRTradesWon = bfrTradesWon;
     weekleaderboard.league = league;
+    weekleaderboard.USDCFee = usdcFee;
+    weekleaderboard.ARBFee = arbFee;
+    weekleaderboard.BFRFee = bfrFee;
     weekleaderboard.totalPnl = totalPnl;
     weekleaderboard.totalVolume = totalVolume;
     weekleaderboard.totalTrades = totalTrades;
+    weekleaderboard.totalFee = totalFee;
     weekleaderboard.save();
   } else {
     weekleaderboard.ARBVolume = weekleaderboard.ARBVolume.plus(arbVolume);
@@ -264,9 +287,13 @@ export function _createOrUpdateLeaderBoards(
       weekleaderboard.ARBTradesWon.plus(arbTradesWon);
     weekleaderboard.BFRTradesWon =
       weekleaderboard.BFRTradesWon.plus(bfrTradesWon);
+    weekleaderboard.USDCFee = weekleaderboard.USDCFee.plus(usdcFee);
+    weekleaderboard.ARBFee = weekleaderboard.ARBFee.plus(arbFee);
+    weekleaderboard.BFRFee = weekleaderboard.BFRFee.plus(bfrFee);
     weekleaderboard.totalPnl = weekleaderboard.totalPnl.plus(totalPnl);
     weekleaderboard.totalVolume = weekleaderboard.totalVolume.plus(totalVolume);
     weekleaderboard.totalTrades = weekleaderboard.totalTrades.plus(totalTrades);
+    weekleaderboard.totalFee = weekleaderboard.totalFee.plus(totalFee);
     weekleaderboard.save();
   }
 }
@@ -297,6 +324,7 @@ export function _createTradeEntity(
   marketAddress: Bytes,
   userAddress: Bytes,
   volume: BigInt,
+  fee: BigInt,
   depositToken: string
 ): void {
   const trade = new Trade(
@@ -305,12 +333,14 @@ export function _createTradeEntity(
   trade.userAddress = userAddress;
   trade.volume = volume;
   trade.token = depositToken;
+  trade.fee = fee;
   trade.save();
 }
 
 export function _createOrUpdateTotalData(
   timestamp: BigInt,
   volume: BigInt,
+  fee: BigInt,
   depositToken: string
 ): void {
   const dayId = _getDayId(timestamp);
@@ -321,12 +351,14 @@ export function _createOrUpdateTotalData(
     dailyData = new TotalData(dayId);
     dailyData.volume = convertToUSD(volume, depositToken);
     dailyData.trades = ONE;
+    dailyData.fee = convertToUSD(fee, depositToken);
     dailyData.participents = ZERO;
     dailyData.save();
   } else {
     dailyData.volume = dailyData.volume.plus(
       convertToUSD(volume, depositToken)
     );
+    dailyData.fee = dailyData.fee.plus(convertToUSD(fee, depositToken));
     dailyData.trades = dailyData.trades.plus(ONE);
     dailyData.save();
   }
@@ -339,12 +371,14 @@ export function _createOrUpdateTotalData(
     weeklyData = new TotalData(weekId);
     weeklyData.volume = convertToUSD(volume, depositToken);
     weeklyData.trades = ONE;
+    weeklyData.fee = convertToUSD(fee, depositToken);
     weeklyData.participents = ZERO;
     weeklyData.save();
   } else {
     weeklyData.volume = weeklyData.volume.plus(
       convertToUSD(volume, depositToken)
     );
+    weeklyData.fee = weeklyData.fee.plus(convertToUSD(fee, depositToken));
     weeklyData.trades = weeklyData.trades.plus(ONE);
     weeklyData.save();
   }

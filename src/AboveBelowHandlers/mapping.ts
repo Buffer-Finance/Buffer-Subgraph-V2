@@ -71,6 +71,7 @@ export function handleABCreate(event: Create): void {
         event.address,
         event.params.account,
         event.params.totalFee,
+        event.params.settlementFee,
         market.pool
       );
     }
@@ -91,6 +92,7 @@ export function handleABExercise(event: Exercise): void {
         trade.userAddress,
         trade.volume,
         trade.token,
+        trade.fee,
         event.params.profit.minus(trade.volume)
       );
     }
@@ -111,6 +113,7 @@ export function handleABExpire(event: Expire): void {
         trade.userAddress,
         trade.volume,
         trade.token,
+        trade.fee,
         ZERO.minus(trade.volume)
       );
     }

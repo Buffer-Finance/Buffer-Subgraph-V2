@@ -26,6 +26,7 @@ type Trade @entity {
   userAddress: Bytes!
   token: String!
   volume: BigInt!
+  fee: BigInt!
 }
 
 type DailyLeaderboard @entity {
@@ -33,14 +34,17 @@ type DailyLeaderboard @entity {
   userAddress: Bytes!
   USDCVolume: BigInt!
   USDCPnl: BigInt!
+  USDCFee: BigInt!
   USDCTrades: BigInt!
   USDCTradesWon: BigInt!
   ARBVolume: BigInt!
   ARBPnl: BigInt!
+  ARBFee: BigInt!
   ARBTrades: BigInt!
   ARBTradesWon: BigInt!
   BFRVolume: BigInt!
   BFRPnl: BigInt!
+  BFRFee: BigInt!
   BFRTrades: BigInt!
   BFRTradesWon: BigInt!
   league: String!
@@ -49,6 +53,7 @@ type DailyLeaderboard @entity {
   totalVolume: BigInt!
   totalPnl: BigInt!
   totalTrades: BigInt!
+  totalFee: BigInt!
 }
 
 type WeeklyLeaderboard @entity {
@@ -56,14 +61,17 @@ type WeeklyLeaderboard @entity {
   userAddress: Bytes!
   USDCVolume: BigInt!
   USDCPnl: BigInt!
+  USDCFee: BigInt!
   USDCTrades: BigInt!
   USDCTradesWon: BigInt!
   ARBVolume: BigInt!
   ARBPnl: BigInt!
+  ARBFee: BigInt!
   ARBTrades: BigInt!
   ARBTradesWon: BigInt!
   BFRVolume: BigInt!
   BFRPnl: BigInt!
+  BFRFee: BigInt!
   BFRTrades: BigInt!
   BFRTradesWon: BigInt!
   league: String!
@@ -71,11 +79,13 @@ type WeeklyLeaderboard @entity {
   totalVolume: BigInt!
   totalPnl: BigInt!
   totalTrades: BigInt!
+  totalFee: BigInt!
 }
 
 type TotalData @entity {
   id: String! # dayid / weekid
   trades: BigInt!
   volume: BigInt!
+  fee: BigInt!
   participents: BigInt!
 }

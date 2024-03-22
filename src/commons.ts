@@ -53,7 +53,7 @@ export function isRegisteredTOABRouter(targetContract: Bytes): boolean {
   if (market) {
     return (
       market.routerContract ==
-      Address.fromString("0xA747eeE75fF4a917c6c822C7b7815cdd28c37974")
+      Address.fromString("0x7730133488D1FB3b705FB8eDffb6630cF616777B")
     );
   }
   return false;

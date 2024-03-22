@@ -99,8 +99,6 @@ export function _createOrUpdateLeaderBoards(
   fee: BigInt,
   winAmount: BigInt
 ): void {
-  _createOrUpdateTotalData(timestamp, volume, fee, depositToken);
-
   let arbVolume = ZERO;
   let bfrVolume = ZERO;
   let usdcVolume = ZERO;
@@ -166,12 +164,15 @@ export function _createOrUpdateLeaderBoards(
     timestamp.minus(BigInt.fromI32(604800))
   );
   if (dailyLeaderboard == null) {
-    const weekTotal = TotalData.load(weekId);
-    if (weekTotal) {
-      weekTotal.participents = weekTotal.participents.plus(ONE);
-      weekTotal.save();
-    }
     const league = getLeagueFromLastWeek(lastWeekId, userAddress);
+
+    _createOrUpdateTotalData(timestamp, volume, fee, depositToken, league);
+
+    const dayTotal = TotalData.load(dayId);
+    if (dayTotal != null) {
+      dayTotal.participents = dayTotal.participents.plus(ONE);
+      dayTotal.save();
+    }
 
     dailyLeaderboard = new DailyLeaderboard(id);
     dailyLeaderboard.ARBVolume = arbVolume;
@@ -199,11 +200,13 @@ export function _createOrUpdateLeaderBoards(
     dailyLeaderboard.weekId = weekId;
     dailyLeaderboard.save();
   } else {
-    const dailyTotal = TotalData.load(dayId);
-    if (dailyTotal) {
-      dailyTotal.participents = dailyTotal.participents.plus(ONE);
-      dailyTotal.save();
-    }
+    _createOrUpdateTotalData(
+      timestamp,
+      volume,
+      fee,
+      depositToken,
+      dailyLeaderboard.league
+    );
 
     dailyLeaderboard.ARBVolume = dailyLeaderboard.ARBVolume.plus(arbVolume);
     dailyLeaderboard.BFRVolume = dailyLeaderboard.BFRVolume.plus(bfrVolume);
@@ -237,13 +240,19 @@ export function _createOrUpdateLeaderBoards(
   );
 
   if (weekleaderboard == null) {
-    const weekTotal = TotalData.load(weekId);
-    if (weekTotal) {
+    const weekTotal = TotalData.load(weekId + "total");
+    if (weekTotal !== null) {
       weekTotal.participents = weekTotal.participents.plus(ONE);
       weekTotal.save();
     }
 
     const league = getLeagueFromLastWeek(lastWeekId, userAddress);
+
+    const weekleague = TotalData.load(weekId + league);
+    if (weekleague !== null) {
+      weekleague.participents = weekleague.participents.plus(ONE);
+      weekleague.save();
+    }
 
     const weekleaderboard = new WeeklyLeaderboard(
       weekId + userAddress.toHexString()
@@ -341,7 +350,8 @@ export function _createOrUpdateTotalData(
   timestamp: BigInt,
   volume: BigInt,
   fee: BigInt,
-  depositToken: string
+  depositToken: string,
+  league: string
 ): void {
   const dayId = _getDayId(timestamp);
 
@@ -353,6 +363,7 @@ export function _createOrUpdateTotalData(
     dailyData.trades = ONE;
     dailyData.fee = convertToUSD(fee, depositToken);
     dailyData.participents = ZERO;
+    dailyData.league = "total;";
     dailyData.save();
   } else {
     dailyData.volume = dailyData.volume.plus(
@@ -365,21 +376,42 @@ export function _createOrUpdateTotalData(
 
   const weekId = _getLeaderboardWeekId(timestamp);
 
-  let weeklyData = TotalData.load(weekId);
+  let weeklyLeagueData = TotalData.load(weekId + league);
 
-  if (weeklyData == null) {
-    weeklyData = new TotalData(weekId);
-    weeklyData.volume = convertToUSD(volume, depositToken);
-    weeklyData.trades = ONE;
-    weeklyData.fee = convertToUSD(fee, depositToken);
-    weeklyData.participents = ZERO;
-    weeklyData.save();
+  if (weeklyLeagueData == null) {
+    weeklyLeagueData = new TotalData(weekId + league);
+    weeklyLeagueData.volume = convertToUSD(volume, depositToken);
+    weeklyLeagueData.trades = ONE;
+    weeklyLeagueData.fee = convertToUSD(fee, depositToken);
+    weeklyLeagueData.participents = ZERO;
+    weeklyLeagueData.league = league;
+    weeklyLeagueData.save();
   } else {
-    weeklyData.volume = weeklyData.volume.plus(
+    weeklyLeagueData.volume = weeklyLeagueData.volume.plus(
       convertToUSD(volume, depositToken)
     );
-    weeklyData.fee = weeklyData.fee.plus(convertToUSD(fee, depositToken));
-    weeklyData.trades = weeklyData.trades.plus(ONE);
-    weeklyData.save();
+    weeklyLeagueData.trades = weeklyLeagueData.trades.plus(ONE);
+    weeklyLeagueData.save();
+  }
+
+  let weeklyTotalData = TotalData.load(weekId + "total");
+
+  if (weeklyTotalData == null) {
+    weeklyTotalData = new TotalData(weekId + "total");
+    weeklyTotalData.volume = convertToUSD(volume, depositToken);
+    weeklyTotalData.trades = ONE;
+    weeklyTotalData.fee = convertToUSD(fee, depositToken);
+    weeklyTotalData.participents = ZERO;
+    weeklyTotalData.league = league;
+    weeklyTotalData.save();
+  } else {
+    weeklyTotalData.volume = weeklyTotalData.volume.plus(
+      convertToUSD(volume, depositToken)
+    );
+    weeklyTotalData.fee = weeklyTotalData.fee.plus(
+      convertToUSD(fee, depositToken)
+    );
+    weeklyTotalData.trades = weeklyTotalData.trades.plus(ONE);
+    weeklyTotalData.save();
   }
 }

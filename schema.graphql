@@ -83,9 +83,10 @@ type WeeklyLeaderboard @entity {
 }
 
 type TotalData @entity {
-  id: String! # dayid / weekid
+  id: String! # dayid / (weekid =league/total)
   trades: BigInt!
   volume: BigInt!
   fee: BigInt!
   participents: BigInt!
+  league: String!
 }

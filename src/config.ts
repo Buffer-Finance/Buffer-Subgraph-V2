@@ -53,3 +53,4 @@ export const BFR_UNISWAP_POOL_CONTRACT =
   "0xD6D04709695935aAf80B2bd0215911bc2D3Bc1Ac";
 
 export const ONE = BigInt.fromI32(1);
+export const ZERO = BigInt.fromI32(0);

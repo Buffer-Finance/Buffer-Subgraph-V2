@@ -1,321 +1,190 @@
 import {
-  Create as CreateAB,
-  CreateMarket,
-} from "../generated/AboveBelowBufferBinaryOptions/AboveBelowBufferBinaryOptions";
-import {
-  OpenTrade as AboveBelowOpenTrade,
-  CancelTrade,
-  InitiateTrade,
-} from "../generated/AboveBelowBufferRouter/AboveBelowBufferRouter";
-import {
-  UpdateCircuitBreakerContract,
-  UpdateMaxSkew,
-  UpdatePayout,
-  UpdateSf,
-  UpdateStrikeStepSize,
-} from "../generated/AboveBelowConfigs/AboveBelowConfig";
-import {
-  DeregisterAccount,
-  RegisterAccount,
-} from "../generated/AccountRegistrar/AccountRegistrar";
-import { Transfer } from "../generated/BFR/BFR";
-import {
   Create,
   CreateOptionsContract,
   Exercise,
   Expire,
-  LpLoss,
-  LpProfit,
-  Pause,
-  UpdateReferral,
-} from "../generated/BufferBinaryOptions/BufferBinaryOptions";
+} from "../generated/BufferRouter/BufferBinaryOptions";
+import { ContractRegistryUpdated } from "../generated/BufferRouter/BufferRouter";
+import { OptionContract, Trade } from "../generated/schema";
 import {
-  UpdateCreationWindowContract,
-  UpdateEarlyClose,
-  UpdateEarlyCloseThreshold,
-  UpdateIV,
-  UpdateIVFactorITM,
-  UpdateIVFactorOTM,
-  UpdateMarketOIConfigContract,
-  UpdateMaxPeriod,
-  UpdateMinFee,
-  UpdateMinPeriod,
-  UpdateOptionStorageContract,
-  UpdatePlatformFee,
-  UpdatePoolOIConfigContract,
-  UpdateSettlementFeeDisbursalContract,
-  UpdateSpreadConfig1,
-  UpdateSpreadConfig2,
-  UpdateSpreadFactor,
-  UpdatetraderNFTContract,
-} from "../generated/BufferConfigUpdates/BufferConfig";
-import {
-  OpenTrade,
-  RevokeRouter,
-} from "../generated/BufferRouter/BufferRouter";
-import {
-  Transfer as NFTtransfer,
-  TokensClaimed,
-  TokensLazyMinted,
-} from "../generated/DropERC721/DropERC721";
-import { TokenURIRevealed } from "../generated/OldDropERC721/DropERC721";
-import {
-  Exercise as ExerciseV1,
-  Expire as ExpireV1,
-} from "../generated/V1Options/V1Options";
-import { _handleTransfer } from "./BFRTracking";
-import {
-  _handleCreateOptionsContract,
-  _handleUpdateCircuitBreakerContract,
-  _handleUpdateCreationWindowContract,
-  _handleUpdateEarlyClose,
-  _handleUpdateEarlyCloseThreshold,
-  _handleUpdateIV,
-  _handleUpdateIVFactorITM,
-  _handleUpdateIVFactorOTM,
-  _handleUpdateMaxPeriod,
-  _handleUpdateMaxSkew,
-  _handleUpdateMinFee,
-  _handleUpdateMinPeriod,
-  _handleUpdateOiconfigContract,
-  _handleUpdateOptionStorageContract,
-  _handleUpdatePayout,
-  _handleUpdatePlatformFee,
-  _handleUpdatePoolOIContract,
-  _handleUpdateSettlementFeeDisbursalContract,
-  _handleUpdateSf,
-  _handleUpdateSpreadConfig1,
-  _handleUpdateSpreadConfig2,
-  _handleUpdateSpreadFactor,
-  _handleUpdateStepSize,
-  _handleUpdatetraderNFTContract,
-} from "./configContractHandlers";
-import {
-  _handleLazyMint,
-  _handleNftTransfer,
-  _handleReveal,
-  _handleTokenClaim,
-} from "./nftContractHandlers";
-import {
-  _handleCreate,
-  _handleCreateAB,
-  _handleCreateMarket,
-  _handleExercise,
-  _handleExerciseV1,
-  _handleExpire,
-  _handleExpireV1,
-  _handleLpLoss,
-  _handleLpProfit,
-  _handlePause,
-  _handleUpdateReferral,
-} from "./optionContractHandlers";
-import {
-  _handleAboveBelowCancelTrade,
-  _handleAboveBelowInitiateTrade,
-  _handleAboveBelowOpenTrade,
-  _handleDeregisterAccount,
-  _handleOpenTrade,
-  _handleRegisterAccount,
-  _handleRevokeRouter,
-} from "./routerContractHandlers";
+  _createTradeEntity,
+  checkTimeThreshold,
+  getPoolNameFromAddress,
+  isRegisteredTOABRouter,
+  isRegisteredToV2Router,
+  registerAmarket,
+  updateOrCreateLeaderboards,
+} from "./common";
 
-export function handleOpenTrade(event: OpenTrade): void {
-  _handleOpenTrade(event);
+import {
+  Create as CreateAB,
+  CreateOptionsContract as CreateOptionsContractAB,
+  Exercise as ExerciseAB,
+  Expire as ExpireAB,
+} from "../generated/AboveBelowBufferRouter/AboveBelowBufferBinaryOptions";
+import { ContractRegistryUpdated as ContractRegistryUpdatedAB } from "../generated/AboveBelowBufferRouter/AboveBelowBufferRouter";
+import { ZERO } from "./config";
+
+// Up - Down
+export function handleV2ContractRegistryUpdated(
+  event: ContractRegistryUpdated
+): void {
+  if (event.params.register) {
+    registerAmarket(event.params.targetContract, event.address);
+  }
 }
 
-export function handleCreate(event: Create): void {
-  _handleCreate(event);
-}
-
-export function handleExercise(event: Exercise): void {
-  _handleExercise(event);
-}
-
-export function handleExpire(event: Expire): void {
-  _handleExpire(event);
-}
-
-export function handleUpdateReferral(event: UpdateReferral): void {
-  _handleUpdateReferral(event);
-}
-
-export function handlePause(event: Pause): void {
-  _handlePause(event);
-}
-
-export function handleCreateOptionsContract(
+export function handleV2CreateOptionsContract(
   event: CreateOptionsContract
 ): void {
-  _handleCreateOptionsContract(event);
+  const market = OptionContract.load(event.address.toHexString().toLowerCase());
+  if (isRegisteredToV2Router(event.address) && market != null) {
+    market.pool = getPoolNameFromAddress(event.params.pool);
+    market.save();
+  }
 }
 
-export function handleUpdateMinFee(event: UpdateMinFee): void {
-  _handleUpdateMinFee(event);
+export function handleV2Create(event: Create): void {
+  if (checkTimeThreshold(event.block.timestamp)) {
+    const market = OptionContract.load(
+      event.address.toHexString().toLowerCase()
+    );
+
+    if (isRegisteredToV2Router(event.address) && market != null) {
+      _createTradeEntity(
+        event.params.id,
+        event.address,
+        event.params.account,
+        event.params.totalFee,
+        event.params.settlementFee,
+        market.pool
+      );
+    }
+  }
 }
 
-export function handleUpdateMaxPeriod(event: UpdateMaxPeriod): void {
-  _handleUpdateMaxPeriod(event);
+export function handleV2Expire(event: Expire): void {
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredToV2Router(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
+    );
+    if (trade != null) {
+      updateOrCreateLeaderboards(
+        trade.volume,
+        trade.token,
+        ZERO.minus(trade.volume),
+        event.block.timestamp,
+        trade.userAddress.toHexString(),
+        false,
+        trade.fee
+      );
+    }
+  }
 }
 
-export function handleUpdateMinPeriod(event: UpdateMinPeriod): void {
-  _handleUpdateMinPeriod(event);
+export function handleV2Exercise(event: Exercise): void {
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredToV2Router(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
+    );
+    if (trade != null) {
+      updateOrCreateLeaderboards(
+        trade.volume,
+        trade.token,
+        event.params.profit.minus(trade.volume),
+        event.block.timestamp,
+        trade.userAddress.toHexString(),
+        true,
+        trade.fee
+      );
+    }
+  }
 }
 
-export function handleUpdatePlatformFee(event: UpdatePlatformFee): void {
-  _handleUpdatePlatformFee(event);
-}
-
-export function handleRegisterAccount(event: RegisterAccount): void {
-  _handleRegisterAccount(event);
-}
-
-export function handleDeregisterAccount(event: DeregisterAccount): void {
-  _handleDeregisterAccount(event);
-}
-
-export function handleUpdateEarlyCloseThreshold(
-  event: UpdateEarlyCloseThreshold
+// Above - Below
+export function handleABContractRegistryUpdated(
+  event: ContractRegistryUpdatedAB
 ): void {
-  _handleUpdateEarlyCloseThreshold(event);
+  if (event.params.register) {
+    registerAmarket(event.params.targetContract, event.address);
+  }
 }
 
-export function handleUpdateEarlyClose(event: UpdateEarlyClose): void {
-  _handleUpdateEarlyClose(event);
-}
-
-export function handleUpdateOiconfigContract(
-  event: UpdateMarketOIConfigContract
+export function handleABCreateOptionsContract(
+  event: CreateOptionsContractAB
 ): void {
-  _handleUpdateOiconfigContract(event);
-}
-export function handleUpdatePoolOIContract(
-  event: UpdatePoolOIConfigContract
-): void {
-  _handleUpdatePoolOIContract(event);
-}
-
-export function handleUpdateIV(event: UpdateIV): void {
-  _handleUpdateIV(event);
+  const market = OptionContract.load(event.address.toHexString().toLowerCase());
+  if (isRegisteredTOABRouter(event.address) && market != null) {
+    market.pool = getPoolNameFromAddress(event.params.pool);
+    market.save();
+  }
 }
 
-export function handleExpireV1(event: ExpireV1): void {
-  _handleExpireV1(event);
+export function handleABCreate(event: CreateAB): void {
+  if (checkTimeThreshold(event.block.timestamp)) {
+    const market = OptionContract.load(
+      event.address.toHexString().toLowerCase()
+    );
+
+    if (isRegisteredTOABRouter(event.address) && market != null) {
+      _createTradeEntity(
+        event.params.id,
+        event.address,
+        event.params.account,
+        event.params.totalFee,
+        event.params.settlementFee,
+        market.pool
+      );
+    }
+  }
 }
 
-export function handleExerciseV1(event: ExerciseV1): void {
-  _handleExerciseV1(event);
+export function handleABExpire(event: ExpireAB): void {
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredTOABRouter(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
+    );
+    if (trade != null) {
+      updateOrCreateLeaderboards(
+        trade.volume,
+        trade.token,
+        ZERO.minus(trade.volume),
+        event.block.timestamp,
+        trade.userAddress.toHexString(),
+        false,
+        trade.fee
+      );
+    }
+  }
 }
 
-export function handleUpdateCreationWindowContract(
-  event: UpdateCreationWindowContract
-): void {
-  _handleUpdateCreationWindowContract(event);
-}
-
-export function handleLpProfit(event: LpProfit): void {
-  _handleLpProfit(event);
-}
-
-export function handleLpLoss(event: LpLoss): void {
-  _handleLpLoss(event);
-}
-
-export function handleUpdateIVFactorOTM(event: UpdateIVFactorOTM): void {
-  _handleUpdateIVFactorOTM(event);
-}
-
-export function handleUpdateIVFactorITM(event: UpdateIVFactorITM): void {
-  _handleUpdateIVFactorITM(event);
-}
-
-export function handleUpdateSpreadConfig1(event: UpdateSpreadConfig1): void {
-  _handleUpdateSpreadConfig1(event);
-}
-
-export function handleUpdateSpreadConfig2(event: UpdateSpreadConfig2): void {
-  _handleUpdateSpreadConfig2(event);
-}
-export function handleUpdateSpreadFactor(event: UpdateSpreadFactor): void {
-  _handleUpdateSpreadFactor(event);
-}
-export function handleTransfer(event: Transfer): void {
-  _handleTransfer(event);
-}
-
-export function handleUpdateSettlementFeeDisbursalContract(
-  event: UpdateSettlementFeeDisbursalContract
-): void {
-  _handleUpdateSettlementFeeDisbursalContract(event);
-}
-
-export function handleUpdateSf(event: UpdateSf): void {
-  _handleUpdateSf(event);
-}
-
-export function handleUpdatetraderNFTContract(
-  event: UpdatetraderNFTContract
-): void {
-  _handleUpdatetraderNFTContract(event);
-}
-
-export function handleUpdateStrikeStepSize(event: UpdateStrikeStepSize): void {
-  _handleUpdateStepSize(event);
-}
-
-export function handleUpdateOptionStorageContract(
-  event: UpdateOptionStorageContract
-): void {
-  _handleUpdateOptionStorageContract(event);
-}
-
-export function handleUpdatePayout(event: UpdatePayout): void {
-  _handleUpdatePayout(event);
-}
-
-export function handleUpdateMaxSkew(event: UpdateMaxSkew): void {
-  _handleUpdateMaxSkew(event);
-}
-
-export function handleUpdateCircuitBreakerContract(
-  event: UpdateCircuitBreakerContract
-): void {
-  _handleUpdateCircuitBreakerContract(event);
-}
-
-export function handleCreateAB(event: CreateAB): void {
-  _handleCreateAB(event);
-}
-
-export function handleCreateMarketAB(event: CreateMarket): void {
-  _handleCreateMarket(event);
-}
-
-export function handleAboveBelowInitiateTrade(event: InitiateTrade): void {
-  _handleAboveBelowInitiateTrade(event);
-}
-
-export function handleAboveBelowCancelTrade(event: CancelTrade): void {
-  _handleAboveBelowCancelTrade(event);
-}
-
-export function handleAboveBelowOpenTrade(event: AboveBelowOpenTrade): void {
-  _handleAboveBelowOpenTrade(event);
-}
-
-export function handleNftTransfer(event: NFTtransfer): void {
-  _handleNftTransfer(event);
-}
-
-export function handleTokenClaim(event: TokensClaimed): void {
-  _handleTokenClaim(event);
-}
-export const handleReveal = (event: TokenURIRevealed): void => {
-  _handleReveal(event);
-};
-export function handleLazyMint(event: TokensLazyMinted): void {
-  _handleLazyMint(event);
-}
-
-export function handleRevokeRouter(event: RevokeRouter): void {
-  _handleRevokeRouter(event);
+export function handleABExercise(event: ExerciseAB): void {
+  if (
+    checkTimeThreshold(event.block.timestamp) &&
+    isRegisteredTOABRouter(event.address)
+  ) {
+    const trade = Trade.load(
+      event.params.id.toString() + event.address.toHexString().toLowerCase()
+    );
+    if (trade != null) {
+      updateOrCreateLeaderboards(
+        trade.volume,
+        trade.token,
+        event.params.profit.minus(trade.volume),
+        event.block.timestamp,
+        trade.userAddress.toHexString(),
+        true,
+        trade.fee
+      );
+    }
+  }
 }
